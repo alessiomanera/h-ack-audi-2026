@@ -10,8 +10,8 @@ A 5-person team at the Audi x H-FARM hackathon "H-ACK | Co-Design the Future" (S
 
 ## Facts versus hypotheses
 
-- **Fixed** (the only ground truth): `knowledge/fixed/` = the 4 challenge questions, the rules, and from Saturday the official brief (`brief.md`). When they conflict with anything else, they win.
-- **Hypotheses**: `knowledge/team-doc/` (mirror of the team Google Doc) and `knowledge/prep/`. Treat every concept, plan and jury read there as a team guess to test against the brief. Start from `knowledge/team-doc/INDEX.md` and open only the tab you need.
+- **Fixed** (the only ground truth): `knowledge/fixed/` = the 4 challenge questions, the rules, the confirmed jury (`jury.md`), and from Saturday the official brief (`brief.md`). When they conflict with anything else, they win.
+- **Hypotheses**: `knowledge/team-doc/` (mirror of the team Google Doc) and `knowledge/prep/`. Treat every concept, plan and juror profile there as a team guess to test against the brief. Start from `knowledge/team-doc/INDEX.md` and open only the tab you need.
 - **Numbers** reach a deliverable only with a primary source and year; label US or German data as such.
 
 ## Language
@@ -21,6 +21,13 @@ Deliverables (UI copy, slides, pitch script, anything written to the Google Doc)
 ## Where things live
 
 `docs/WORKFLOW.md` (mirror of the Google Doc WORKFLOW tab) is the team's operating manual: roles, tools, sync points, Saturday plan. `knowledge/README.md` maps the knowledge base. `brand/tokens.json` is the single source for colors and fonts; `brand/voice.md` for tone.
+
+## Who runs which agent
+
+- **Alessio**: Gemini in Antigravity is his main tool on the repo; Claude is reserved for at most two 5-hour sessions on Saturday (planning, review, pitch). Claude's job there is to write task files that Antigravity executes.
+- **Evelyn**: Claude Code Pro.
+- **Google Doc access** exists only through Claude's connectors. Gemini and Antigravity read the Doc through the mirror in `knowledge/team-doc/`; when it looks stale, they run `npm run align:git -- --pull` and ask a Claude user (Alessio or Evelyn) to run "allinea".
+- Keep sessions lean: read `INDEX.md` files and the task file first, open only what the task needs.
 
 ## Working on the shared codebase (up to 3 people, several agents)
 
@@ -37,7 +44,7 @@ Deliverables (UI copy, slides, pitch script, anything written to the Google Doc)
 
 `HISTORY.md` records who asked what, for the jury's "how did you work?". Claude Code logs itself through hooks. **Any other agent** (Antigravity, Gemini CLI) logs each task prompt it receives before starting work:
 
-```
+```sh
 npm run log -- --tool antigravity --task T012 "<the prompt you received>"
 ```
 
