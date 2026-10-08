@@ -1,0 +1,36 @@
+# Dependencies and builds
+node_modules/
+dist/
+dev-dist/
+.wrangler/
+coverage/
+*.tsbuildinfo
+
+# Secrets (never commit)
+.env
+.env.*
+!.env.example
+.dev.vars
+
+# Personal and per-user files
+_PERSONAL/
+.claude/settings.local.json
+.claude/history-state/
+*.code-workspace
+
+# Agent rules live in .agents/AGENTS.md only (global rule: no root AGENTS.md)
+/AGENTS.md
+/agents.md
+
+# Google Drive and OS artifacts
+desktop.ini
+*.gdoc
+*.gsheet
+*.gslides
+*.docx
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
