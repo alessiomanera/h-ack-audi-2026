@@ -33,7 +33,7 @@ for (const file of files) {
     blocked++;
     console.error(`BLOCCATO  ${file}:${hit.line}  ${hit.id}  (${hit.sample})`);
   }
-  if (!DASH_EXEMPT.test(file) && text.includes("—")) {
+  if (!DASH_EXEMPT.test(file) && text.includes(String.fromCharCode(0x2014))) {
     dashWarnings++;
     console.warn(`avviso    ${file}: contiene em-dash, sostituisci con virgola, due punti o parentesi`);
   }
