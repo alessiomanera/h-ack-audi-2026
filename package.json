@@ -1,0 +1,20 @@
+{
+  "name": "h-ack-audi-2026",
+  "private": true,
+  "type": "module",
+  "description": "Team workspace for H-ACK | Co-Design the Future (Audi x H-FARM, 10 Oct 2026): harness, knowledge mirror, brand tokens, prototype.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "prepare": "git config core.hooksPath .githooks",
+    "log": "node scripts/history.mjs",
+    "history:sort": "node scripts/history.mjs sort",
+    "align:git": "node scripts/align-git.mjs",
+    "agents:sync": "node scripts/agents-sync.mjs",
+    "agents:check": "node scripts/agents-sync.mjs --check",
+    "privacy:scan": "node scripts/privacy-scan.mjs --all",
+    "tasks:board": "node scripts/tasks-board.mjs",
+    "ship": "npm run agents:check && npm run privacy:scan && npm run check --if-present && git pull --rebase --autostash && git push"
+  }
+}
