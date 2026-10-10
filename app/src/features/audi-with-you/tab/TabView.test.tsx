@@ -3,8 +3,10 @@ import { MemoryRouter } from 'react-router'
 import { describe, expect, it, vi } from 'vitest'
 import type { ActionResult, CreateInviteResponse, MeResponse } from '@/shared/types'
 import { SessionTestProvider, type SessionStatus, type SessionValue } from '@/state/session'
-import { bonusReward, getAction, program } from '../program'
+import { formatPoints } from '@/lib/utils'
+import { bonusReward, getAction, getLevel, program } from '../program'
 import { tabCopy } from './copy.it'
+import { bookingCopy } from '../shared/booking.copy.it'
 import { lucaMe, lucaTopMe, paoloMe, paoloTradeInMe, withVehicleAge } from './fixtures'
 import { fullVersionSearch, nextReward, otherActions, servicePoints } from './model'
 import { TabView } from './TabView'
@@ -68,6 +70,9 @@ function makeSession(status: SessionStatus, me: MeResponse | null): SessionValue
     }),
     acceptInvite: noop,
     resetDemo: noop,
+    bookReward: vi.fn(async () => {
+      throw new Error('not used')
+    }),
   }
 }
 
@@ -94,14 +99,19 @@ describe('TabView model', () => {
     expect(fullVersionSearch(new URLSearchParams(''))).toBe('?vista=completa')
   })
 
-  it('doubles service points only for vehicles older than 2 years', () => {
-    expect(servicePoints(lucaMe)).toMatchObject({ points: 400, multiplied: true })
-    expect(servicePoints(withVehicleAge(lucaMe, 1))).toMatchObject({ points: 200, multiplied: false })
+  it('doubles service points only for vehicles older than 2 years, per kind', () => {
+    expect(servicePoints(lucaMe)).toMatchObject({ points: 600, multiplied: true })
+    expect(servicePoints(lucaMe).kinds.map((k) => [k.kind, k.points])).toEqual([
+      ['tagliando', 600],
+      ['gomme', 200],
+      ['check_invernale', 200],
+    ])
+    expect(servicePoints(withVehicleAge(lucaMe, 1))).toMatchObject({ points: 300, multiplied: false })
   })
 
   it('previews the next level with its welcome kit and never the bonus', () => {
     const luca = nextReward(lucaMe)
-    expect(luca).toMatchObject({ levelName: 'S line Club', pointsToNext: 750 })
+    expect(luca).toMatchObject({ levelName: 'S line Club', pointsToNext: 1250 })
     expect(luca?.rewards.map((r) => r.kind)).toContain('welcome_kit')
     expect(nextReward(paoloTradeInMe)?.rewards.some((r) => r.bonus)).toBe(false)
     expect(nextReward(lucaTopMe)).toBeNull()
@@ -109,7 +119,9 @@ describe('TabView model', () => {
 
   it('lists the actions without a tile, new ones included', () => {
     const types = otherActions(program).map((a) => a.type)
-    expect(types).toEqual(expect.arrayContaining(['accessory', 'merch', 'trade_in', 'session', 'event', 'charging']))
+    expect(types).toEqual(
+      expect.arrayContaining(['accessory', 'merch', 'trade_in', 'session', 'event', 'charging', 'first_audi']),
+    )
     expect(types).not.toContain('join')
     expect(types).not.toContain('invite')
     expect(types).not.toContain('service')
@@ -119,7 +131,8 @@ describe('TabView model', () => {
 describe.each([false, true])('TabView (framed=%s)', (framed) => {
   it('shows the intro and the compact auth panel when anonymous', () => {
     renderTab(makeSession('anonymous', null), framed)
-    expect(screen.getByRole('heading', { level: 1, name: 'La tua Audi evolve con te' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Audi with you' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: 'La tua Audi evolve con te' })).toBeInTheDocument()
     expect(screen.getByTestId('auth-panel')).toHaveAttribute('data-variant', 'compact')
     expectFullVersionHref(screen.getByRole('link', { name: tabCopy.anonymous.discover }))
     expect(screen.queryByRole('link', { name: tabCopy.cta.button })).not.toBeInTheDocument()
@@ -141,14 +154,14 @@ describe.each([false, true])('TabView (framed=%s)', (framed) => {
 
     const next = within(screen.getByRole('region', { name: tabCopy.next.title }))
     expect(next.getByText('S line Club')).toBeInTheDocument()
-    expect(next.getByText('ancora 750 punti')).toBeInTheDocument()
+    expect(next.getByText(`ancora ${formatPoints(1250)} punti`)).toBeInTheDocument()
     for (const reward of nextReward(lucaMe)?.rewards ?? []) {
       expect(next.getByText(reward.title)).toBeInTheDocument()
     }
     expect(next.getByText(/Kit di benvenuto/)).toBeInTheDocument()
 
     const service = serviceButton()
-    expect(within(service).getByText('+400 punti')).toBeInTheDocument()
+    expect(within(service).getByText('fino a +600 punti')).toBeInTheDocument()
     expect(within(service).getByText('Punti doppi')).toBeInTheDocument()
     expect(screen.getByText('Sei nella famiglia di Paolo')).toBeInTheDocument()
     expect(screen.queryByTestId('invite-button')).not.toBeInTheDocument()
@@ -160,6 +173,34 @@ describe.each([false, true])('TabView (framed=%s)', (framed) => {
     expectFullVersionHref(screen.getByRole('link', { name: tabCopy.cta.button }))
     expect(screen.getByText(tabCopy.cta.hint)).toBeInTheDocument()
     expect(screen.getByText(tabCopy.footer)).toBeInTheDocument()
+    expect(screen.getByTestId('prototype-note')).toHaveTextContent(tabCopy.prototypeNote)
+  })
+
+  it('lists the bookable rewards of the current level with their cta, and an empty "I tuoi premi"', () => {
+    renderTab(makeSession('authenticated', lucaMe), framed)
+    const rewards = within(screen.getByRole('region', { name: bookingCopy.levelRewards.title }))
+    const bookable = getLevel(program, lucaMe.level.current).rewards.filter((r) => r.claim)
+    expect(bookable.length).toBeGreaterThan(0)
+    for (const reward of bookable) {
+      const item = rewards.getByText(reward.title).closest('li')
+      expect(item).not.toBeNull()
+      if (item && reward.claim) expect(within(item).getByRole('button', { name: reward.claim.cta })).toBeInTheDocument()
+    }
+    const mine = within(screen.getByRole('region', { name: bookingCopy.myBookings.title }))
+    expect(mine.getByText(bookingCopy.myBookings.empty)).toBeInTheDocument()
+  })
+
+  it('shows a booked reward as "Prenotato" with its code, also in "I tuoi premi"', () => {
+    renderTab(makeSession('authenticated', paoloMe), framed)
+    const rewards = within(screen.getByRole('region', { name: bookingCopy.levelRewards.title }))
+    const item = rewards.getByText('Fast track in officina').closest('li')
+    expect(item).not.toBeNull()
+    if (!item) return
+    expect(within(item).getByText('Prenotato')).toBeInTheDocument()
+    expect(within(item).getByText('AWY-3F9D')).toBeInTheDocument()
+    expect(within(item).queryByRole('button')).not.toBeInTheDocument()
+    const mine = within(screen.getByRole('region', { name: bookingCopy.myBookings.title }))
+    expect(mine.getByText('AWY-3F9D')).toBeInTheDocument()
   })
 
   it('opens the workshop dialog with the courtesy car at the current level', () => {
@@ -176,7 +217,7 @@ describe.each([false, true])('TabView (framed=%s)', (framed) => {
     expect(screen.getByText('A3 del 2025, titolare')).toBeInTheDocument()
     expect(screen.getByTestId('invite-button')).toHaveTextContent(tabCopy.actions.family.button)
     const service = serviceButton()
-    expect(within(service).getByText('+200 punti')).toBeInTheDocument()
+    expect(within(service).getByText('fino a +300 punti')).toBeInTheDocument()
     expect(within(service).queryByText('Punti doppi')).not.toBeInTheDocument()
   })
 
@@ -226,8 +267,21 @@ describe('TabView frame', () => {
     expectFullVersionHref(screen.getByRole('link', { name: tabCopy.frame.link }))
   })
 
+  it('wears the myAudi chrome of the Stitch mockup: title, myAudi, six tabs with the star active', () => {
+    renderTab(makeSession('authenticated', lucaMe), true)
+    expect(screen.getByRole('heading', { level: 1, name: 'Audi with you' })).toBeInTheDocument()
+    expect(screen.getByText(bookingCopy.phone.subtitle)).toBeInTheDocument()
+    const nav = within(screen.getByRole('navigation', { name: bookingCopy.phone.navLabel }))
+    expect(nav.getAllByRole('listitem')).toHaveLength(6)
+    const current = nav.getByText(bookingCopy.phone.nav.program).parentElement
+    expect(current).toHaveAttribute('aria-current', 'page')
+    expect(screen.getByRole('region', { name: tabCopy.frame.caption }).querySelector('[class*="signal"]')).toBeNull()
+  })
+
   it('has no frame caption on a real phone', () => {
     renderTab(makeSession('authenticated', lucaMe), false)
     expect(screen.queryByText(tabCopy.frame.caption)).not.toBeInTheDocument()
+    expect(screen.queryByRole('navigation', { name: bookingCopy.phone.navLabel })).not.toBeInTheDocument()
+    expect(screen.getByText(bookingCopy.phone.subtitle)).toBeInTheDocument()
   })
 })

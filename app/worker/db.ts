@@ -6,18 +6,23 @@ import type {
   Invite,
   InviteStatus,
   LedgerEntry,
+  LevelProgress,
   MeResponse,
   PublicUser,
+  RewardBooking,
   Role,
 } from '../src/shared/types'
 import { program } from '../src/features/audi-with-you/program'
 import {
   courtesyCarFor,
+  findReward,
   ledgerLabel,
   levelForPoints,
   levelProgress,
+  summarizeLedger,
   vehicleAgeYears,
   type LedgerMeta,
+  type PointsRow,
 } from '../src/features/audi-with-you/engine'
 
 export const MAX_SECONDARY = 5
@@ -55,7 +60,22 @@ interface MemberRow {
   id: string
   name: string
   role: Role
+}
+
+interface MemberPointsRow {
+  user_id: string
+  action: string
   points: number
+  created_at: string
+}
+
+interface BookingRow {
+  id: string
+  reward_id: string
+  level_id: string
+  choices: string
+  code: string
+  created_at: string
 }
 
 interface InviteRow {
@@ -79,6 +99,8 @@ const ACTION_TYPES: Record<ActionType, true> = {
   session: true,
   event: true,
   charging: true,
+  first_audi: true,
+  anniversary: true,
 }
 
 function isActionType(v: string): v is ActionType {
@@ -127,12 +149,21 @@ export function getUserByEmail(db: D1Database, email: string): Promise<UserRow |
   return db.prepare('SELECT * FROM users WHERE email = ?').bind(email).first<UserRow>()
 }
 
-export async function userPoints(db: D1Database, userId: string): Promise<number> {
-  const row = await db
-    .prepare('SELECT COALESCE(SUM(points), 0) AS total FROM ledger WHERE user_id = ?')
+/** Every ledger row of a user, reduced to what the engine needs (a few dozen rows per user). */
+async function pointsRowsFor(db: D1Database, userId: string): Promise<PointsRow[]> {
+  const { results } = await db
+    .prepare('SELECT action, points, created_at FROM ledger WHERE user_id = ?')
     .bind(userId)
-    .first<{ total: number }>()
-  return row?.total ?? 0
+    .all<{ action: string; points: number; created_at: string }>()
+  return results.map((r) => ({ action: r.action, points: r.points, createdAt: r.created_at }))
+}
+
+/**
+ * Level of a user: window points (last `program.windowMonths` months), lifetime points,
+ * points leaving the window soon and level requirements (RS Vanguard: a recent service).
+ */
+export async function userStanding(db: D1Database, userId: string, now: Date): Promise<LevelProgress> {
+  return levelProgress(program, summarizeLedger(program, await pointsRowsFor(db, userId), now))
 }
 
 /** Memberships with their vehicle, key memberships first. */
@@ -204,16 +235,22 @@ export function ledgerEntryFromNew(row: NewLedgerRow): LedgerEntry {
 async function buildHousehold(db: D1Database, me: UserRow, m: MembershipRow, now: Date): Promise<Household> {
   const membersQuery = db
     .prepare(
-      `SELECT u.id, u.name, m.role, COALESCE(SUM(l.points), 0) AS points
+      `SELECT u.id, u.name, m.role
          FROM memberships m
          JOIN users u ON u.id = m.user_id
-         LEFT JOIN ledger l ON l.user_id = u.id
         WHERE m.vehicle_id = ?
-        GROUP BY u.id, u.name, m.role, m.created_at
         ORDER BY CASE m.role WHEN 'key' THEN 0 ELSE 1 END, m.created_at`,
     )
     .bind(m.id)
     .all<MemberRow>()
+  const pointsQuery = db
+    .prepare(
+      `SELECT l.user_id, l.action, l.points, l.created_at
+         FROM ledger l JOIN memberships m ON m.user_id = l.user_id
+        WHERE m.vehicle_id = ?`,
+    )
+    .bind(m.id)
+    .all<MemberPointsRow>()
   const invitesQuery =
     m.role === 'key'
       ? db
@@ -228,16 +265,25 @@ async function buildHousehold(db: D1Database, me: UserRow, m: MembershipRow, now
           .bind(m.id)
           .all<InviteRow>()
       : null
-  const [members, invites] = await Promise.all([membersQuery, invitesQuery])
+  const [members, pointRows, invites] = await Promise.all([membersQuery, pointsQuery, invitesQuery])
 
-  const memberList: HouseholdMember[] = members.results.map((r) => ({
-    userId: r.id,
-    name: r.name,
-    role: r.role,
-    points: r.points,
-    level: levelForPoints(program, r.points),
-    isMe: r.id === me.id,
-  }))
+  const rowsByUser = new Map<string, PointsRow[]>()
+  for (const r of pointRows.results) {
+    const list = rowsByUser.get(r.user_id) ?? []
+    list.push({ action: r.action, points: r.points, createdAt: r.created_at })
+    rowsByUser.set(r.user_id, list)
+  }
+  const memberList: HouseholdMember[] = members.results.map((r) => {
+    const summary = summarizeLedger(program, rowsByUser.get(r.id) ?? [], now)
+    return {
+      userId: r.id,
+      name: r.name,
+      role: r.role,
+      points: summary.points,
+      level: levelForPoints(program, summary.points, summary.satisfied),
+      isMe: r.id === me.id,
+    }
+  })
   const pendingInvites: Invite[] = (invites?.results ?? []).map(toInvite)
   return {
     vehicle: { id: m.id, model: m.model, year: m.year, ageYears: vehicleAgeYears(m.year, now) },
@@ -259,19 +305,48 @@ export function toInvite(r: InviteRow): Invite {
   }
 }
 
+/** Option id -> chosen value; anything that is not a string is dropped. */
+export function parseChoices(raw: string): Record<string, string> {
+  const out: Record<string, string> = {}
+  for (const [k, v] of Object.entries(parseMeta(raw))) if (typeof v === 'string') out[k] = v
+  return out
+}
+
+export function toBooking(row: BookingRow): RewardBooking {
+  return {
+    id: row.id,
+    rewardId: row.reward_id,
+    rewardTitle: findReward(program, row.reward_id)?.reward.title ?? row.reward_id,
+    levelId: row.level_id,
+    choices: parseChoices(row.choices),
+    code: row.code,
+    createdAt: row.created_at,
+  }
+}
+
+export async function bookingsFor(db: D1Database, userId: string): Promise<RewardBooking[]> {
+  const { results } = await db
+    .prepare(
+      'SELECT id, reward_id, level_id, choices, code, created_at FROM bookings WHERE user_id = ? ORDER BY created_at DESC, rowid DESC',
+    )
+    .bind(userId)
+    .all<BookingRow>()
+  return results.map(toBooking)
+}
+
 export async function buildMe(db: D1Database, user: UserRow, now: Date): Promise<MeResponse> {
-  const [memberships, points, ledgerRows] = await Promise.all([
+  const [memberships, level, ledgerRows, bookings] = await Promise.all([
     membershipsFor(db, user.id),
-    userPoints(db, user.id),
+    userStanding(db, user.id, now),
     db
       .prepare(
         'SELECT id, action, points, meta, created_at FROM ledger WHERE user_id = ? ORDER BY created_at DESC, rowid DESC LIMIT ?',
       )
       .bind(user.id, LEDGER_LIMIT)
       .all<LedgerRow>(),
+    bookingsFor(db, user.id),
   ])
   const households = await Promise.all(memberships.map((m) => buildHousehold(db, user, m, now)))
-  const level = levelProgress(program, points)
   const primary = households[0]
   return {
     user: toPublicUser(user),
@@ -279,5 +354,6 @@ export async function buildMe(db: D1Database, user: UserRow, now: Date): Promise
     households,
     ledger: ledgerRows.results.map(toLedgerEntry).filter((e): e is LedgerEntry => e !== null),
     courtesyCar: primary ? courtesyCarFor(program, level.current, primary.vehicle.model) : null,
+    bookings,
   }
 }

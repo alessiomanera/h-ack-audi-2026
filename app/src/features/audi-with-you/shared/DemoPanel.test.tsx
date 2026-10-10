@@ -9,18 +9,27 @@ import { InviteAcceptBanner } from './InviteAcceptBanner'
 import { InviteButton } from './InviteButton'
 import {
   accessoryResult,
+  dolomitiBookingResponse,
   eventLevelUpResult,
+  firstAudiResult,
   giuliaMe,
+  lucaAfterService,
   lucaMe,
   makeSession,
   paoloMe,
+  progress,
   serviceResult,
   tradeInResult,
 } from './fixtures'
+import { api } from '@/state/api'
 
 // Toasts are rendered by the app shell's Toaster, absent here: capture the calls instead.
 const toastMock = vi.hoisted(() => Object.assign(vi.fn(), { error: vi.fn(), success: vi.fn() }))
 vi.mock('sonner', () => ({ toast: toastMock }))
+
+afterEach(() => {
+  vi.restoreAllMocks()
+})
 
 beforeEach(() => {
   toastMock.mockClear()
@@ -60,16 +69,18 @@ describe('DemoPanel', () => {
       'Evento',
       'Ricarica',
       'Invita un familiare',
+      'Prima Audi',
       'Reset demo',
     ]) {
       expect(screen.getByRole('button', { name })).toBeInTheDocument()
     }
+    expect(screen.getByRole('button', { name: 'Prima Audi' })).toHaveAccessibleDescription('solo guidatore invitato')
     expect(screen.getByRole('button', { name: 'Luca' })).toHaveAttribute('aria-pressed', 'true')
   })
 
   it('disables events until a persona is chosen', () => {
     renderAt('/?demo=1', <DemoPanel />, makeSession({ status: 'anonymous', me: null }))
-    for (const name of ['Tagliando', 'Accessorio', 'Audi Collection', 'Permuta']) {
+    for (const name of ['Tagliando', 'Accessorio', 'Audi Collection', 'Permuta', 'Prima Audi']) {
       expect(screen.getByRole('button', { name })).toBeDisabled()
     }
     expect(screen.getByText('Scegli una persona per simulare gli eventi.')).toBeInTheDocument()
@@ -114,7 +125,7 @@ describe('DemoPanel', () => {
     renderAt('/?demo=1', <DemoPanel />, makeSession({ runAction }))
     fireEvent.click(screen.getByRole('button', { name: 'Tagliando' }))
     expect(runAction).toHaveBeenCalledWith({ type: 'service', meta: { serviceKind: 'tagliando' } })
-    expect(await screen.findByText('Tagliando registrato: +400 punti')).toBeInTheDocument()
+    expect(await screen.findByText('Tagliando registrato: +600 punti')).toBeInTheDocument()
     const dialog = within(screen.getByRole('dialog'))
     expect(dialog.getByText('Mentre la tua A3 è in officina, guidi una A5')).toBeInTheDocument()
     expect(dialog.getByText('Audi A5')).toBeInTheDocument()
@@ -127,7 +138,7 @@ describe('DemoPanel', () => {
     }
   })
 
-  it('F2: an event that crosses 1500 lists what S line Club unlocks, welcome kit included', async () => {
+  it('F2: an event that crosses 2500 lists what S line Club unlocks, welcome kit included', async () => {
     const runAction = vi.fn(async () => eventLevelUpResult)
     renderAt('/?demo=1', <DemoPanel />, makeSession({ me: giuliaMe, runAction }))
     fireEvent.click(screen.getByRole('button', { name: 'Evento' }))
@@ -169,7 +180,7 @@ describe('DemoPanel', () => {
     const runAction = vi.fn(async () => ({
       ...eventLevelUpResult,
       levelUp: 'rs-vanguard',
-      me: { ...giuliaMe, level: { current: 'rs-vanguard', next: null, points: 3050, pointsToNext: null, progress: 1 } },
+      me: { ...giuliaMe, level: progress({ current: 'rs-vanguard', next: null, points: 5050, pointsToNext: null, progress: 1 }) },
     }))
     renderAt('/?demo=1', <DemoPanel />, makeSession({ me: giuliaMe, runAction }))
     fireEvent.click(screen.getByRole('button', { name: 'Evento' }))
@@ -181,6 +192,49 @@ describe('DemoPanel', () => {
     if (!item || !bonus) return
     expect(within(item).getByText(bonus.title)).toBeInTheDocument()
     expect(within(item).getByText('Premio bonus')).toBeInTheDocument()
+  })
+
+  it('F2: "Prenota" on the Dolomiti day swaps the dialog to the booking flow', async () => {
+    vi.spyOn(api, 'getAvailability').mockResolvedValue({
+      rewardId: 'sline-dolomiti',
+      seatsLeft: { "Cortina d'Ampezzo": 20, 'Alta Badia': 20, 'Madonna di Campiglio': 20 },
+      booked: false,
+    })
+    const dolomiti = getLevel(program, 's-line-club').rewards.find((r) => r.id === 'sline-dolomiti')
+    expect(dolomiti?.claim).toBeDefined()
+    if (!dolomiti?.claim) return
+    const bookReward = vi.fn(async () => dolomitiBookingResponse)
+    const runAction = vi.fn(async () => eventLevelUpResult)
+    renderAt('/?demo=1', <DemoPanel />, makeSession({ me: giuliaMe, runAction, bookReward }))
+    fireEvent.click(screen.getByRole('button', { name: 'Evento' }))
+
+    const unlocked = within(await screen.findByRole('region', { name: 'Hai sbloccato' }))
+    const item = unlocked.getByText(dolomiti.title).closest('li')
+    expect(item).not.toBeNull()
+    if (!item) return
+    fireEvent.click(within(item as HTMLElement).getByRole('button', { name: dolomiti.claim.cta }))
+
+    // Same dialog, new body: the booking of the Dolomiti day.
+    const dialog = within(screen.getByRole('dialog'))
+    expect(dialog.getByRole('heading', { name: dolomiti.title })).toBeInTheDocument()
+    expect(dialog.queryByRole('region', { name: 'Hai sbloccato' })).not.toBeInTheDocument()
+    const firstOption = dolomiti.claim.options[0]
+    expect(firstOption).toBeDefined()
+    if (!firstOption) return
+    expect(dialog.getByText(firstOption.label)).toBeInTheDocument()
+    expect(await dialog.findAllByText('Restano 20 posti')).toHaveLength(firstOption.choices.length)
+    expect(screen.getByRole('dialog').querySelector('[class*="signal"]')).toBeNull()
+  })
+
+  it('F4: Prima Audi tells the carry over and the points to the inviter', async () => {
+    const runAction = vi.fn(async () => firstAudiResult)
+    renderAt('/?demo=1', <DemoPanel />, makeSession({ me: lucaAfterService, runAction }))
+    fireEvent.click(screen.getByRole('button', { name: 'Prima Audi' }))
+    expect(runAction).toHaveBeenCalledWith({ type: 'first_audi' })
+    const dialog = within(await screen.findByRole('dialog'))
+    expect(dialog.getByRole('heading', { name: `La tua prima Audi: +${formatPoints(1000)} punti` })).toBeInTheDocument()
+    expect(dialog.getByText('Da guidatore invitato a titolare: livello e storico vengono con te.')).toBeInTheDocument()
+    expect(dialog.getByText('E 500 punti anche a Paolo, che ti aveva invitato.')).toBeInTheDocument()
   })
 
   it('dialogs never use the signal color', async () => {

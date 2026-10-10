@@ -3,6 +3,8 @@ import type {
   ActionRequest,
   ActionResult,
   ApiError,
+  BookingRequest,
+  BookingResponse,
   CreateInviteRequest,
   CreateInviteResponse,
   InvitePreview,
@@ -11,6 +13,7 @@ import type {
   Persona,
   PersonaId,
   Program,
+  RewardAvailability,
   SignupRequest,
 } from '@/shared/types'
 
@@ -57,4 +60,8 @@ export const api = {
   acceptInvite: (code: string) => request<MeResponse>('POST', `/api/invites/${encodeURIComponent(code)}/accept`),
   runAction: (body: ActionRequest) => request<ActionResult>('POST', '/api/actions', body),
   resetDemo: () => request<{ ok: true }>('POST', '/api/demo/reset'),
+  /** Books a reward of a reached level. Points are never spent. */
+  postBooking: (body: BookingRequest) => request<BookingResponse>('POST', '/api/bookings', body),
+  getAvailability: (rewardId: string) =>
+    request<RewardAvailability>('GET', `/api/rewards/${encodeURIComponent(rewardId)}/availability`),
 }

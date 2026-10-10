@@ -13,6 +13,8 @@ const ACTION_TYPES: Record<ActionType, true> = {
   session: true,
   event: true,
   charging: true,
+  first_audi: true,
+  anniversary: true,
 }
 
 const REWARD_KINDS: Record<RewardKind, true> = {
@@ -35,11 +37,32 @@ function duplicates(values: string[]): string[] {
 
 const rewards = program.levels.flatMap((l) => l.rewards)
 
+/** Rewards the demo books, with the level that unlocks them. */
+const BOOKABLE: Record<string, string> = {
+  'icon-kit': 'icon-circle',
+  'quattro-kit': 'quattro-circle',
+  'sline-kit': 's-line-club',
+  'rs-kit': 'rs-vanguard',
+  'quattro-fasttrack': 'quattro-circle',
+  'sline-dolomiti': 's-line-club',
+  'sline-designweek': 's-line-club',
+  'rs-wrap': 'rs-vanguard',
+}
+
+function levelOfReward(id: string): string | undefined {
+  return program.levels.find((l) => l.rewards.some((r) => r.id === id))?.id
+}
+
+function rewardById(id: string) {
+  return rewards.find((r) => r.id === id)
+}
+
 describe('program.it.json', () => {
   it('has a name, a claim, a version and non-empty rules', () => {
     expect(program.name).toBe('Audi with you')
     expect(program.claim.length).toBeGreaterThan(0)
-    expect(program.version).toBe('0.2 (H-ACK, 10/10/2026)')
+    expect(program.version).toBe('0.3 (H-ACK, 10/10/2026)')
+    expect(program.windowMonths).toBe(36)
     expect(program.rules.length).toBeGreaterThan(0)
     for (const rule of program.rules) expect(rule.trim().length).toBeGreaterThan(0)
   })
@@ -60,6 +83,19 @@ describe('program.it.json', () => {
       const cur = program.levels[i]
       expect(prev && cur && cur.threshold > prev.threshold).toBe(true)
     }
+  })
+
+  it('uses the T006 thresholds and the RS Vanguard service requirement', () => {
+    expect(program.levels.map((l) => [l.id, l.threshold])).toEqual([
+      ['icon-circle', 0],
+      ['quattro-circle', 1000],
+      ['s-line-club', 2500],
+      ['rs-vanguard', 5000],
+    ])
+    const rs = program.levels.find((l) => l.id === 'rs-vanguard')
+    expect(rs?.requires).toMatchObject({ action: 'service', withinMonths: 12 })
+    expect(rs?.requires?.label.length).toBeGreaterThan(0)
+    for (const level of program.levels) if (level.id !== 'rs-vanguard') expect(level.requires).toBeUndefined()
   })
 
   it('derives LEVEL_ORDER from the thresholds', () => {
@@ -103,19 +139,102 @@ describe('program.it.json', () => {
     }
   })
 
-  it('caps Audi Collection and charging per month and grants a trade-in once per vehicle', () => {
+  it('caps Audi Collection, charging and events and grants a trade-in once per vehicle', () => {
     expect(getAction(program, 'merch').monthlyCap).toBe(4)
-    expect(getAction(program, 'charging').monthlyCap).toBe(20)
+    expect(getAction(program, 'charging').monthlyCap).toBe(1)
+    expect(getAction(program, 'charging').points).toBe(25)
+    expect(getAction(program, 'charging').description).toMatch(/con almeno 4 ricariche Audi nel mese/)
+    expect(getAction(program, 'event').yearlyCap).toBe(6)
     expect(getAction(program, 'trade_in').oncePerVehicle).toBe(true)
+    expect(getAction(program, 'trade_in').points).toBe(1000)
+  })
+
+  it('gives points by kind for service and sessions, doubled on an older Audi', () => {
+    const service = getAction(program, 'service')
+    expect(service.pointsByKind).toEqual({ tagliando: 300, gomme: 100, check_invernale: 100 })
+    expect(service.multiplier).toMatchObject({ olderThanYears: 2, factor: 2 })
+    expect(getAction(program, 'session').pointsByKind).toEqual({ dealer: 150, driving_experience: 250 })
+    for (const action of program.actions) {
+      for (const value of Object.values(action.pointsByKind ?? {})) expect(Number.isInteger(value) && value > 0).toBe(true)
+      if (action.yearlyCap !== undefined) expect(Number.isInteger(action.yearlyCap) && action.yearlyCap > 0).toBe(true)
+    }
+  })
+
+  it('rewards the first Audi of an invited driver, and the inviter', () => {
+    const first = getAction(program, 'first_audi')
+    expect(first.points).toBe(1000)
+    expect(first.inviterPoints).toBe(500)
+    expect(first.once).toBe(true)
+    expect(getAction(program, 'join').points).toBe(100)
+    expect(getAction(program, 'invite')).toMatchObject({ points: 100, bothSides: true })
+    expect(getAction(program, 'anniversary').points).toBe(200)
+  })
+
+  it('keeps every action enabled, in the T006 order', () => {
+    expect(program.actions.map((a) => a.type)).toEqual([
+      'join',
+      'invite',
+      'service',
+      'accessory',
+      'merch',
+      'trade_in',
+      'first_audi',
+      'anniversary',
+      'session',
+      'event',
+      'charging',
+    ])
+    for (const action of program.actions) expect(action.enabled).toBe(true)
   })
 
   it('uses only known reward kinds', () => {
     for (const reward of rewards) expect(Object.keys(REWARD_KINDS)).toContain(reward.kind)
   })
 
-  it('gives every level exactly one welcome kit', () => {
+  it('gives every level exactly one welcome kit, picked up in a dealership', () => {
     for (const level of program.levels) {
       expect(level.rewards.filter((r) => r.kind === 'welcome_kit'), level.id).toHaveLength(1)
+    }
+    for (const kit of rewards.filter((r) => r.kind === 'welcome_kit')) {
+      expect(kit.claim, kit.id).toBeDefined()
+      expect(kit.claim?.options[0]?.id).toBe('concessionaria')
+      expect(kit.claim?.seatsPerChoice).toBeUndefined()
+    }
+  })
+
+  it('puts the bookable rewards at the right levels', () => {
+    for (const [id, level] of Object.entries(BOOKABLE)) {
+      expect(levelOfReward(id), id).toBe(level)
+      expect(rewardById(id)?.claim, id).toBeDefined()
+    }
+    expect(rewardById('sline-dolomiti')?.claim?.seatsPerChoice).toBe(20)
+    expect(rewardById('sline-designweek')?.claim?.seatsPerChoice).toBe(30)
+    expect(rewardById('rs-wrap')?.claim?.seatsPerChoice).toBe(10)
+    expect(rewardById('quattro-fasttrack')?.claim?.seatsPerChoice).toBeUndefined()
+    const dolomiti = rewardById('sline-dolomiti')?.claim
+    expect(dolomiti?.options.map((o) => o.id)).toEqual(['hub', 'data'])
+    expect(dolomiti?.options[0]?.choices).toEqual(["Cortina d'Ampezzo", 'Alta Badia', 'Madonna di Campiglio'])
+    expect(rewardById('quattro-fasttrack')?.claim?.options.map((o) => o.id)).toEqual(['data', 'concessionaria'])
+    expect(rewardById('rs-wrap')?.claim?.options.map((o) => o.id)).toEqual(['zona'])
+  })
+
+  it('gives every claim a cta, a confirmation and options with choices', () => {
+    for (const reward of rewards) {
+      const claim = reward.claim
+      if (!claim) continue
+      expect(claim.cta.trim().length, reward.id).toBeGreaterThan(0)
+      expect(claim.confirmation.trim().length, reward.id).toBeGreaterThan(0)
+      expect(claim.options.length, reward.id).toBeGreaterThan(0)
+      expect(duplicates(claim.options.map((o) => o.id)), reward.id).toEqual([])
+      for (const option of claim.options) {
+        expect(option.label.trim().length, `${reward.id}.${option.id}`).toBeGreaterThan(0)
+        expect(option.choices.length, `${reward.id}.${option.id}`).toBeGreaterThan(0)
+        expect(duplicates(option.choices), `${reward.id}.${option.id}`).toEqual([])
+      }
+      if (claim.seatsPerChoice !== undefined) {
+        expect(Number.isInteger(claim.seatsPerChoice) && claim.seatsPerChoice > 0).toBe(true)
+        expect(reward.limited, reward.id).toBe(true)
+      }
     }
   })
 
@@ -137,6 +256,30 @@ describe('program.it.json', () => {
       ...program.levels.flatMap((l) => [l.tagline, l.courtesyCar.label, l.courtesyCar.description]),
     ]
     for (const text of texts) for (const re of BANNED_COPY) expect(text).not.toMatch(re)
+  })
+
+  it('keeps reward copy truthful: no World Cup as a place, nothing promised as free', () => {
+    const texts = rewards.flatMap((r) => [
+      r.title,
+      r.description,
+      r.note ?? '',
+      r.claim?.cta ?? '',
+      r.claim?.confirmation ?? '',
+      ...(r.claim?.options.flatMap((o) => [o.label, ...o.choices]) ?? []),
+    ])
+    const all = [...texts, ...program.experiences.items.flatMap((e) => [e.title, e.description, e.place ?? ''])]
+    for (const text of all) expect(text).not.toMatch(/FIS Ski World Cup/)
+    for (const text of texts) expect(text).not.toMatch(/\bgratis\b|gratuit/i)
+    const fisi = program.experiences.items.find((e) => e.id === 'fisi')
+    expect(fisi?.description).toMatch(/previa approvazione della FISI/)
+  })
+
+  it('states the rolling window and that points are never spent', () => {
+    const rules = program.rules.join(' ')
+    expect(rules).toMatch(/36 mesi/)
+    expect(rules).toMatch(/non si spendono/)
+    expect(rules).toMatch(/non consuma punti/)
+    expect(rules).not.toMatch(/non scadono/)
   })
 
   it('gives every experience a known minimum level', () => {

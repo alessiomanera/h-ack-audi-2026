@@ -1,4 +1,5 @@
-// Sections of the authenticated TabView: header, next milestone, bonus teaser, action tiles, recent points.
+// Sections of the authenticated TabView: header, next milestone, rewards of the current level,
+// bonus teaser, action tiles, recent points.
 // Neutral surfaces only: the screen's single lava element lives in LevelCard.
 import { useId } from 'react'
 import { ChevronRight, Flag, Gift, LogOut, UserPlus, Users, Wrench } from 'lucide-react'
@@ -19,8 +20,11 @@ import type { MeResponse } from '@/shared/types'
 import { useSession } from '@/state/session'
 import { actionNotes } from '../portal/metrics'
 import { bonusReward, getAction, getLevel, program } from '../program'
+import { bookingCopy } from '../shared/booking.copy.it'
+import { RewardClaimAction } from '../shared/BookingDialog'
 import { BonusRewardCard } from '../shared/BonusRewardCard'
 import { CourtesyCarCard } from '../shared/CourtesyCarCard'
+import { sharedCopy } from '../shared/copy.it'
 import { InviteButton } from '../shared/InviteButton'
 import { tabCopy } from './copy.it'
 import { firstName, keyUserName, nextReward, otherActions, primaryHousehold, servicePoints } from './model'
@@ -40,8 +44,7 @@ export function TabHeader({ me }: { me: MeResponse }) {
   return (
     <header className="flex items-start justify-between gap-3">
       <div className="min-w-0 space-y-1">
-        <h1 className="text-xl font-bold leading-tight">{program.name}</h1>
-        <p className="text-sm text-foreground">{tabCopy.header.greeting(firstName(me.user.name))}</p>
+        <p className="font-display text-lg font-bold leading-tight">{tabCopy.header.greeting(firstName(me.user.name))}</p>
         {household && role && (
           <p className="text-sm text-muted-foreground">
             {tabCopy.header.vehicle(household.vehicle.model, household.vehicle.year, role)}
@@ -114,6 +117,7 @@ function ServiceTile({ me }: { me: MeResponse }) {
   const action = getAction(program, 'service')
   const service = servicePoints(me)
   const points = formatPoints(service.points)
+  const byKind = service.kinds.length > 1
 
   return (
     <Dialog>
@@ -125,7 +129,9 @@ function ServiceTile({ me }: { me: MeResponse }) {
           <Wrench className="size-5" aria-hidden />
           <span className="text-sm font-bold leading-snug">{action.title}</span>
           <span className="mt-auto flex flex-wrap items-center gap-1.5">
-            <span className="text-sm tabular-nums">{tabCopy.actions.points(points)}</span>
+            <span className="text-sm tabular-nums">
+              {byKind ? bookingCopy.service.upTo(points) : tabCopy.actions.points(points)}
+            </span>
             {service.multiplied && (
               <Badge variant="outline" className="rounded-sm px-1.5 font-normal">
                 {tabCopy.actions.service.doubled}
@@ -153,7 +159,15 @@ function ServiceTile({ me }: { me: MeResponse }) {
         )}
 
         <div className="rounded-md border border-border p-3 text-sm">
-          <p className="font-bold tabular-nums">{tabCopy.actions.service.perVisit(points)}</p>
+          {byKind ? (
+            <ul className="space-y-1 font-bold tabular-nums">
+              {service.kinds.map((k) => (
+                <li key={k.kind}>{bookingCopy.earn.kindPoints(k.label, formatPoints(k.points))}</li>
+              ))}
+            </ul>
+          ) : (
+            <p className="font-bold tabular-nums">{tabCopy.actions.service.perVisit(points)}</p>
+          )}
           {service.multiplied && service.multiplierLabel && (
             <p className="mt-1 text-muted-foreground">{service.multiplierLabel}</p>
           )}
@@ -209,6 +223,39 @@ function FamilyTile({ me }: { me: MeResponse }) {
       <span className="text-sm">{keyName ? copy.memberOf(keyName) : copy.memberFallback}</span>
       <span className="mt-auto text-xs text-muted-foreground">{copy.memberBody}</span>
     </div>
+  )
+}
+
+/** Bookable rewards of the current level, each with its claim button or "Prenotato" and the code. */
+export function LevelRewards({ me }: { me: MeResponse }) {
+  const titleId = useId()
+  const level = getLevel(program, me.level.current)
+  const rewards = level.rewards.filter((r) => r.claim)
+  if (rewards.length === 0) return null
+  return (
+    <section aria-labelledby={titleId} className="space-y-3">
+      <div className="space-y-1">
+        <h2 id={titleId} className={sectionLabel}>
+          {bookingCopy.levelRewards.title}
+        </h2>
+        <p className="text-xs text-muted-foreground">{bookingCopy.levelRewards.hint}</p>
+      </div>
+      <ul className="divide-y divide-border rounded-lg border border-border bg-card">
+        {rewards.map((reward) => (
+          <li
+            key={reward.id}
+            data-reward={reward.id}
+            className="flex min-h-14 flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 py-3"
+          >
+            <div className="min-w-0 flex-1">
+              <p className="text-pretty text-sm font-bold">{reward.title}</p>
+              {reward.limited && <p className="text-xs text-muted-foreground">{sharedCopy.bonus.limited}</p>}
+            </div>
+            <RewardClaimAction reward={reward} levelId={level.id} me={me} className="shrink-0" />
+          </li>
+        ))}
+      </ul>
+    </section>
   )
 }
 

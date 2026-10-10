@@ -1,12 +1,13 @@
 // Demo panel, visible only with ?demo=1: switch persona, simulate Audi events, reset the demo.
 // After an event a dialog tells the moment: the courtesy car while yours is in the workshop (service),
 // the carry over of level and history (trade in) and what a new level unlocks ("Hai sbloccato").
+// "Prenota" on an unlocked reward swaps the same dialog to the booking flow, without closing it.
 // Dialogs stay chalk on graphite: the screen's single lava element is the LevelCard progress fill.
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
-import { ArrowLeftRight, ChevronDown, LoaderCircle, RotateCcw, Sparkles, Wrench } from 'lucide-react'
-import type { ActionRequest, ActionResult, PersonaId, ProgramReward } from '@/shared/types'
+import { ArrowLeftRight, ChevronDown, KeyRound, LoaderCircle, RotateCcw, Sparkles, Wrench } from 'lucide-react'
+import type { ActionRequest, ActionResult, LevelId, MeResponse, PersonaId, ProgramReward } from '@/shared/types'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -19,6 +20,8 @@ import { Separator } from '@/components/ui/separator'
 import { cn, formatPoints } from '@/lib/utils'
 import { useSession } from '@/state/session'
 import { getAction, getLevel, program } from '../program'
+import { bookingCopy } from './booking.copy.it'
+import { BOOKING_DIALOG_CLASS, BookingBody, RewardClaimAction, type BookingTarget } from './BookingDialog'
 import { sharedCopy } from './copy.it'
 import { CourtesyCarCard } from './CourtesyCarCard'
 import { errorMessage, firstName, useCountUp } from './hooks'
@@ -55,6 +58,9 @@ const ACTIONS: DemoAction[] = [
   { id: 'invite', label: copy.actions.invite, req: { type: 'invite', meta: { inviteeName: copy.inviteeName } } },
 ]
 
+/** An invited secondary driver becomes key user of their first Audi: points to them and to the inviter. */
+const FIRST_AUDI: DemoAction = { id: 'first-audi', label: copy.actions.firstAudi, req: { type: 'first_audi' } }
+
 function initiallyOpen(): boolean {
   // Expanded on desktop, collapsed bottom sheet on phones so it does not cover the view.
   if (typeof window.matchMedia !== 'function') return true
@@ -67,15 +73,53 @@ interface ActionMoment {
   result: ActionResult
 }
 
-/** True when the result deserves a dialog: courtesy car, new level or trade in carry over. */
+/** True when the result deserves a dialog: courtesy car, new level, trade in or first Audi carry over. */
 function hasMoment(result: ActionResult): boolean {
-  return result.courtesyCar !== null || result.levelUp !== null || result.entry?.action === 'trade_in'
+  const action = result.entry?.action
+  return result.courtesyCar !== null || result.levelUp !== null || action === 'trade_in' || action === 'first_audi'
 }
 
-function MomentDialog({ moment, onClose }: { moment: ActionMoment | null; onClose: () => void }) {
+/** First name of the key user who invited me (the household where I am a secondary driver). */
+function inviterName(me: MeResponse): string | null {
+  const household = me.households.find((h) => h.myRole === 'secondary')
+  const key = household?.members.find((m) => m.role === 'key' && !m.isMe)
+  return key ? firstName(key.name) : null
+}
+
+/** One dialog for the moment and, after "Prenota", the booking: the body swaps in place. */
+function MomentDialog({
+  moment,
+  booking,
+  onBook,
+  onClose,
+}: {
+  moment: ActionMoment | null
+  booking: BookingTarget | null
+  onBook: (target: BookingTarget) => void
+  onClose: () => void
+}) {
+  const contentRef = useRef<HTMLDivElement>(null)
+  const open = moment !== null || booking !== null
+
+  // The booking replaces the moment: start from the top and keep focus inside the dialog.
+  useEffect(() => {
+    const el = contentRef.current
+    if (!booking || !el) return
+    el.scrollTop = 0
+    el.focus()
+  }, [booking])
+
   return (
-    <Dialog open={moment !== null} onOpenChange={(open) => !open && onClose()}>
-      {moment && <MomentDialogBody moment={moment} />}
+    <Dialog open={open} onOpenChange={(next) => !next && onClose()}>
+      {open && (
+        <DialogContent ref={contentRef} className={BOOKING_DIALOG_CLASS}>
+          {booking ? (
+            <BookingBody key={booking.reward.id} reward={booking.reward} levelId={booking.levelId} />
+          ) : (
+            moment && <MomentDialogBody moment={moment} onBook={onBook} />
+          )}
+        </DialogContent>
+      )}
     </Dialog>
   )
 }
@@ -88,8 +132,20 @@ function Marker({ children }: { children: string }) {
   )
 }
 
-/** "Hai sbloccato": every reward of the new level, welcome kit included, bonus marked as such. */
-function UnlockedRewards({ rewards, levelName }: { rewards: ProgramReward[]; levelName: string }) {
+/** "Hai sbloccato": every reward of the new level, welcome kit included, bonus marked, with its claim button. */
+function UnlockedRewards({
+  rewards,
+  levelId,
+  levelName,
+  me,
+  onBook,
+}: {
+  rewards: ProgramReward[]
+  levelId: LevelId
+  levelName: string
+  me: MeResponse
+  onBook: (target: BookingTarget) => void
+}) {
   const c = copy.moment
   return (
     <section aria-label={c.unlocked} className="grid gap-3 p-6">
@@ -111,10 +167,11 @@ function UnlockedRewards({ rewards, levelName }: { rewards: ProgramReward[]; lev
             )}
           >
             <span className="min-w-0 text-pretty text-sm font-bold">{r.title}</span>
-            <span className="flex flex-wrap gap-1">
+            <span className="flex flex-wrap items-center gap-1">
               {r.bonus && <Marker>{sharedCopy.bonus.eyebrow}</Marker>}
               {r.kind === 'welcome_kit' && <Marker>{c.welcomeKit}</Marker>}
               {r.limited && !r.bonus && <Marker>{c.limited}</Marker>}
+              <RewardClaimAction reward={r} levelId={levelId} me={me} onBook={onBook} className="ml-1" />
             </span>
           </li>
         ))}
@@ -123,7 +180,7 @@ function UnlockedRewards({ rewards, levelName }: { rewards: ProgramReward[]; lev
   )
 }
 
-function MomentDialogBody({ moment }: { moment: ActionMoment }) {
+function MomentDialogBody({ moment, onBook }: { moment: ActionMoment; onBook: (target: BookingTarget) => void }) {
   const c = copy.service
   const m = copy.moment
   const { result, action } = moment
@@ -136,11 +193,15 @@ function MomentDialogBody({ moment }: { moment: ActionMoment }) {
 
   const serviceKind = action.req.type === 'service' ? action.req.meta?.serviceKind : undefined
   const tradeIn = result.entry?.action === 'trade_in'
+  const firstAudi = result.entry?.action === 'first_audi'
+  const inviter = firstAudi ? inviterName(me) : null
+  const inviterPoints = firstAudi ? getAction(program, 'first_audi').inviterPoints : undefined
   const service = getAction(program, 'service')
+  const serviceBase = serviceKind ? (service.pointsByKind?.[serviceKind] ?? service.points) : service.points
   const doubled =
     serviceKind !== undefined &&
     service.multiplier !== undefined &&
-    result.awarded >= service.points * service.multiplier.factor
+    (result.entry?.meta.multiplied === true || result.awarded >= serviceBase * service.multiplier.factor)
   const points = formatPoints(result.awarded)
 
   let eyebrow: string = m.eyebrow
@@ -151,12 +212,15 @@ function MomentDialogBody({ moment }: { moment: ActionMoment }) {
   } else if (tradeIn) {
     eyebrow = m.tradeInEyebrow
     title = m.tradeInHeadline(points)
+  } else if (firstAudi) {
+    eyebrow = m.firstAudiEyebrow
+    title = m.firstAudiHeadline(points)
   }
-  const EyebrowIcon = serviceKind ? Wrench : tradeIn ? ArrowLeftRight : Sparkles
+  const EyebrowIcon = serviceKind ? Wrench : tradeIn ? ArrowLeftRight : firstAudi ? KeyRound : Sparkles
   const nextBetter = next && offer && next.courtesyCar.label !== offer.rule.label ? next : null
 
   return (
-    <DialogContent className="max-h-[90dvh] max-w-md gap-0 overflow-y-auto rounded-lg bg-card p-0">
+    <>
       <div className="p-6 pb-5">
         <p className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground">
           <EyebrowIcon className="size-4" aria-hidden />
@@ -173,6 +237,16 @@ function MomentDialogBody({ moment }: { moment: ActionMoment }) {
           </span>
         )}
         {tradeIn && <p className="mt-4 text-pretty font-display text-lg font-bold leading-snug">{m.tradeInCarryOver}</p>}
+        {firstAudi && (
+          <>
+            <p className="mt-4 text-pretty font-display text-lg font-bold leading-snug">{m.firstAudiCarryOver}</p>
+            {inviter && inviterPoints !== undefined && (
+              <p className="mt-2 text-pretty text-sm text-muted-foreground">
+                {m.firstAudiInviter(inviter, formatPoints(inviterPoints))}
+              </p>
+            )}
+          </>
+        )}
       </div>
 
       {offer && (
@@ -197,7 +271,13 @@ function MomentDialogBody({ moment }: { moment: ActionMoment }) {
       {newLevel && newLevel.rewards.length > 0 && (
         <>
           <Separator />
-          <UnlockedRewards rewards={newLevel.rewards} levelName={newLevel.name} />
+          <UnlockedRewards
+            rewards={newLevel.rewards}
+            levelId={newLevel.id}
+            levelName={newLevel.name}
+            me={me}
+            onBook={onBook}
+          />
         </>
       )}
 
@@ -208,7 +288,7 @@ function MomentDialogBody({ moment }: { moment: ActionMoment }) {
           </Button>
         </DialogClose>
       </div>
-    </DialogContent>
+    </>
   )
 }
 
@@ -217,6 +297,7 @@ function DemoPanelBody() {
   const [open, setOpen] = useState(initiallyOpen)
   const [busy, setBusy] = useState<string | null>(null)
   const [moment, setMoment] = useState<ActionMoment | null>(null)
+  const [booking, setBooking] = useState<BookingTarget | null>(null)
   const loggedIn = status === 'authenticated' && me !== null
   const currentName = me ? firstName(me.user.name) : null
 
@@ -247,8 +328,21 @@ function DemoPanelBody() {
         const level = getLevel(program, result.levelUp)
         toast(copy.levelUp(level.name), { description: level.tagline })
       }
-      if (hasMoment(result)) setMoment({ action, result })
+      if (hasMoment(result)) {
+        setBooking(null)
+        setMoment({ action, result })
+      }
     })
+
+  const openBooking = (target: BookingTarget) => {
+    setMoment(null)
+    setBooking(target)
+  }
+
+  const closeDialog = () => {
+    setMoment(null)
+    setBooking(null)
+  }
 
   const reset = () =>
     run('reset', async () => {
@@ -325,6 +419,22 @@ function DemoPanelBody() {
                   </Button>
                 ))}
               </div>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  disabled={!loggedIn || busy !== null}
+                  onClick={() => void simulate(FIRST_AUDI)}
+                  aria-describedby="demo-first-audi-hint"
+                >
+                  {busy === FIRST_AUDI.id && <LoaderCircle className="animate-spin" aria-hidden />}
+                  {FIRST_AUDI.label}
+                </Button>
+                <span id="demo-first-audi-hint" className="text-xs text-muted-foreground">
+                  {bookingCopy.demo.firstAudiHint}
+                </span>
+              </div>
             </section>
 
             <Button
@@ -341,7 +451,7 @@ function DemoPanelBody() {
           </div>
         )}
       </aside>
-      <MomentDialog moment={moment} onClose={() => setMoment(null)} />
+      <MomentDialog moment={moment} booking={booking} onBook={openBooking} onClose={closeDialog} />
     </>
   )
 }

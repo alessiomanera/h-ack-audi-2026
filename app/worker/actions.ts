@@ -1,12 +1,13 @@
 // POST /api/actions: the demo panel simulates Audi events and sees the points engine at work.
+// Points are flat per action (and kind), never per euro, and are never spent.
 import type { ActionResult, ServiceKind, SessionKind, SimulatedActionType } from '../src/shared/types'
 import { program } from '../src/features/audi-with-you/program'
 import {
   ENGINE_COPY,
   computeAward,
   courtesyCarFor,
-  levelForPoints,
   monthStartUtc,
+  yearStartUtc,
   type LedgerMeta,
 } from '../src/features/audi-with-you/engine'
 import { COPY } from './copy.it'
@@ -14,11 +15,12 @@ import { randomCode, randomHex } from './crypto'
 import {
   MAX_SECONDARY,
   buildMe,
+  hasLedgerEntry,
   insertLedger,
   ledgerEntryFromNew,
   membershipsFor,
   secondaryCount,
-  userPoints,
+  userStanding,
   type MembershipRow,
   type NewLedgerRow,
   type UserRow,
@@ -36,6 +38,8 @@ const SIMULATED: readonly SimulatedActionType[] = [
   'session',
   'event',
   'charging',
+  'first_audi',
+  'anniversary',
 ]
 const SERVICE_KINDS: readonly ServiceKind[] = ['tagliando', 'gomme', 'check_invernale']
 const SESSION_KINDS: readonly SessionKind[] = ['dealer', 'driving_experience']
@@ -57,13 +61,22 @@ function newEntry(user: UserRow, now: Date, action: NewLedgerRow['action'], poin
   return { id: crypto.randomUUID(), userId: user.id, action, points, meta, createdAt: now.toISOString() }
 }
 
-/** Rewarded entries of one action type for this user since the start of the current calendar month. */
-async function countThisMonth(db: D1Database, userId: string, action: SimulatedActionType, now: Date): Promise<number> {
+/** Rewarded entries of one action type for this user since `from`. */
+async function countSince(db: D1Database, userId: string, action: SimulatedActionType, from: Date): Promise<number> {
   const row = await db
     .prepare('SELECT COUNT(*) AS n FROM ledger WHERE user_id = ? AND action = ? AND points > 0 AND created_at >= ?')
-    .bind(userId, action, monthStartUtc(now).toISOString())
+    .bind(userId, action, from.toISOString())
     .first<{ n: number }>()
   return row?.n ?? 0
+}
+
+/** Rewarded entries this calendar month and this calendar year, for the caps in program.it.json. */
+async function capCounts(db: D1Database, userId: string, action: SimulatedActionType, now: Date) {
+  const [thisMonth, thisYear] = await Promise.all([
+    countSince(db, userId, action, monthStartUtc(now)),
+    countSince(db, userId, action, yearStartUtc(now)),
+  ])
+  return { thisMonth, thisYear }
 }
 
 /** True when trade-in points were already granted for this vehicle, to any user. */
@@ -83,8 +96,8 @@ async function simulatePurchase(
   meta: Record<string, unknown>,
   now: Date,
 ): Promise<Outcome> {
-  const thisMonth = await countThisMonth(db, user.id, type, now)
-  const award = computeAward(program, { type, now, thisMonth })
+  const counts = await capCounts(db, user.id, type, now)
+  const award = computeAward(program, { type, now, ...counts })
   if (award.points === 0) return skipped(award.notice)
   const itemName = optionalText(meta.itemName, 60)
   const entryMeta: LedgerMeta = itemName ? { itemName } : {}
@@ -103,6 +116,48 @@ async function simulateTradeIn(db: D1Database, user: UserRow, households: Member
     notice: null,
     extra: [],
   }
+}
+
+/**
+ * A secondary driver becomes key user of their first Audi: points to them and, in the same batch,
+ * `inviterPoints` to the key user of the household that brought them in. Once per user.
+ */
+async function simulateFirstAudi(db: D1Database, user: UserRow, households: MembershipRow[], now: Date): Promise<Outcome> {
+  const roles = households.map((h) => h.role)
+  const alreadyHadFirstAudi = await hasLedgerEntry(db, user.id, 'first_audi')
+  const award = computeAward(program, { type: 'first_audi', now, roles, alreadyHadFirstAudi })
+  if (award.points === 0) return skipped(award.notice)
+
+  const household = households.find((h) => h.role === 'secondary')
+  const keyUser = household
+    ? await db
+        .prepare(
+          "SELECT u.id, u.name FROM memberships m JOIN users u ON u.id = m.user_id WHERE m.vehicle_id = ? AND m.role = 'key' LIMIT 1",
+        )
+        .bind(household.id)
+        .first<{ id: string; name: string }>()
+    : null
+
+  const meta: LedgerMeta = { side: 'invitee' }
+  if (keyUser) {
+    meta.inviterId = keyUser.id
+    meta.inviterName = keyUser.name
+  }
+  if (household) meta.familyVehicleModel = household.model
+  const extra: D1PreparedStatement[] = []
+  if (keyUser && award.inviterPoints > 0) {
+    extra.push(
+      insertLedger(db, {
+        id: crypto.randomUUID(),
+        userId: keyUser.id,
+        action: 'first_audi',
+        points: award.inviterPoints,
+        meta: { side: 'inviter', name: user.name, inviteeId: user.id },
+        createdAt: now.toISOString(),
+      }),
+    )
+  }
+  return { entry: newEntry(user, now, 'first_audi', award.points, meta), notice: null, extra }
 }
 
 function slug(name: string): string {
@@ -180,8 +235,7 @@ export async function runAction(ctx: Ctx): Promise<Response> {
   const type = body.type
   const meta = isRecord(body.meta) ? body.meta : {}
 
-  const [pointsBefore, households] = await Promise.all([userPoints(db, user.id), membershipsFor(db, user.id)])
-  const levelBefore = levelForPoints(program, pointsBefore)
+  const [before, households] = await Promise.all([userStanding(db, user.id, now), membershipsFor(db, user.id)])
   const primary = households[0] ?? null
 
   let outcome: Outcome
@@ -193,7 +247,8 @@ export async function runAction(ctx: Ctx): Promise<Response> {
         outcome = skipped(COPY.notices.noVehicle)
         break
       }
-      const award = computeAward(program, { type, now, vehicleYear: primary.year })
+      const counts = await capCounts(db, user.id, type, now)
+      const award = computeAward(program, { type, now, kind, vehicleYear: primary.year, ...counts })
       outcome =
         award.points > 0
           ? {
@@ -212,7 +267,8 @@ export async function runAction(ctx: Ctx): Promise<Response> {
     case 'session': {
       const kind = meta.sessionKind ?? 'dealer'
       if (!oneOf(SESSION_KINDS, kind)) throw new HttpError(400, 'invalid_input', COPY.errors.sessionKindInvalid)
-      const award = computeAward(program, { type, now })
+      const counts = await capCounts(db, user.id, type, now)
+      const award = computeAward(program, { type, now, kind, ...counts })
       outcome =
         award.points > 0
           ? { entry: newEntry(user, now, type, award.points, { sessionKind: kind }), notice: null, extra: [] }
@@ -221,7 +277,8 @@ export async function runAction(ctx: Ctx): Promise<Response> {
     }
     case 'event': {
       const eventName = optionalText(meta.eventName, 80) ?? ENGINE_COPY.eventDefaultName
-      const award = computeAward(program, { type, now })
+      const counts = await capCounts(db, user.id, type, now)
+      const award = computeAward(program, { type, now, ...counts })
       outcome =
         award.points > 0
           ? { entry: newEntry(user, now, type, award.points, { eventName }), notice: null, extra: [] }
@@ -229,8 +286,8 @@ export async function runAction(ctx: Ctx): Promise<Response> {
       break
     }
     case 'charging': {
-      const thisMonth = await countThisMonth(db, user.id, type, now)
-      const award = computeAward(program, { type, now, thisMonth })
+      const counts = await capCounts(db, user.id, type, now)
+      const award = computeAward(program, { type, now, ...counts })
       outcome =
         award.points > 0 ? { entry: newEntry(user, now, type, award.points, {}), notice: null, extra: [] } : skipped(award.notice)
       break
@@ -245,6 +302,13 @@ export async function runAction(ctx: Ctx): Promise<Response> {
     case 'invite':
       outcome = await simulateInvite(db, user, households, meta, now)
       break
+    case 'first_audi':
+      outcome = await simulateFirstAudi(db, user, households, now)
+      break
+    case 'anniversary':
+      // Granted by the system once a year (seeded in the demo), never from the demo panel.
+      outcome = skipped(COPY.notices.anniversarySystemOnly)
+      break
   }
 
   if (outcome.entry) {
@@ -258,7 +322,7 @@ export async function runAction(ctx: Ctx): Promise<Response> {
     entry: outcome.entry ? ledgerEntryFromNew(outcome.entry) : null,
     awarded: outcome.entry?.points ?? 0,
     notice: outcome.notice,
-    levelUp: levelAfter !== levelBefore ? levelAfter : null,
+    levelUp: levelAfter !== before.current ? levelAfter : null,
     courtesyCar: type === 'service' && primary ? courtesyCarFor(program, levelAfter, primary.model) : null,
     me,
   }

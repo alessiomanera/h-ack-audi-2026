@@ -3,6 +3,8 @@ import type { MeResponse } from '@/shared/types'
 import { useSession } from '@/state/session'
 import { program } from '../program'
 import { AuthPanel } from '../shared/AuthPanel'
+import { bookingCopy } from '../shared/booking.copy.it'
+import { MyBookingsList } from '../shared/MyBookings'
 import { portalCopy } from './copy.it'
 import { FamilySection } from './FamilySection'
 import { HistorySection } from './HistorySection'
@@ -15,10 +17,10 @@ import {
   PassageSection,
   RulesSection,
 } from './ProgramSections'
-import type { PortalSectionId } from './Section'
+import { Section, type PortalSectionId } from './Section'
 import { TopBar } from './TopBar'
 
-const AUTHENTICATED_NAV: PortalSectionId[] = ['livello', 'punti', 'livelli', 'esperienze', 'famiglia', 'storico']
+const AUTHENTICATED_NAV: PortalSectionId[] = ['livello', 'premi', 'punti', 'livelli', 'esperienze', 'famiglia', 'storico']
 const ANONYMOUS_NAV: PortalSectionId[] = ['come-funziona', 'punti', 'livelli', 'esperienze', 'passaggio', 'regolamento']
 
 export function FullPortal() {
@@ -39,7 +41,12 @@ export function FullPortal() {
         )}
       </main>
       <footer className="border-t">
-        <p className="mx-auto max-w-6xl px-4 py-8 text-xs text-subtle sm:px-6">{portalCopy.footer}</p>
+        <div className="mx-auto max-w-6xl space-y-2 px-4 py-8 sm:px-6">
+          <p className="text-xs text-subtle">{portalCopy.footer}</p>
+          <p data-testid="prototype-note" className="max-w-3xl text-pretty text-xs text-subtle">
+            {portalCopy.prototypeNote}
+          </p>
+        </div>
       </footer>
     </div>
   )
@@ -50,12 +57,17 @@ function AuthenticatedContent({ me }: { me: MeResponse }) {
     <>
       <h1 className="sr-only">{program.name}</h1>
       <LevelSection me={me} />
+      <Section id="premi" title={bookingCopy.myBookings.title} intro={bookingCopy.myBookings.intro}>
+        <div className="max-w-3xl">
+          <MyBookingsList bookings={me.bookings ?? []} />
+        </div>
+      </Section>
       <HowItWorksSection />
       <EarnPointsSection />
-      <LevelsSection currentLevel={me.level.current} />
+      <LevelsSection currentLevel={me.level.current} me={me} />
       <ExperiencesSection userLevel={me.level.current} />
       <FamilySection me={me} />
-      <HistorySection ledger={me.ledger} />
+      <HistorySection ledger={me.ledger} lifetimePoints={me.level.lifetimePoints} />
       <PassageSection me={me} />
       <RulesSection />
     </>

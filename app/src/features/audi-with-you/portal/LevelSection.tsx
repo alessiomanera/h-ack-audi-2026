@@ -19,7 +19,11 @@ export function LevelSection({ me }: { me: MeResponse }) {
   const firstName = me.user.name.split(' ')[0] ?? me.user.name
 
   const tiles: { label: string; value: string; hint?: string }[] = [
-    { label: copy.metrics.totalPoints, value: formatPoints(metrics.totalPoints) },
+    {
+      label: copy.metrics.totalPoints,
+      value: formatPoints(metrics.totalPoints),
+      hint: `${copy.metrics.lifetimePoints}: ${formatPoints(metrics.lifetimePoints)}`,
+    },
     { label: copy.metrics.currentLevel, value: metrics.levelName },
     {
       label: copy.metrics.pointsToNext,

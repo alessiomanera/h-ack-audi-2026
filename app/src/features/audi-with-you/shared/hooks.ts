@@ -1,6 +1,6 @@
 // Small data hooks for the shared components. They call the typed api client, never fetch directly.
-import { useEffect, useRef, useState } from 'react'
-import type { InvitePreview, Persona } from '@/shared/types'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import type { InvitePreview, Persona, RewardAvailability } from '@/shared/types'
 import { api, ApiRequestError } from '@/state/api'
 
 export function firstName(fullName: string): string {
@@ -61,6 +61,41 @@ export function useInvitePreview(
   if (!code) return { preview: null, error: null, loading: false }
   if (state.code !== code) return { preview: null, error: null, loading: true }
   return { preview: state.preview, error: state.error, loading: false }
+}
+
+interface AvailabilityState {
+  rewardId: string | null
+  availability: RewardAvailability | null
+}
+
+/**
+ * Seats left for a limited reward (GET /api/rewards/:id/availability). Pass null to skip the request.
+ * `availability` stays null while loading or when the server does not answer: the UI then hides the seats.
+ */
+export function useRewardAvailability(rewardId: string | null): {
+  availability: RewardAvailability | null
+  reload: () => void
+} {
+  const [state, setState] = useState<AvailabilityState>({ rewardId: null, availability: null })
+  const [tick, setTick] = useState(0)
+  useEffect(() => {
+    if (!rewardId) return
+    let alive = true
+    api
+      .getAvailability(rewardId)
+      .then((availability) => {
+        if (alive) setState({ rewardId, availability })
+      })
+      .catch(() => {
+        if (alive) setState({ rewardId, availability: null })
+      })
+    return () => {
+      alive = false
+    }
+  }, [rewardId, tick])
+  const reload = useCallback(() => setTick((t) => t + 1), [])
+  const availability = rewardId && state.rewardId === rewardId ? state.availability : null
+  return { availability, reload }
 }
 
 function prefersReducedMotion(): boolean {

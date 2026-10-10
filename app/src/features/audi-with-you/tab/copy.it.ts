@@ -30,14 +30,14 @@ export const tabCopy = {
     points: (points: string) => `+${points} punti`,
     more: {
       title: 'Altri modi per fare punti',
-      hint: 'Punti fissi per ogni azione registrata da Audi.',
+      hint: 'Punti fissi per ogni azione, mai in base agli euro spesi.',
     },
     service: {
       doubled: 'Punti doppi',
       perVisit: (points: string) => `${points} punti a ogni passaggio in officina ufficiale`,
       courtesyTitle: 'La tua auto di cortesia a questo livello',
       courtesyMissing: "Aggiungi la tua Audi in myAudi per vedere l'auto di cortesia.",
-      how: 'Qui non prenoti nulla: prenoti come sempre con la tua officina Audi. I punti arrivano da soli dopo il passaggio.',
+      how: 'Il passaggio lo prenoti come sempre con la tua officina Audi. I punti arrivano da soli dopo la visita.',
       close: 'Ho capito',
     },
     family: {
@@ -56,10 +56,19 @@ export const tabCopy = {
     title: 'Ultimi punti',
     empty: 'Ancora nessun punto: il primo arriva con il benvenuto.',
     points: (points: string) => `+${points}`,
+    windowHint: 'Contano i punti degli ultimi 3 anni',
+    expiring: (points: string, days: number) => `${points} punti escono dal conteggio tra ${days} giorni`,
+  },
+  bookings: {
+    title: 'Le tue prenotazioni',
+    empty: 'Ancora nessuna prenotazione.',
+    code: (code: string) => `Codice ${code}`,
+    noPointsSpent: 'Prenotare non consuma punti.',
   },
   cta: {
     button: 'Apri la versione completa',
     hint: 'Livelli, premi, famiglia e storico completo',
   },
   footer: 'Demo: dati di fantasia',
+  prototypeNote: 'Prototipo H-ACK 2026: persone, punti, date e posti sono dimostrativi. Premi e partnership sono proposte.',
 } as const

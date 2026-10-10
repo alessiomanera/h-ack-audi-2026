@@ -1,10 +1,15 @@
 // Pure helpers that turn a MeResponse into the numbers the full version shows.
 import type { LedgerEntry, LevelId, MeResponse, ProgramAction, ProgramLevel, ProgramReward } from '@/shared/types'
+import { formatPoints } from '@/lib/utils'
 import { bonusReward, getLevel, program } from '../program'
+import { bookingCopy } from '../shared/booking.copy.it'
 import { portalCopy } from './copy.it'
 
 export interface PortalMetrics {
+  /** Points of the rolling window: they set the level. */
   totalPoints: number
+  /** All points ever earned, window or not. */
+  lifetimePoints: number
   levelName: string
   /** Null at the top level. */
   pointsToNext: number | null
@@ -18,6 +23,7 @@ export function computeMetrics(me: MeResponse): PortalMetrics {
   const household = me.households[0]
   return {
     totalPoints: me.level.points,
+    lifetimePoints: me.level.lifetimePoints ?? me.level.points,
     levelName: getLevel(program, me.level.current).name,
     pointsToNext: me.level.pointsToNext,
     familyPoints: household ? household.members.reduce((sum, m) => sum + m.points, 0) : me.level.points,
@@ -39,7 +45,31 @@ export function actionNotes(action: ProgramAction): string[] {
   else if (action.once && !action.bothSides) notes.push(copy.once)
   if (action.bothSides) notes.push(copy.bothSides)
   if (action.monthlyCap) notes.push(copy.monthlyCap(action.monthlyCap))
+  if (action.yearlyCap) notes.push(bookingCopy.earn.yearlyCap(action.yearlyCap))
+  if (action.inviterPoints) notes.push(bookingCopy.earn.inviterPoints(formatPoints(action.inviterPoints)))
   return notes
+}
+
+export interface KindPoints {
+  kind: string
+  label: string
+  points: number
+}
+
+/** Flat points per kind (service: tagliando, gomme...; session: dealer, driving), in program order. */
+export function kindPoints(action: ProgramAction): KindPoints[] {
+  if (!action.pointsByKind) return []
+  return Object.entries(action.pointsByKind).map(([kind, points]) => ({
+    kind,
+    label: bookingCopy.earn.kinds[kind] ?? kind,
+    points,
+  }))
+}
+
+/** Highest points an action can award once (the biggest kind, or the flat points). */
+export function maxPoints(action: ProgramAction): number {
+  const kinds = kindPoints(action)
+  return kinds.length > 0 ? Math.max(...kinds.map((k) => k.points)) : action.points
 }
 
 /** A welcome kit whose title does not already say "Kit di benvenuto": the UI adds that label. */

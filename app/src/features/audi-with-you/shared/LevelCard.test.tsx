@@ -2,11 +2,12 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import type { MeResponse } from '@/shared/types'
 import { SessionTestProvider } from '@/state/session'
+import { formatPoints } from '@/lib/utils'
 import { getLevel, LEVEL_ORDER, program } from '../program'
 import { CourtesyCarCard } from './CourtesyCarCard'
 import { LevelCard } from './LevelCard'
 import { PointsProgress } from './PointsProgress'
-import { giuliaMe, lucaMe, makeSession, quattroOffer } from './fixtures'
+import { giuliaMe, lucaMe, makeSession, paoloMe, progress, quattroOffer } from './fixtures'
 
 function renderCard(variant: 'compact' | 'full' = 'full', me: MeResponse = lucaMe) {
   return render(
@@ -20,7 +21,20 @@ function renderCard(variant: 'compact' | 'full' = 'full', me: MeResponse = lucaM
 
 const topMe: MeResponse = {
   ...lucaMe,
-  level: { current: 'rs-vanguard', next: null, points: 3200, pointsToNext: null, progress: 1 },
+  level: progress({ current: 'rs-vanguard', next: null, points: 5200, pointsToNext: null, progress: 1 }),
+}
+
+/** Enough points for RS Vanguard, but no service in the last 12 months. */
+const blockedMe: MeResponse = {
+  ...paoloMe,
+  level: progress({
+    current: 's-line-club',
+    next: 'rs-vanguard',
+    points: 5100,
+    pointsToNext: 0,
+    progress: 1,
+    blockedBy: 'almeno un passaggio in officina ufficiale negli ultimi 12 mesi',
+  }),
 }
 
 describe('LevelCard', () => {
@@ -28,14 +42,35 @@ describe('LevelCard', () => {
     renderCard()
     expect(screen.getByRole('heading', { name: 'Icon Circle' })).toBeInTheDocument()
     expect(screen.getByText('Luca')).toBeInTheDocument()
-    expect(screen.getByTestId('level-points')).toHaveTextContent('320')
-    expect(screen.getByText('Ancora 180 punti per quattro Circle')).toBeInTheDocument()
+    expect(screen.getByTestId('level-points')).toHaveTextContent('650')
+    expect(screen.getByText('Ancora 350 punti per quattro Circle')).toBeInTheDocument()
+  })
+
+  it('labels the main number as the points of the last 3 years', () => {
+    renderCard()
+    expect(screen.getByText('Punti degli ultimi 3 anni')).toBeInTheDocument()
+    expect(screen.queryByTestId('level-expiring')).not.toBeInTheDocument()
+  })
+
+  it('says how many points leave the count within 90 days, muted', () => {
+    renderCard('full', paoloMe)
+    const line = screen.getByText('150 punti escono dal conteggio entro 90 giorni')
+    expect(line).toHaveClass('text-subtle')
+    expect(screen.getByTestId('level-points')).toHaveTextContent(formatPoints(1700))
+  })
+
+  it('says what else the next level needs when the points are already there', () => {
+    renderCard('compact', blockedMe)
+    expect(
+      screen.getByText('Per RS Vanguard serve anche almeno un passaggio in officina ufficiale negli ultimi 12 mesi'),
+    ).toBeInTheDocument()
+    expect(screen.queryByText(/Ancora 0 punti/)).not.toBeInTheDocument()
   })
 
   it('carries the single signal progress bar with aria values', () => {
     renderCard()
     const bar = screen.getByRole('progressbar')
-    expect(bar).toHaveAttribute('aria-valuenow', '64')
+    expect(bar).toHaveAttribute('aria-valuenow', '65')
     expect(bar).toHaveAttribute('aria-valuemin', '0')
     expect(bar).toHaveAttribute('aria-valuemax', '100')
     expect(bar.firstElementChild).toHaveClass('bg-signal')
@@ -99,7 +134,7 @@ describe('LevelCard level rings', () => {
   })
 
   it('keeps the progress fill as the only signal element of the card', () => {
-    const { container } = renderCard('full')
+    const { container } = renderCard('full', blockedMe)
     const signal = container.querySelectorAll('[class*="signal"]')
     expect(signal).toHaveLength(1)
     expect(signal[0]).toHaveAttribute('data-tone', 'signal')

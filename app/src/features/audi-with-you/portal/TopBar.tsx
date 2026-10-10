@@ -4,10 +4,15 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { useSession } from '@/state/session'
 import { program } from '../program'
+import { bookingCopy } from '../shared/booking.copy.it'
 import { portalCopy } from './copy.it'
 import type { PortalSectionId } from './Section'
 
 const copy = portalCopy.topBar
+
+function navLabel(id: PortalSectionId): string {
+  return id === 'premi' ? bookingCopy.myBookings.nav : portalCopy.nav[id]
+}
 
 /** Sticky bar: program name, section anchors (desktop), user name, "Esci" and the link to the mobile view. */
 export function TopBar({ sections }: { sections: PortalSectionId[] }) {
@@ -34,7 +39,7 @@ export function TopBar({ sections }: { sections: PortalSectionId[] }) {
                 href={`#${id}`}
                 className="text-sm whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground"
               >
-                {portalCopy.nav[id]}
+                {navLabel(id)}
               </a>
             ))}
           </nav>

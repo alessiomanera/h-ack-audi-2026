@@ -1,6 +1,6 @@
 // Pure helpers for the TabView: derive what the compact view shows from MeResponse and the program.
 import type { ActionType, Household, MeResponse, Program, ProgramAction, ProgramReward } from '@/shared/types'
-import { previewRewards } from '../portal/metrics'
+import { kindPoints, maxPoints, previewRewards, type KindPoints } from '../portal/metrics'
 import { getAction, getLevel, program } from '../program'
 
 /** The first household is the primary one (contract). */
@@ -13,21 +13,26 @@ export function firstName(name: string): string {
 }
 
 export interface ServicePoints {
+  /** Highest points one visit can earn (the biggest kind), multiplier included. */
   points: number
+  /** Points per kind (tagliando, gomme...), multiplier included. Empty when the action is flat. */
+  kinds: KindPoints[]
   /** True when the vehicle is old enough for the service multiplier. */
   multiplied: boolean
   /** Program label for the multiplier, shown in the dialog. */
   multiplierLabel: string | null
 }
 
-/** Points a service visit earns now, with the age multiplier from program.it.json. */
+/** Points a service visit earns now, per kind, with the age multiplier from program.it.json. */
 export function servicePoints(me: MeResponse): ServicePoints {
   const action = getAction(program, 'service')
   const rule = action.multiplier
   const age = primaryHousehold(me)?.vehicle.ageYears ?? 0
   const multiplied = rule !== undefined && age > rule.olderThanYears
+  const factor = multiplied && rule ? rule.factor : 1
   return {
-    points: multiplied && rule ? action.points * rule.factor : action.points,
+    points: maxPoints(action) * factor,
+    kinds: kindPoints(action).map((k) => ({ ...k, points: k.points * factor })),
     multiplied,
     multiplierLabel: rule?.label ?? null,
   }

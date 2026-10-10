@@ -3,6 +3,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import type {
   ActionRequest,
   ActionResult,
+  BookingRequest,
+  BookingResponse,
   CreateInviteResponse,
   LoginRequest,
   MeResponse,
@@ -27,6 +29,8 @@ export interface SessionValue {
   acceptInvite: (code: string) => Promise<void>
   /** Re-seeds the demo data on the server and logs out. */
   resetDemo: () => Promise<void>
+  /** Books a reward of a reached level. Updates `me` (points unchanged, new booking listed). */
+  bookReward: (req: BookingRequest) => Promise<BookingResponse>
 }
 
 const SessionContext = createContext<SessionValue | null>(null)
@@ -79,6 +83,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       resetDemo: async () => {
         await api.resetDemo()
         apply(null)
+      },
+      bookReward: async (req) => {
+        const res = await api.postBooking(req)
+        apply(res.me)
+        return res
       },
     }),
     [status, me, refresh, apply],

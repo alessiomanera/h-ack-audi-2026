@@ -5,6 +5,7 @@ import { formatPoints } from '@/lib/utils'
 import type { MeResponse } from '@/shared/types'
 import { SessionTestProvider, type SessionStatus } from '@/state/session'
 import { getAction, getLevel, isLevelReached, levelsInOrder, program } from '../program'
+import { bookingCopy } from '../shared/booking.copy.it'
 import { sharedCopy } from '../shared/copy.it'
 import { portalCopy } from './copy.it'
 import { lucaMe, makeSession, paoloMe, paoloTradeInMe, topLevelMe } from './fixtures'
@@ -44,6 +45,9 @@ describe('FullPortal', () => {
     expect(screen.queryByRole('heading', { level: 2, name: 'La tua famiglia' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: portalCopy.topBar.logout })).not.toBeInTheDocument()
     expect(screen.getByText(portalCopy.footer)).toBeInTheDocument()
+    expect(screen.getByTestId('prototype-note')).toHaveTextContent(portalCopy.prototypeNote)
+    // Anonymous: the levels table shows no booking buttons.
+    expect(region('Livelli e premi').queryByRole('button', { name: 'Prenota' })).not.toBeInTheDocument()
   })
 
   it('shows every section in order with metrics for Luca', () => {
@@ -51,6 +55,7 @@ describe('FullPortal', () => {
     const titles = Array.from(container.querySelectorAll('h2[id$="-titolo"]')).map((h) => h.textContent)
     expect(titles).toEqual([
       'Il tuo livello',
+      'I tuoi premi',
       'Come funziona',
       'Guadagna punti',
       'Livelli e premi',
@@ -64,9 +69,9 @@ describe('FullPortal', () => {
     // Metrics row: total, family sum, service and experience counts.
     const metrics = within(screen.getByRole('group', { name: portalCopy.level.metricsLabel }))
     const metric = (label: string) => metrics.getByText(label).nextElementSibling
-    expect(metric(portalCopy.level.metrics.totalPoints)).toHaveTextContent('850')
-    expect(metric(portalCopy.level.metrics.familyPoints)).toHaveTextContent(formatPoints(1450))
-    expect(metric(portalCopy.level.metrics.pointsToNext)).toHaveTextContent('650')
+    expect(metric(portalCopy.level.metrics.totalPoints)).toHaveTextContent(formatPoints(1250))
+    expect(metric(portalCopy.level.metrics.familyPoints)).toHaveTextContent(formatPoints(2950))
+    expect(metric(portalCopy.level.metrics.pointsToNext)).toHaveTextContent(formatPoints(1250))
     expect(metric(portalCopy.level.metrics.services)).toHaveTextContent('1')
     expect(metric(portalCopy.level.metrics.experiences)).toHaveTextContent('2')
 
@@ -122,8 +127,12 @@ describe('FullPortal', () => {
     expect(earn.getByText('Max 4 al mese')).toBeInTheDocument()
     expect(earn.getByText('Una volta per ogni Audi')).toBeInTheDocument()
     expect(earn.getByText('x2 se la tua Audi ha più di 2 anni')).toBeInTheDocument()
-    expect(earn.getByText(portalCopy.earn.points(formatPoints(1000)))).toBeInTheDocument()
-    expect(screen.getByRole('region', { name: 'Guadagna punti' })).not.toHaveTextContent(/euro/i)
+    expect(earn.getAllByText(portalCopy.earn.points(formatPoints(1000))).length).toBeGreaterThan(0)
+    // Points per kind for the service and the sessions, never per euro.
+    expect(earn.getByText('Tagliando: +300')).toBeInTheDocument()
+    expect(earn.getByText('Audi driving experience: +250')).toBeInTheDocument()
+    // Flat points per action: never points per euro spent (a negation such as "mai in base agli euro" is fine).
+    expect(screen.getByRole('region', { name: 'Guadagna punti' })).not.toHaveTextContent(/€|per ogni euro|punti per euro/i)
   })
 
   it('marks the current level and the reached ones, and locks experiences above it', () => {
@@ -148,15 +157,15 @@ describe('FullPortal', () => {
     renderPortal('authenticated', lucaMe)
     const level = region('Il tuo livello')
     expect(level.getByRole('heading', { level: 3, name: 'Prossimo traguardo: S line Club' })).toBeInTheDocument()
-    expect(level.getByText(portalCopy.level.nextReward.missing(formatPoints(650)))).toBeInTheDocument()
+    expect(level.getByText(portalCopy.level.nextReward.missing(formatPoints(1250)))).toBeInTheDocument()
     expect(level.queryByRole('article', { name: WRAP })).not.toBeInTheDocument()
   })
 
-  it('shows RS Vanguard and the wrap card as next milestone after the trade in (F3, 1600 points)', () => {
+  it('shows RS Vanguard and the wrap card as next milestone after the trade in (F3, 2700 points)', () => {
     renderPortal('authenticated', paoloTradeInMe)
     const level = region('Il tuo livello')
     expect(level.getByRole('heading', { level: 3, name: 'Prossimo traguardo: RS Vanguard' })).toBeInTheDocument()
-    expect(level.getByText(portalCopy.level.nextReward.missing(formatPoints(1400)))).toBeInTheDocument()
+    expect(level.getByText(portalCopy.level.nextReward.missing(formatPoints(2300)))).toBeInTheDocument()
     const wrap = within(level.getByRole('article', { name: WRAP }))
     expect(wrap.getByText(sharedCopy.bonus.unlocksAt('RS Vanguard'))).toBeInTheDocument()
     expect(level.getByText(/Kit di benvenuto: profumatore/)).toBeInTheDocument()
@@ -172,6 +181,40 @@ describe('FullPortal', () => {
     expect(level.queryByText(/Prossimo traguardo/)).not.toBeInTheDocument()
   })
 
+  it('offers the booking of reached rewards, shows booked ones with the code, locks the others', () => {
+    renderPortal('authenticated', paoloMe)
+    const levels = region('Livelli e premi')
+    const quattro = within(levels.getByRole('article', { name: 'quattro Circle' }))
+    const fasttrack = quattro.getByText('Fast track in officina').closest('li')
+    expect(fasttrack).not.toBeNull()
+    if (fasttrack) {
+      expect(within(fasttrack).getByText(bookingCopy.reward.booked)).toBeInTheDocument()
+      expect(within(fasttrack).getByText('AWY-3F9D')).toBeInTheDocument()
+    }
+    expect(quattro.getByRole('button', { name: 'Ritira in concessionaria' })).toBeInTheDocument()
+    expect(within(levels.getByRole('article', { name: 'Icon Circle' })).getByRole('button', { name: 'Ritira in concessionaria' })).toBeInTheDocument()
+
+    const sline = within(levels.getByRole('article', { name: 'S line Club' }))
+    expect(sline.queryByRole('button')).not.toBeInTheDocument()
+    expect(sline.getAllByText(bookingCopy.reward.locked('S line Club')).length).toBeGreaterThan(0)
+    const rs = within(levels.getByRole('article', { name: 'RS Vanguard' }))
+    expect(rs.getByText(bookingCopy.level.requires(getLevel(program, 'rs-vanguard').requires?.label ?? ''))).toBeInTheDocument()
+
+    // "I tuoi premi" lists the booking with its code.
+    const mine = region(bookingCopy.myBookings.title)
+    expect(mine.getByText('AWY-3F9D')).toBeInTheDocument()
+    expect(mine.getByText('Martedì 13 ottobre, 8:30, Treviso')).toBeInTheDocument()
+
+    // The level card: window points and the points leaving the count.
+    expect(region('Il tuo livello').getByText('150 punti escono dal conteggio entro 90 giorni')).toBeInTheDocument()
+    expect(region('Storico punti').getByText(bookingCopy.history.lifetime(formatPoints(1850)))).toBeInTheDocument()
+  })
+
+  it('shows the empty "I tuoi premi" before any booking', () => {
+    renderPortal('authenticated', lucaMe)
+    expect(region(bookingCopy.myBookings.title).getByText(bookingCopy.myBookings.empty)).toBeInTheDocument()
+  })
+
   it('lets a key user invite and see pending invites', () => {
     renderPortal('authenticated', paoloMe)
     const family = region('La tua famiglia')
@@ -185,17 +228,19 @@ describe('HistorySection', () => {
   it('lists the ledger', () => {
     render(<HistorySection ledger={lucaMe.ledger} now={new Date(2026, 9, 10)} />)
     expect(screen.getByText('Tagliando in officina Audi (punti doppi)')).toBeInTheDocument()
-    expect(screen.getByText('+400')).toBeInTheDocument()
+    expect(screen.getByText('+600')).toBeInTheDocument()
+    expect(screen.queryByTestId('history-lifetime')).not.toBeInTheDocument()
   })
 })
 
 describe('portal metrics', () => {
   it('computes the metrics row', () => {
     expect(computeMetrics(lucaMe)).toEqual({
-      totalPoints: 850,
+      totalPoints: 1250,
+      lifetimePoints: 1250,
       levelName: 'quattro Circle',
-      pointsToNext: 650,
-      familyPoints: 1450,
+      pointsToNext: 1250,
+      familyPoints: 2950,
       serviceCount: 1,
       experienceCount: 2,
     })
@@ -204,7 +249,7 @@ describe('portal metrics', () => {
   it('buckets points by month for the last 6 months', () => {
     const buckets = monthlyPoints(lucaMe.ledger, new Date(2026, 9, 10))
     expect(buckets.map((b) => b.key)).toEqual(['2026-05', '2026-06', '2026-07', '2026-08', '2026-09', '2026-10'])
-    expect(buckets.map((b) => b.points)).toEqual([200, 0, 400, 150, 100, 0])
+    expect(buckets.map((b) => b.points)).toEqual([200, 100, 600, 250, 100, 0])
   })
 
   it('finds the next milestone and its bonus reward', () => {
@@ -235,6 +280,8 @@ describe('portal metrics', () => {
     expect(actionNotes(getAction(program, 'service'))).toEqual(['x2 se la tua Audi ha più di 2 anni'])
     expect(actionNotes(getAction(program, 'invite'))).toEqual([portalCopy.earn.bothSides])
     expect(actionNotes(getAction(program, 'join'))).toEqual([portalCopy.earn.once])
+    expect(actionNotes(getAction(program, 'event'))).toContain('Max 6 all’anno')
+    expect(actionNotes(getAction(program, 'first_audi'))).toContain('+500 a chi ti ha invitato')
   })
 
   it('adds the welcome kit label only when the title lacks it', () => {

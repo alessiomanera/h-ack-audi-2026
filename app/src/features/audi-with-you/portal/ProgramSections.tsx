@@ -5,9 +5,11 @@ import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { cn, formatPoints } from '@/lib/utils'
 import { bonusReward, getLevel, isLevelReached, levelIndex, levelsInOrder, program } from '../program'
+import { bookingCopy } from '../shared/booking.copy.it'
+import { RewardClaimAction } from '../shared/BookingDialog'
 import { BonusRewardCard } from '../shared/BonusRewardCard'
 import { portalCopy } from './copy.it'
-import { actionNotes, needsWelcomeKitLabel } from './metrics'
+import { actionNotes, kindPoints, maxPoints, needsWelcomeKitLabel } from './metrics'
 import { Section } from './Section'
 
 const levelName = (id: LevelId) => getLevel(program, id).name
@@ -42,16 +44,26 @@ export function EarnPointsSection() {
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {actions.map((action) => {
           const notes = actionNotes(action)
+          const kinds = kindPoints(action)
           return (
             <li key={action.type}>
               <Card className="flex h-full flex-col gap-3 p-6" data-action={action.type}>
                 <div className="flex items-start justify-between gap-4">
                   <h3 className="text-base font-bold text-balance">{action.title}</h3>
                   <p className="shrink-0 font-display text-lg font-bold whitespace-nowrap tabular-nums">
-                    {copy.points(formatPoints(action.points))}
+                    {kinds.length > 1
+                      ? bookingCopy.service.upTo(formatPoints(maxPoints(action)))
+                      : copy.points(formatPoints(maxPoints(action)))}
                   </p>
                 </div>
                 <p className="text-sm text-pretty text-muted-foreground">{action.description}</p>
+                {kinds.length > 1 && (
+                  <ul className="space-y-1 text-sm tabular-nums">
+                    {kinds.map((k) => (
+                      <li key={k.kind}>{bookingCopy.earn.kindPoints(k.label, formatPoints(k.points))}</li>
+                    ))}
+                  </ul>
+                )}
                 {action.examples && action.examples.length > 0 && (
                   <p className="text-xs text-subtle">{action.examples.join(', ')}</p>
                 )}
@@ -77,7 +89,7 @@ export function EarnPointsSection() {
  * Levels in threshold order: one column on phones, two on tablets, side by side on wide screens
  * (subgrid keeps the courtesy-car row aligned). The bonus reward gets its own chalk card below the columns.
  */
-export function LevelsSection({ currentLevel }: { currentLevel: LevelId | null }) {
+export function LevelsSection({ currentLevel, me = null }: { currentLevel: LevelId | null; me?: MeResponse | null }) {
   const copy = portalCopy.levels
   const bonus = bonusReward(program)
   return (
@@ -110,6 +122,11 @@ export function LevelsSection({ currentLevel }: { currentLevel: LevelId | null }
                 <p className="text-sm text-muted-foreground tabular-nums">
                   {copy.threshold(formatPoints(level.threshold))}
                 </p>
+                {level.requires && (
+                  <p className="text-xs text-pretty text-muted-foreground">
+                    {bookingCopy.level.requires(level.requires.label)}
+                  </p>
+                )}
                 <p className="pt-2 text-pretty">{level.tagline}</p>
               </header>
               <div className="px-6">
@@ -152,6 +169,7 @@ export function LevelsSection({ currentLevel }: { currentLevel: LevelId | null }
                           {copy.limited}
                         </p>
                       )}
+                      <RewardClaimAction reward={reward} levelId={level.id} me={me} className="mt-3" />
                     </li>
                   ))}
                 {hasBonus && (
@@ -167,7 +185,12 @@ export function LevelsSection({ currentLevel }: { currentLevel: LevelId | null }
       </div>
       {bonus && (
         <div className="mt-6 xl:mt-8">
-          <BonusRewardCard reward={bonus.reward} levelName={bonus.level.name} variant="card" />
+          <BonusRewardCard
+            reward={bonus.reward}
+            levelName={bonus.level.name}
+            variant="card"
+            action={me && <RewardClaimAction reward={bonus.reward} levelId={bonus.level.id} me={me} />}
+          />
         </div>
       )}
     </Section>

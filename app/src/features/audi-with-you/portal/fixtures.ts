@@ -1,8 +1,24 @@
 // Fictional fixtures for the full version tests. Emails end with @example.com.
-// Level ids follow program.it.json: icon-circle, quattro-circle, s-line-club, rs-vanguard.
-import type { Household, HouseholdMember, LedgerEntry, LevelId, MeResponse } from '@/shared/types'
+// Level ids follow program.it.json: icon-circle (0), quattro-circle (1000), s-line-club (2500), rs-vanguard (5000).
+// Points are the rolling 36 month window, never spent; lifetimePoints adds what left the window.
+import type { Household, HouseholdMember, LedgerEntry, LevelId, LevelProgress, MeResponse, RewardBooking } from '@/shared/types'
 import type { SessionStatus, SessionValue } from '@/state/session'
 import { getLevel, program } from '../program'
+
+function progress(p: Pick<LevelProgress, 'current' | 'next' | 'points' | 'pointsToNext' | 'progress'> & Partial<LevelProgress>): LevelProgress {
+  return { lifetimePoints: p.points, expiring: null, blockedBy: null, ...p }
+}
+
+/** Paolo's booking of the quattro Circle fast track. */
+export const fasttrackBooking: RewardBooking = {
+  id: 'b-2',
+  rewardId: 'quattro-fasttrack',
+  rewardTitle: 'Fast track in officina',
+  levelId: 'quattro-circle',
+  choices: { data: 'Martedì 13 ottobre, 8:30', concessionaria: 'Treviso' },
+  code: 'AWY-3F9D',
+  createdAt: '2026-10-09T09:00:00.000Z',
+}
 
 const vehicle = { id: 'veh-a3', model: 'A3', year: 2021, ageYears: 5 }
 
@@ -18,18 +34,26 @@ const lucaLedger: LedgerEntry[] = [
   {
     id: 'l4',
     action: 'session',
-    points: 150,
-    label: 'Sessione "Conosci la tua Audi"',
-    meta: { sessionKind: 'dealer' },
+    points: 250,
+    label: 'Audi driving experience',
+    meta: { sessionKind: 'driving_experience' },
     createdAt: '2026-08-14T12:00:00.000Z',
   },
   {
     id: 'l3',
     action: 'service',
-    points: 400,
+    points: 600,
     label: 'Tagliando in officina Audi (punti doppi)',
     meta: { serviceKind: 'tagliando', multiplied: true },
     createdAt: '2026-07-15T12:00:00.000Z',
+  },
+  {
+    id: 'l2b',
+    action: 'accessory',
+    points: 100,
+    label: 'Accessorio originale: Barre portatutto',
+    meta: { itemName: 'Barre portatutto' },
+    createdAt: '2026-06-03T12:00:00.000Z',
   },
   {
     id: 'l2',
@@ -53,7 +77,7 @@ const paoloLedger: LedgerEntry[] = [
   {
     id: 'p3',
     action: 'service',
-    points: 400,
+    points: 600,
     label: 'Tagliando in officina Audi (punti doppi)',
     meta: { serviceKind: 'tagliando', multiplied: true },
     createdAt: '2026-06-10T12:00:00.000Z',
@@ -74,12 +98,20 @@ const paoloLedger: LedgerEntry[] = [
     meta: {},
     createdAt: '2026-04-02T12:00:00.000Z',
   },
+  {
+    id: 'p0',
+    action: 'service',
+    points: 150,
+    label: 'Tagliando in officina Audi',
+    meta: { serviceKind: 'tagliando' },
+    createdAt: '2022-06-10T12:00:00.000Z',
+  },
 ]
 
 function household(myRole: Household['myRole'], paolo: { points: number; level: LevelId }): Household {
   const members: HouseholdMember[] = [
     { userId: 'u-paolo', name: 'Paolo', role: 'key', points: paolo.points, level: paolo.level, isMe: myRole === 'key' },
-    { userId: 'u-luca', name: 'Luca', role: 'secondary', points: 850, level: 'quattro-circle', isMe: myRole === 'secondary' },
+    { userId: 'u-luca', name: 'Luca', role: 'secondary', points: 1250, level: 'quattro-circle', isMe: myRole === 'secondary' },
   ]
   return {
     vehicle,
@@ -105,8 +137,8 @@ function household(myRole: Household['myRole'], paolo: { points: number; level: 
 /** Luca, 21, secondary user on his father's A3, level quattro Circle. */
 export const lucaMe: MeResponse = {
   user: { id: 'u-luca', email: 'luca@example.com', name: 'Luca', birthYear: 2005, createdAt: '2026-05-12T12:00:00.000Z' },
-  level: { current: 'quattro-circle', next: 's-line-club', points: 850, pointsToNext: 650, progress: 0.35 },
-  households: [household('secondary', { points: 600, level: 'quattro-circle' })],
+  level: progress({ current: 'quattro-circle', next: 's-line-club', points: 1250, pointsToNext: 1250, progress: 250 / 1500 }),
+  households: [household('secondary', { points: 1700, level: 'quattro-circle' })],
   ledger: lucaLedger,
   courtesyCar: {
     level: 'quattro-circle',
@@ -114,22 +146,40 @@ export const lucaMe: MeResponse = {
     ownModel: 'A3',
     offeredModel: 'A5',
   },
+  bookings: [],
 }
 
-/** Paolo, key user of the A3 (seed: 600 points, quattro Circle), with one pending invite. */
+/** Paolo, key user of the A3 (seed: 1700 window points, one older entry, 150 leaving soon), one pending invite. */
 export const paoloMe: MeResponse = {
-  user: { id: 'u-paolo', email: 'paolo@example.com', name: 'Paolo', birthYear: 1968, createdAt: '2026-04-02T12:00:00.000Z' },
-  level: { current: 'quattro-circle', next: 's-line-club', points: 600, pointsToNext: 900, progress: 0.1 },
-  households: [household('key', { points: 600, level: 'quattro-circle' })],
+  user: { id: 'u-paolo', email: 'paolo@example.com', name: 'Paolo', birthYear: 1968, createdAt: '2022-06-10T12:00:00.000Z' },
+  level: progress({
+    current: 'quattro-circle',
+    next: 's-line-club',
+    points: 1700,
+    pointsToNext: 800,
+    progress: 700 / 1500,
+    lifetimePoints: 1850,
+    expiring: { points: 150, withinDays: 90 },
+  }),
+  households: [household('key', { points: 1700, level: 'quattro-circle' })],
   ledger: paoloLedger,
   courtesyCar: null,
+  bookings: [fasttrackBooking],
 }
 
-/** Paolo after the trade in (demo flow F3): 1600 points, S line Club, next milestone RS Vanguard. */
+/** Paolo after the trade in (demo flow F3): 2700 points, S line Club, next milestone RS Vanguard. */
 export const paoloTradeInMe: MeResponse = {
   ...paoloMe,
-  level: { current: 's-line-club', next: 'rs-vanguard', points: 1600, pointsToNext: 1400, progress: 100 / 1500 },
-  households: [household('key', { points: 1600, level: 's-line-club' })],
+  level: progress({
+    current: 's-line-club',
+    next: 'rs-vanguard',
+    points: 2700,
+    pointsToNext: 2300,
+    progress: 200 / 2500,
+    lifetimePoints: 2850,
+    expiring: { points: 150, withinDays: 90 },
+  }),
+  households: [household('key', { points: 2700, level: 's-line-club' })],
   ledger: [
     {
       id: 'p4',
@@ -152,7 +202,7 @@ export const paoloTradeInMe: MeResponse = {
 /** A member at the top level: no next milestone. */
 export const topLevelMe: MeResponse = {
   ...lucaMe,
-  level: { current: 'rs-vanguard', next: null, points: 3200, pointsToNext: null, progress: 1 },
+  level: progress({ current: 'rs-vanguard', next: null, points: 5200, pointsToNext: null, progress: 1 }),
   courtesyCar: null,
 }
 
@@ -174,5 +224,6 @@ export function makeSession(status: SessionStatus, me: MeResponse | null = null)
     createInvite: notInTests,
     acceptInvite: async () => {},
     resetDemo: async () => {},
+    bookReward: notInTests,
   }
 }

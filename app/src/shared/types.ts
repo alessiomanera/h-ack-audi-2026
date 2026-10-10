@@ -17,6 +17,10 @@ export type ActionType =
   | 'session'
   | 'event'
   | 'charging'
+  /** An invited secondary driver becomes key user of their first Audi: points to them and to the inviter. */
+  | 'first_audi'
+  /** One year in the program with at least one visit to the official network. */
+  | 'anniversary'
 
 /** Actions the demo panel can simulate through POST /api/actions. */
 export type SimulatedActionType = Exclude<ActionType, 'join'>
@@ -36,8 +40,14 @@ export interface ProgramAction {
   bothSides?: boolean
   /** service: points multiplied when the vehicle is older than `olderThanYears`. */
   multiplier?: { olderThanYears: number; factor: number; label: string }
+  /** Points per kind, overriding `points` (service: tagliando 300, gomme 100; session: dealer 150, driving 250). */
+  pointsByKind?: Record<string, number>
   /** Any action (merch, charging): maximum number of rewarded occurrences per calendar month. */
   monthlyCap?: number
+  /** Any action (event): maximum number of rewarded occurrences per calendar year. */
+  yearlyCap?: number
+  /** first_audi: points also granted to the user who invited them. */
+  inviterPoints?: number
   /** trade_in: granted at most once per vehicle. */
   oncePerVehicle?: boolean
   examples?: string[]
@@ -69,6 +79,27 @@ export interface ProgramReward {
   bonus?: boolean
   /** Public image path, e.g. "/rewards/wrap-demo.jpg". The UI hides it when the file is missing. */
   image?: string
+  /** Booking flow. Booking never spends points. Absent: the reward is shown, not booked. */
+  claim?: RewardClaimConfig
+}
+
+export interface RewardClaimOption {
+  /** Key stored in the booking, e.g. "hub", "data", "concessionaria". */
+  id: string
+  /** Italian label, e.g. "Scegli l'hub". */
+  label: string
+  choices: string[]
+}
+
+export interface RewardClaimConfig {
+  /** Button label, e.g. "Prenota", "Ritira in concessionaria". */
+  cta: string
+  /** Choices made in order; every option needs one value. */
+  options: RewardClaimOption[]
+  /** Limited rewards: seats for each choice of the FIRST option (demo data). */
+  seatsPerChoice?: number
+  /** Italian text on the confirmation screen. */
+  confirmation: string
 }
 
 export interface CourtesyCarRule {
@@ -81,11 +112,21 @@ export interface CourtesyCarRule {
   electricWhenAvailable?: boolean
 }
 
+export interface LevelRequirement {
+  /** Action the user must have in the ledger within `withinMonths`, e.g. service in the last 12 months. */
+  action: ActionType
+  withinMonths: number
+  /** Italian, e.g. "almeno un passaggio in officina ufficiale negli ultimi 12 mesi". */
+  label: string
+}
+
 export interface ProgramLevel {
   id: LevelId
   name: string
-  /** Minimum lifetime points to reach the level. */
+  /** Minimum points earned in the last `program.windowMonths` months to reach the level. */
   threshold: number
+  /** Extra condition besides the threshold (RS Vanguard: a service in the last 12 months). */
+  requires?: LevelRequirement
   tagline: string
   courtesyCar: CourtesyCarRule
   rewards: ProgramReward[]
@@ -112,6 +153,8 @@ export interface Program {
   name: string
   claim: string
   version: string
+  /** Rolling window: only points earned in the last N months count for the level (36). Points are never spent. */
+  windowMonths: number
   steps: ProgramStep[]
   actions: ProgramAction[]
   levels: ProgramLevel[]
@@ -146,8 +189,14 @@ export interface Vehicle {
 export interface LevelProgress {
   current: LevelId
   next: LevelId | null
-  /** Lifetime points (never spent). */
+  /** Points earned in the rolling window (last `program.windowMonths` months). They set the level. Never spent. */
   points: number
+  /** All points ever earned, window or not (shown as history, they do not set the level). */
+  lifetimePoints: number
+  /** Points leaving the window within `withinDays`, null when none. */
+  expiring: { points: number; withinDays: number } | null
+  /** Italian label of the unmet requirement of `next` when the threshold is met but the requirement is not, else null. */
+  blockedBy: string | null
   /** Points still needed for `next`, null at the top level. */
   pointsToNext: number | null
   /** 0..1 progress from current threshold to next threshold (1 at top level). */
@@ -210,6 +259,22 @@ export interface MeResponse {
   ledger: LedgerEntry[]
   /** Courtesy car the user gets at their current level with the primary household's vehicle. */
   courtesyCar: CourtesyCarOffer | null
+  /** Rewards the user booked, newest first. Booking never spends points. */
+  bookings: RewardBooking[]
+}
+
+export interface RewardBooking {
+  id: string
+  rewardId: string
+  /** Reward title from program.it.json at booking time. */
+  rewardTitle: string
+  /** Level that unlocks the reward. */
+  levelId: LevelId
+  /** Option id -> chosen value. */
+  choices: Record<string, string>
+  /** Code shown to the user and to the dealer, e.g. "AWY-7K2Q". */
+  code: string
+  createdAt: string
 }
 
 // ---------- Requests and responses ----------
@@ -293,6 +358,28 @@ export interface ActionResult {
   me: MeResponse
 }
 
+export interface BookingRequest {
+  rewardId: string
+  /** Option id -> chosen value, one per option of the reward's claim config. */
+  choices: Record<string, string>
+}
+
+export interface BookingResponse {
+  booking: RewardBooking
+  /** Seats left for the chosen first option after this booking, null when unlimited. */
+  seatsLeft: number | null
+  /** Points are unchanged by a booking. */
+  me: MeResponse
+}
+
+export interface RewardAvailability {
+  rewardId: string
+  /** Seats left per choice of the first option, null when unlimited. */
+  seatsLeft: Record<string, number> | null
+  /** The current user already booked this reward. */
+  booked: boolean
+}
+
 // Endpoints (all JSON, session in an HttpOnly cookie named `awy_session`):
 // POST /api/auth/signup        SignupRequest        -> MeResponse
 // POST /api/auth/login         LoginRequest         -> MeResponse
@@ -306,3 +393,5 @@ export interface ActionResult {
 // POST /api/invites/:code/accept                    -> MeResponse
 // POST /api/actions            ActionRequest        -> ActionResult
 // POST /api/demo/reset                              -> { ok: true }  (re-seeds the demo data)
+// POST /api/bookings           BookingRequest       -> BookingResponse  (403 level not reached, 409 already booked or sold out, 400 bad choice)
+// GET  /api/rewards/:id/availability                -> RewardAvailability

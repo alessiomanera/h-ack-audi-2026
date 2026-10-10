@@ -1,6 +1,6 @@
 // Deterministic fictional demo data. Every statement is INSERT OR IGNORE with fixed ids,
 // so concurrent auto-seeds are harmless. Dates are relative to `now`.
-import type { ActionType, PersonaId, Role } from '../src/shared/types'
+import type { ActionType, PersonaId, Role, ServiceKind } from '../src/shared/types'
 import type { LedgerMeta } from '../src/features/audi-with-you/engine'
 import { hashPin } from './crypto'
 
@@ -24,53 +24,94 @@ interface SeedUser {
 }
 
 const USERS: SeedUser[] = [
-  { id: 'u_paolo', email: 'paolo.bianchi@example.com', name: 'Paolo Bianchi', birthYear: 1974, persona: 'paolo', daysAgo: 200 },
-  { id: 'u_luca', email: 'luca.bianchi@example.com', name: 'Luca Bianchi', birthYear: 2005, persona: 'luca', daysAgo: 120 },
-  { id: 'u_giulia', email: 'giulia.ferri@example.com', name: 'Giulia Ferri', birthYear: 1997, persona: 'giulia', daysAgo: 210 },
+  { id: 'u_paolo', email: 'paolo.bianchi@example.com', name: 'Paolo Bianchi', birthYear: 1974, persona: 'paolo', daysAgo: 1250 },
+  { id: 'u_luca', email: 'luca.bianchi@example.com', name: 'Luca Bianchi', birthYear: 2005, persona: 'luca', daysAgo: 400 },
+  { id: 'u_giulia', email: 'giulia.ferri@example.com', name: 'Giulia Ferri', birthYear: 1997, persona: 'giulia', daysAgo: 910 },
 ]
 
 const VEHICLES = [
-  { id: 'v_bianchi_a3', model: 'A3', year: 2021, daysAgo: 200 },
-  { id: 'v_ferri_q3', model: 'Q3', year: 2025, daysAgo: 210 },
+  { id: 'v_bianchi_a3', model: 'A3', year: 2021, daysAgo: 1250 },
+  { id: 'v_ferri_q3', model: 'Q3', year: 2025, daysAgo: 330 },
 ]
 
 const MEMBERSHIPS: { userId: string; vehicleId: string; role: Role; daysAgo: number }[] = [
-  { userId: 'u_paolo', vehicleId: 'v_bianchi_a3', role: 'key', daysAgo: 200 },
-  { userId: 'u_luca', vehicleId: 'v_bianchi_a3', role: 'secondary', daysAgo: 120 },
-  { userId: 'u_giulia', vehicleId: 'v_ferri_q3', role: 'key', daysAgo: 210 },
+  { userId: 'u_paolo', vehicleId: 'v_bianchi_a3', role: 'key', daysAgo: 1250 },
+  { userId: 'u_luca', vehicleId: 'v_bianchi_a3', role: 'secondary', daysAgo: 400 },
+  { userId: 'u_giulia', vehicleId: 'v_ferri_q3', role: 'key', daysAgo: 330 },
 ]
 
 type SeedLedger = [id: string, userId: string, action: ActionType, points: number, daysAgo: number, meta: LedgerMeta]
 
-const tagliandoA3: LedgerMeta = { serviceKind: 'tagliando', vehicleModel: 'A3', multiplied: true, factor: 2 }
-const charging = (userId: string, prefix: string, days: number[]): SeedLedger[] =>
-  days.map((d, i) => [`l_${prefix}_charging_${i + 1}`, userId, 'charging', 5, d, {}])
+const service = (kind: ServiceKind, vehicleModel: string, factor: 1 | 2, extra: LedgerMeta = {}): LedgerMeta => ({
+  serviceKind: kind,
+  vehicleModel,
+  multiplied: factor > 1,
+  factor,
+  ...extra,
+})
+/** Giulia's history started on her previous Audi: level and history came with her to the Q3. */
+const previousA1: LedgerMeta = { vehicleModel: 'A1', previousVehicle: true }
 
-const LEDGER: SeedLedger[] = [
-  // Paolo Bianchi: 100 + 100 + 400 = 600 (quattro Circle). Demo: Permuta +1000 -> 1600 (S line Club).
-  ['l_paolo_join', 'u_paolo', 'join', 100, 200, {}],
-  ['l_paolo_invite_luca', 'u_paolo', 'invite', 100, 120, { side: 'inviter', name: 'Luca Bianchi', inviteeId: 'u_luca' }],
-  ['l_paolo_service_1', 'u_paolo', 'service', 400, 60, tagliandoA3],
-  // Luca Bianchi: 100 + 100 + 100 + 4 x 5 = 320 (Icon Circle). Demo: Tagliando x2 +400 -> 720 (quattro Circle).
-  ['l_luca_join', 'u_luca', 'join', 100, 120, {}],
-  ['l_luca_invite', 'u_luca', 'invite', 100, 120, { side: 'invitee', name: 'Paolo Bianchi', inviterId: 'u_paolo' }],
-  ['l_luca_event_1', 'u_luca', 'event', 100, 45, { eventName: 'Audi Night in concessionaria' }],
-  ...charging('u_luca', 'luca', [40, 25, 12, 3]),
-  // Giulia Ferri: join 100 + sessions 300 + events 300 + services 400 + charging 10 x 5 + accessory 100
-  // + merch 2 x 50 = 1350 (quattro Circle). Demo: Accessorio +100 -> 1450, Evento +100 -> 1550 (S line Club).
-  // No merch entry within the last 35 days, so the monthly merch cap never bites in the demo.
-  ['l_giulia_join', 'u_giulia', 'join', 100, 210, {}],
-  ['l_giulia_session_1', 'u_giulia', 'session', 150, 190, { sessionKind: 'dealer' }],
-  ['l_giulia_event_1', 'u_giulia', 'event', 100, 180, { eventName: 'Audi alla Milano Design Week' }],
-  ['l_giulia_service_1', 'u_giulia', 'service', 200, 150, { serviceKind: 'tagliando', vehicleModel: 'Q3', multiplied: false, factor: 1 }],
-  ['l_giulia_event_2', 'u_giulia', 'event', 100, 120, { eventName: 'Presentazione nuova Audi A5' }],
-  ['l_giulia_service_2', 'u_giulia', 'service', 200, 100, { serviceKind: 'gomme', vehicleModel: 'Q3', multiplied: false, factor: 1 }],
-  ['l_giulia_session_2', 'u_giulia', 'session', 150, 80, { sessionKind: 'driving_experience' }],
-  ['l_giulia_event_3', 'u_giulia', 'event', 100, 60, { eventName: 'Audi hub di Cortina' }],
-  ['l_giulia_merch_1', 'u_giulia', 'merch', 50, 70, { itemName: 'Zaino da viaggio' }],
-  ['l_giulia_merch_2', 'u_giulia', 'merch', 50, 50, { itemName: 'Cappellino' }],
-  ['l_giulia_accessory_1', 'u_giulia', 'accessory', 100, 40, { itemName: 'Barre portatutto' }],
-  ...charging('u_giulia', 'giulia', [170, 150, 130, 110, 90, 70, 50, 30, 15, 5]),
+// Window = last 36 months (about 1096 days). Points leaving the window within 90 days were earned
+// between about 1096 and 1006 days ago. Service is x2 when the vehicle is older than 2 years.
+// Caps respected: merch at most 4 a month, charging once a month, events at most 6 a calendar year.
+export const SEED_LEDGER: SeedLedger[] = [
+  // Paolo Bianchi (A3 2021, key user). Window 1700 (quattro Circle), lifetime 2100, expiring 150.
+  // Outside the window: join 100 + tagliando 300 (A3 two years old, x1) = 400.
+  // Expiring soon: gomme 100 (x1) + merch 50 = 150.
+  // Rest of the window: 3 anniversaries 600 + tagliando 600 (x2) + invite 100 + gomme 200 (x2) + merch 50 = 1550.
+  // Demo: Permuta +1000 -> 2700 (S line Club). Luca's "Prima Audi" gives Paolo +500.
+  ['l_paolo_join', 'u_paolo', 'join', 100, 1250, {}],
+  ['l_paolo_service_1', 'u_paolo', 'service', 300, 1200, service('tagliando', 'A3', 1)],
+  ['l_paolo_service_2', 'u_paolo', 'service', 100, 1050, service('gomme', 'A3', 1)],
+  ['l_paolo_merch_1', 'u_paolo', 'merch', 50, 1025, { itemName: 'Ombrello' }],
+  ['l_paolo_anniversary_1', 'u_paolo', 'anniversary', 200, 885, {}],
+  ['l_paolo_service_3', 'u_paolo', 'service', 600, 700, service('tagliando', 'A3', 2)],
+  ['l_paolo_anniversary_2', 'u_paolo', 'anniversary', 200, 520, {}],
+  ['l_paolo_invite_luca', 'u_paolo', 'invite', 100, 400, { side: 'inviter', name: 'Luca Bianchi', inviteeId: 'u_luca' }],
+  ['l_paolo_service_4', 'u_paolo', 'service', 200, 330, service('gomme', 'A3', 2)],
+  ['l_paolo_anniversary_3', 'u_paolo', 'anniversary', 200, 155, {}],
+  ['l_paolo_merch_2', 'u_paolo', 'merch', 50, 60, { itemName: 'Cappellino' }],
+  // Luca Bianchi (secondary user of the family A3). Window 650 (Icon Circle):
+  // join 100 + invite 100 + session 150 + event 100 + anniversary 200.
+  // Demo: Tagliando on the A3 (x2) +600 -> 1250 (quattro Circle). Prima Audi +1000.
+  ['l_luca_join', 'u_luca', 'join', 100, 400, {}],
+  ['l_luca_invite', 'u_luca', 'invite', 100, 400, { side: 'invitee', name: 'Paolo Bianchi', inviterId: 'u_paolo' }],
+  ['l_luca_session_1', 'u_luca', 'session', 150, 300, { sessionKind: 'dealer' }],
+  ['l_luca_event_1', 'u_luca', 'event', 100, 200, { eventName: 'Audi Night in concessionaria' }],
+  ['l_luca_anniversary_1', 'u_luca', 'anniversary', 200, 35, {}],
+  // Giulia Ferri (Q3 2025, key user; before it an A1). Window 2350 (quattro Circle), oldest entry about 30 months.
+  // A1 years: join 100 + tagliando 600 (x2) + driving experience 250 + gomme 200 (x2) + event 100 + anniversary 200 = 1450.
+  // Q3 months: session 150 + 2 events 200 + anniversary 200 + merch 50 + tagliando 300 (x1) = 900.
+  // Two events in the last 12 months, so the yearly cap of 6 never bites in the demo.
+  // Demo: Accessorio +100 -> 2450, Evento +100 -> 2550 (S line Club), then she books the Dolomiti day.
+  ['l_giulia_join', 'u_giulia', 'join', 100, 910, previousA1],
+  ['l_giulia_service_1', 'u_giulia', 'service', 600, 880, service('tagliando', 'A1', 2, { previousVehicle: true })],
+  ['l_giulia_session_1', 'u_giulia', 'session', 250, 760, { sessionKind: 'driving_experience', ...previousA1 }],
+  ['l_giulia_service_2', 'u_giulia', 'service', 200, 700, service('gomme', 'A1', 2, { previousVehicle: true })],
+  ['l_giulia_event_1', 'u_giulia', 'event', 100, 547, { eventName: 'Audi alla Milano Design Week', ...previousA1 }],
+  ['l_giulia_anniversary_1', 'u_giulia', 'anniversary', 200, 545, previousA1],
+  ['l_giulia_session_2', 'u_giulia', 'session', 150, 325, { sessionKind: 'dealer', vehicleModel: 'Q3' }],
+  ['l_giulia_event_2', 'u_giulia', 'event', 100, 270, { eventName: "Audi hub di Cortina d'Ampezzo" }],
+  ['l_giulia_event_3', 'u_giulia', 'event', 100, 240, { eventName: 'Audi Night in concessionaria' }],
+  ['l_giulia_anniversary_2', 'u_giulia', 'anniversary', 200, 180, {}],
+  ['l_giulia_merch_1', 'u_giulia', 'merch', 50, 90, { itemName: 'Zaino da viaggio' }],
+  ['l_giulia_service_3', 'u_giulia', 'service', 300, 60, service('tagliando', 'Q3', 1)],
+]
+
+/** Past bookings. Booking never spends points. */
+const BOOKINGS = [
+  {
+    // Paolo collected his quattro Circle welcome kit at the Treviso dealer.
+    id: 'b_paolo_quattro_kit',
+    userId: 'u_paolo',
+    rewardId: 'quattro-kit',
+    levelId: 'quattro-circle',
+    choices: { concessionaria: 'Treviso' },
+    firstChoice: 'Treviso',
+    code: 'AWY-P4OL',
+    daysAgo: 50,
+  },
 ]
 
 function seedStatements(db: D1Database, now: Date, pinHash: string): D1PreparedStatement[] {
@@ -104,13 +145,22 @@ function seedStatements(db: D1Database, now: Date, pinHash: string): D1PreparedS
       .prepare(
         "INSERT OR IGNORE INTO invites (code, vehicle_id, inviter_id, email, status, invitee_id, created_at) VALUES (?, ?, ?, ?, 'accepted', ?, ?)",
       )
-      .bind('FAMA3L', 'v_bianchi_a3', 'u_paolo', 'luca.bianchi@example.com', 'u_luca', at(121)),
+      .bind('FAMA3L', 'v_bianchi_a3', 'u_paolo', 'luca.bianchi@example.com', 'u_luca', at(401)),
   )
-  for (const [id, userId, action, points, daysAgo, meta] of LEDGER) {
+  for (const [id, userId, action, points, daysAgo, meta] of SEED_LEDGER) {
     stmts.push(
       db
         .prepare('INSERT OR IGNORE INTO ledger (id, user_id, action, points, meta, created_at) VALUES (?, ?, ?, ?, ?, ?)')
         .bind(id, userId, action, points, JSON.stringify(meta), at(daysAgo)),
+    )
+  }
+  for (const b of BOOKINGS) {
+    stmts.push(
+      db
+        .prepare(
+          'INSERT OR IGNORE INTO bookings (id, user_id, reward_id, level_id, choices, first_choice, code, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        )
+        .bind(b.id, b.userId, b.rewardId, b.levelId, JSON.stringify(b.choices), b.firstChoice, b.code, at(b.daysAgo)),
     )
   }
   return stmts
@@ -128,10 +178,10 @@ export async function ensureSeeded(db: D1Database, now: Date): Promise<void> {
   if (!any) await seedDemo(db, now)
 }
 
-/** Deletes every row and re-seeds, in one transaction. */
+/** Deletes every row and re-seeds, in one transaction. Bookings go first: they reference users. */
 export async function resetDemo(db: D1Database, now: Date): Promise<void> {
   const pinHash = await hashPin(DEMO_PIN)
-  const wipe = ['ledger', 'invites', 'sessions', 'memberships', 'vehicles', 'users'].map((t) =>
+  const wipe = ['bookings', 'ledger', 'invites', 'sessions', 'memberships', 'vehicles', 'users'].map((t) =>
     db.prepare(`DELETE FROM ${t}`),
   )
   await db.batch([...wipe, ...seedStatements(db, now, pinHash)])

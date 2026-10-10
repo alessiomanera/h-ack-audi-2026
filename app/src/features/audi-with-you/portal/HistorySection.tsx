@@ -1,14 +1,25 @@
 import type { LedgerEntry } from '@/shared/types'
 import { Card } from '@/components/ui/card'
 import { formatDate, formatPoints } from '@/lib/utils'
+import { bookingCopy } from '../shared/booking.copy.it'
+import { windowYears } from '../shared/LevelCard'
 import { portalCopy } from './copy.it'
 import { monthlyPoints } from './metrics'
 import { Section } from './Section'
 
 const copy = portalCopy.history
 
-/** Section 7: points per month (plain CSS bars, neutral) and the full ledger. */
-export function HistorySection({ ledger, now = new Date() }: { ledger: LedgerEntry[]; now?: Date }) {
+/** Section 7: points per month (plain CSS bars, neutral), lifetime points and the full ledger. */
+export function HistorySection({
+  ledger,
+  lifetimePoints,
+  now = new Date(),
+}: {
+  ledger: LedgerEntry[]
+  /** All points ever earned; the level counts only the rolling window. */
+  lifetimePoints?: number
+  now?: Date
+}) {
   const buckets = monthlyPoints(ledger, now)
   const max = Math.max(1, ...buckets.map((b) => b.points))
 
@@ -39,6 +50,14 @@ export function HistorySection({ ledger, now = new Date() }: { ledger: LedgerEnt
               </li>
             ))}
           </ul>
+          {lifetimePoints !== undefined && (
+            <div className="mt-6 border-t pt-4">
+              <p data-testid="history-lifetime" className="font-display text-lg font-bold tabular-nums">
+                {bookingCopy.history.lifetime(formatPoints(lifetimePoints))}
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">{bookingCopy.history.window(windowYears())}</p>
+            </div>
+          )}
         </Card>
 
         <Card className="lg:col-span-7">

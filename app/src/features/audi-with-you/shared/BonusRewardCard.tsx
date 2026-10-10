@@ -1,7 +1,7 @@
 // The bonus reward (the custom wrap) shown as a highlighted card in chalk tones, never lava.
 // The image is optional: when the file is missing or fails to load it is hidden, never shown broken.
 // Bonus rewards are unlocked by level and assigned by early access: they are never redeemed with points.
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Sparkles } from 'lucide-react'
 import type { ProgramReward } from '@/shared/types'
 import { cn } from '@/lib/utils'
@@ -22,10 +22,13 @@ export function BonusRewardCard({
   reward,
   levelName,
   variant = 'card',
+  action,
 }: {
   reward: ProgramReward
   levelName: string
   variant?: 'card' | 'teaser'
+  /** Card variant only: the claim button, "Prenotato" or "Si sblocca a" (RewardClaimAction). */
+  action?: ReactNode
 }) {
   const image = useImage(reward.image)
 
@@ -87,6 +90,7 @@ export function BonusRewardCard({
         </div>
         {reward.limited && <p className="mt-3 text-pretty text-sm text-foreground">{copy.limited}</p>}
         {reward.note && <p className="mt-2 text-pretty text-xs text-muted-foreground">{reward.note}</p>}
+        {action && <div className="mt-4">{action}</div>}
       </div>
     </article>
   )

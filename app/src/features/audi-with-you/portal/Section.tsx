@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils'
 
 export type PortalSectionId =
   | 'livello'
+  | 'premi'
   | 'come-funziona'
   | 'punti'
   | 'livelli'

@@ -3,6 +3,7 @@
 import { program } from '../src/features/audi-with-you/program'
 import { runAction } from './actions'
 import { listPersonas, login, logout, personaLogin, signup } from './auth'
+import { createBooking, rewardAvailability } from './bookings'
 import { COPY } from './copy.it'
 import { buildMe } from './db'
 import { HttpError, clearSessionCookie, errorResponse, json, type Ctx } from './http'
@@ -51,6 +52,8 @@ const ROUTES: Route[] = [
   route('GET', '/api/invites/:code', previewInvite),
   route('POST', '/api/invites/:code/accept', acceptInviteRoute),
   route('POST', '/api/actions', runAction),
+  route('POST', '/api/bookings', createBooking),
+  route('GET', '/api/rewards/:id/availability', rewardAvailability),
   route('POST', '/api/demo/reset', demoReset),
 ]
 

@@ -30,18 +30,22 @@ export const COPY = {
     slotsFull: 'Questa Audi ha già 5 utenti secondari: è il massimo in myAudi.',
     keyOnly: 'In myAudi solo il titolare può invitare.',
     noVehicle: 'Nessuna Audi collegata al tuo profilo.',
+    rewardNotFound: 'Premio non trovato.',
+    rewardIdRequired: 'Indica il premio da prenotare.',
+    choicesInvalid: 'Scegli le opzioni della prenotazione.',
   },
   notices: {
     keyOnly: 'In myAudi solo il titolare può invitare.',
     tradeInKeyOnly: 'In myAudi solo il titolare può registrare la permuta della sua Audi.',
     slotsFull: 'Hai già 5 utenti secondari: è il massimo in myAudi.',
     noVehicle: 'Nessuna Audi collegata al tuo profilo.',
+    anniversarySystemOnly: "L'anniversario arriva da solo, una volta l'anno: non serve fare nulla.",
   },
   /** First names used when the demo simulates a family member joining. */
   defaultInviteeNames: ['Sara', 'Marco', 'Elena', 'Matteo', 'Chiara', 'Davide'],
   personas: {
     luca: '21 anni, guida la A3 di famiglia',
-    giulia: '29 anni, la sua Q3 in leasing',
+    giulia: '29 anni, dalla sua prima Audi alla nuova Q3',
     paolo: 'Titolare della A3 di famiglia',
   } satisfies Record<PersonaId, string>,
 } as const
