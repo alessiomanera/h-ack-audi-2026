@@ -6,11 +6,11 @@ One rulebook for Claude Code, Antigravity and Gemini CLI. `CLAUDE.md` imports th
 
 ## The project
 
-A 5-person team at the Audi x H-FARM hackathon "H-ACK | Co-Design the Future" (Sat 10 Oct 2026, 08:30-20:30). Deliverable: one *soluzione digitale* (clickable mobile demo + Canva deck) pitched in Italian to a jury scoring IDEA, PRODUCT, EXECUTION, COHERENCE, ATTITUDE (1-10 each juror, summed). All IP passes to Volkswagen Group Italia (rules art. 10).
+An 8-person team (Alessio, Evelyn, Simone, Valeria, Aurora, Sofi, Nicola, Alberto) at the Audi x H-FARM hackathon "H-ACK | Co-Design the Future" (Sat 10 Oct 2026, 08:30-20:30). Deliverable: one *soluzione digitale* answering ONE of the four official briefs (a clickable prototype living in Audi's existing channels, never a dedicated app, plus a Canva deck of at most 10 slides) pitched in Italian in 5 minutes by 1-2 people, only if the mentors select us, to a jury scoring IDEA, PRODUCT, EXECUTION, COHERENCE, ATTITUDE (1-10 each juror, summed). All IP passes to Volkswagen Group Italia (rules art. 10).
 
 ## Facts versus hypotheses
 
-- **Fixed** (the only ground truth): `knowledge/fixed/` = the 4 challenge questions, the rules, the confirmed jury (`jury.md`), and from Saturday the official brief (`brief.md`). When they conflict with anything else, they win.
+- **Fixed** (the only ground truth): `knowledge/fixed/` = the official brief (`brief.md`, start here), the Audi Italia marketing director's speech, the event-day rules, jury and mentors (`jury.md`), the organizers' links. Original PDFs in `knowledge/fixed/sources/`. When they conflict with anything else, they win.
 - **Hypotheses**: `knowledge/team-doc/` (mirror of the team Google Doc) and `knowledge/prep/`. Treat every concept, plan and juror profile there as a team guess to test against the brief. Start from `knowledge/team-doc/INDEX.md` and open only the tab you need.
 - **Numbers** reach a deliverable only with a primary source and year; label US or German data as such.
 

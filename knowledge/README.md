@@ -2,7 +2,7 @@
 
 | Cartella | Cosa contiene | Affidabilità | Chi la aggiorna |
 |---|---|---|---|
-| `fixed/` | Le 4 domande, il regolamento, la giuria confermata (`jury.md`), da sabato il brief ufficiale (`brief.md`) | **Fatti confermati** | a mano (brief: trascrizione sabato mattina) |
+| `fixed/` | Il brief ufficiale (`brief.md`, parti da qui), lo speech di il direttore marketing (`speech-farao.md`), il regolamento del 10/10 (`rules.md`), giuria e mentor (`jury.md`), link utili degli organizzatori (`useful-links.md`). PDF originali in `fixed/sources/`. `four-questions.md` è superato | **Fatti confermati** | a mano |
 | `team-doc/` | Copia del Google Doc del team, una tab per file. Parti da `INDEX.md` | Ipotesi del team | solo `align` (`scripts/gdoc_to_md.py`), mai a mano |
 | `prep/` | Note di preparazione di Alessio | Ipotesi, superate dal Google Doc se in conflitto | a mano |
 | `decisions/` | Riassunti delle decisioni (call, mentor). Mai trascrizioni grezze | Decisioni del team | `ingest-call` |
