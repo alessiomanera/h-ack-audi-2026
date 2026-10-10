@@ -61,7 +61,7 @@ describe('program.it.json', () => {
   it('has a name, a claim, a version and non-empty rules', () => {
     expect(program.name).toBe('Audi with you')
     expect(program.claim.length).toBeGreaterThan(0)
-    expect(program.version).toBe('0.3 (H-ACK, 10/10/2026)')
+    expect(program.version).toBe('1.0 (H-ACK, 10/10/2026)')
     expect(program.windowMonths).toBe(36)
     expect(program.rules.length).toBeGreaterThan(0)
     for (const rule of program.rules) expect(rule.trim().length).toBeGreaterThan(0)

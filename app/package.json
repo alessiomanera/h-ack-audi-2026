@@ -1,7 +1,7 @@
 {
   "name": "audi-with-you",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
   "description": "Audi with you: loyalty prototype for H-ACK Brief 4 (single-page webapp + Cloudflare Worker API on D1).",
   "scripts": {
