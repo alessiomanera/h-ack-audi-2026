@@ -4,6 +4,7 @@ import { getAction, getLevel, program } from './program'
 import {
   ENGINE_COPY,
   EXPIRING_WITHIN_DAYS,
+  bookingQrPayload,
   checkBooking,
   computeAward,
   courtesyCarFor,
@@ -410,6 +411,34 @@ describe('checkBooking', () => {
       seatsTakenForFirstChoice: 999,
     })
     expect(busy.ok).toBe(true)
+  })
+
+  it('T007: tickets go from 1 to the people on the account and count as seats', () => {
+    const ticketed: Program = {
+      ...synthetic,
+      levels: synthetic.levels.map((l) => ({
+        ...l,
+        rewards: l.rewards.map((r) => (r.id === 'mid-day' && r.claim ? { ...r, claim: { ...r.claim, tickets: true } } : r)),
+      })),
+    }
+    expect(checkBooking(ticketed, { ...input, tickets: 2, maxTickets: 2 })).toMatchObject({ ok: true, tickets: 2 })
+    expect(checkBooking(ticketed, { ...input, tickets: 3, maxTickets: 2 })).toMatchObject({ ok: false, status: 400, error: 'tickets_invalid' })
+    expect(checkBooking(ticketed, { ...input, tickets: 0, maxTickets: 2 })).toMatchObject({ ok: false, status: 400 })
+    expect(checkBooking(ticketed, { ...input, tickets: 1.5, maxTickets: 2 })).toMatchObject({ ok: false, status: 400 })
+    // 1 seat left out of 2: one ticket fits, two do not.
+    expect(checkBooking(ticketed, { ...input, tickets: 1, maxTickets: 2, seatsTakenForFirstChoice: 1 }).ok).toBe(true)
+    expect(checkBooking(ticketed, { ...input, tickets: 2, maxTickets: 2, seatsTakenForFirstChoice: 1 })).toMatchObject({
+      ok: false,
+      status: 409,
+      error: 'sold_out',
+    })
+    // Rewards without tickets accept only 1.
+    expect(checkBooking(synthetic, { ...input, tickets: 2, maxTickets: 4 })).toMatchObject({ ok: false, status: 400 })
+    expect(checkBooking(synthetic, input)).toMatchObject({ ok: true, tickets: 1 })
+  })
+
+  it('T007: the QR payload carries no personal data', () => {
+    expect(bookingQrPayload({ code: 'AWY-7K2Q', rewardId: 'sline-dolomiti', tickets: 2 })).toBe('AWY|AWY-7K2Q|sline-dolomiti|2')
   })
 
   it('rejects a level not reached with 403', () => {

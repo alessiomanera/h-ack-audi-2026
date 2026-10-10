@@ -5,13 +5,14 @@ import { program } from '../src/features/audi-with-you/program'
 import {
   ENGINE_COPY,
   checkBooking,
+  deliveryOf,
   findReward,
   firstOptionId,
   seatsLeftByChoice,
 } from '../src/features/audi-with-you/engine'
 import { COPY } from './copy.it'
 import { randomCode } from './crypto'
-import { buildMe, userStanding } from './db'
+import { accountSize, buildMe, userStanding } from './db'
 import { HttpError, isRecord, json, readJsonObject, type Ctx } from './http'
 import { requireUser } from './session'
 
@@ -34,9 +35,16 @@ function parseChoicesBody(v: unknown): Record<string, string> {
   return out
 }
 
+/** Requested tickets: an integer, or undefined (the engine defaults to 1 and checks the range). */
+function parseTickets(v: unknown): number | undefined {
+  if (v === undefined || v === null) return undefined
+  return typeof v === 'number' ? v : Number.NaN
+}
+
+/** Tickets already booked (seats taken) for one first-option choice. */
 async function seatsTaken(db: D1Database, rewardId: string, firstChoice: string): Promise<number> {
   const row = await db
-    .prepare('SELECT COUNT(*) AS n FROM bookings WHERE reward_id = ? AND first_choice = ?')
+    .prepare('SELECT COALESCE(SUM(tickets), 0) AS n FROM bookings WHERE reward_id = ? AND first_choice = ?')
     .bind(rewardId, firstChoice)
     .first<{ n: number }>()
   return row?.n ?? 0
@@ -58,14 +66,16 @@ export async function createBooking(ctx: Ctx): Promise<Response> {
   const rewardId = typeof body.rewardId === 'string' ? body.rewardId.trim() : ''
   if (!rewardId) throw new HttpError(400, 'invalid_input', COPY.errors.rewardIdRequired)
   const choices = parseChoicesBody(body.choices)
+  const tickets = parseTickets(body.tickets)
 
   const claim = findReward(program, rewardId)?.reward.claim
   const firstId = claim ? firstOptionId(claim) : null
   const firstRaw = firstId && Object.hasOwn(choices, firstId) ? choices[firstId].trim() : ''
-  const [level, alreadyBooked, taken] = await Promise.all([
+  const [level, alreadyBooked, taken, maxTickets] = await Promise.all([
     userStanding(db, user.id, now),
     hasBooked(db, user.id, rewardId),
     seatsTaken(db, rewardId, firstRaw),
+    accountSize(db, user.id),
   ])
   const check = checkBooking(program, {
     levelId: level.current,
@@ -73,6 +83,8 @@ export async function createBooking(ctx: Ctx): Promise<Response> {
     choices,
     alreadyBooked,
     seatsTakenForFirstChoice: taken,
+    tickets,
+    maxTickets,
   })
   if (!check.ok) throw new HttpError(check.status, check.error, check.message)
 
@@ -82,22 +94,22 @@ export async function createBooking(ctx: Ctx): Promise<Response> {
   const seats = check.seatsPerChoice
   for (let attempt = 0; attempt < 5; attempt++) {
     const code = `AWY-${randomCode(4)}`
-    const values = [id, user.id, rewardId, check.levelId, choicesJson, check.firstChoice, code, createdAt]
+    const values = [id, user.id, rewardId, check.levelId, choicesJson, check.firstChoice, code, check.tickets, createdAt]
     // Limited seats: the count and the insert are one statement, so the last seat cannot be sold twice.
     const stmt =
       seats === null
         ? db
             .prepare(
-              'INSERT INTO bookings (id, user_id, reward_id, level_id, choices, first_choice, code, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+              'INSERT INTO bookings (id, user_id, reward_id, level_id, choices, first_choice, code, tickets, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
             )
             .bind(...values)
         : db
             .prepare(
-              `INSERT INTO bookings (id, user_id, reward_id, level_id, choices, first_choice, code, created_at)
-               SELECT ?, ?, ?, ?, ?, ?, ?, ?
-                WHERE (SELECT COUNT(*) FROM bookings WHERE reward_id = ? AND first_choice = ?) < ?`,
+              `INSERT INTO bookings (id, user_id, reward_id, level_id, choices, first_choice, code, tickets, created_at)
+               SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?
+                WHERE (SELECT COALESCE(SUM(tickets), 0) FROM bookings WHERE reward_id = ? AND first_choice = ?) + ? <= ?`,
             )
-            .bind(...values, rewardId, check.firstChoice, seats)
+            .bind(...values, rewardId, check.firstChoice, check.tickets, seats)
     let changes: number
     try {
       changes = (await stmt.run()).meta.changes
@@ -116,6 +128,8 @@ export async function createBooking(ctx: Ctx): Promise<Response> {
       levelId: check.levelId,
       choices: check.choices,
       code,
+      tickets: check.tickets,
+      delivery: deliveryOf(check.claim),
       createdAt,
     }
     const [takenAfter, me] = await Promise.all([
@@ -142,7 +156,7 @@ export async function rewardAvailability(ctx: Ctx): Promise<Response> {
   const claim = found.reward.claim
   const [counts, booked] = await Promise.all([
     db
-      .prepare('SELECT first_choice, COUNT(*) AS n FROM bookings WHERE reward_id = ? GROUP BY first_choice')
+      .prepare('SELECT first_choice, SUM(tickets) AS n FROM bookings WHERE reward_id = ? GROUP BY first_choice')
       .bind(rewardId)
       .all<{ first_choice: string; n: number }>(),
     hasBooked(db, user.id, rewardId),

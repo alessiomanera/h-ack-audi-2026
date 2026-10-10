@@ -180,3 +180,62 @@ describe('MyBookings', () => {
     expect(item.getByText(/^Prenotato il 9 ott 2026$/)).toBeInTheDocument()
   })
 })
+
+describe('T007: tickets, QR, shipping and concierge', () => {
+  const ticketed = { reward: { ...dolomitiReward, claim: { ...dolomitiReward.claim!, tickets: true } }, levelId: 's-line-club' }
+  const withMarco: MeResponse = {
+    ...giuliaSlineMe,
+    households: giuliaSlineMe.households.map((h, i) =>
+      i === 0
+        ? {
+            ...h,
+            members: [
+              ...h.members,
+              { userId: 'u-marco', name: 'Marco Ferri', role: 'secondary', points: 0, level: 'icon-circle', isMe: false },
+            ],
+          }
+        : h,
+    ),
+  }
+
+  it('offers one ticket per person on the account and books them', async () => {
+    mockSeats({ "Cortina d'Ampezzo": 20, 'Alta Badia': 20, 'Madonna di Campiglio': 20 })
+    const bookReward = vi.fn(async () => ({ ...dolomitiBookingResponse, booking: { ...dolomitiBooking, tickets: 2 } }))
+    renderWith(<BookingDialog target={ticketed} onClose={() => {}} />, makeSession({ me: withMarco, bookReward }))
+    const dialog = within(screen.getByRole('dialog'))
+    fireEvent.click(await dialog.findByRole('button', { name: /Alta Badia/ }))
+    fireEvent.click(dialog.getByRole('button', { name: 'Sabato 16 gennaio 2027' }))
+    expect(dialog.getByText('Uno per ogni persona sul tuo account')).toBeInTheDocument()
+    expect(dialog.queryByRole('button', { name: '3 persone' })).not.toBeInTheDocument()
+    fireEvent.click(dialog.getByRole('button', { name: '2 persone' }))
+    fireEvent.click(dialog.getByRole('button', { name: 'Prenota' }))
+    await waitFor(() =>
+      expect(bookReward).toHaveBeenCalledWith({
+        rewardId: 'sline-dolomiti',
+        choices: { hub: 'Alta Badia', data: 'Sabato 16 gennaio 2027' },
+        tickets: 2,
+      }),
+    )
+    expect(await dialog.findByTestId('booking-qr')).toBeInTheDocument()
+    expect(dialog.getByText(/Nessun punto speso/)).toBeInTheDocument()
+  })
+
+  it('confirms a welcome kit with home shipping, no QR', () => {
+    const kit = { ...fasttrackBooking, id: 'b-kit', rewardId: 'quattro-kit', rewardTitle: 'Kit', delivery: 'shipping' as const }
+    renderWith(
+      <BookingDialog target={{ reward: quattroKitReward, levelId: 'quattro-circle' }} onClose={() => {}} />,
+      makeSession({ me: { ...giuliaMe, bookings: [kit] } }),
+    )
+    const dialog = within(screen.getByRole('dialog'))
+    expect(dialog.getByTestId('booking-shipping')).toHaveTextContent('Spedizione confermata')
+    expect(dialog.queryByTestId('booking-qr')).not.toBeInTheDocument()
+  })
+
+  it('opens the concierge placeholder after booking and in "I tuoi premi"', () => {
+    renderWith(<MyBookingsList bookings={[dolomitiBooking]} />, makeSession({ me: giuliaSlineMe }))
+    fireEvent.click(screen.getByRole('button', { name: 'Mostra il QR' }))
+    expect(screen.getByTestId('booking-qr').querySelector('svg')).not.toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Contatta il concierge' }))
+    expect(screen.getByRole('note')).toHaveTextContent('Prototipo')
+  })
+})

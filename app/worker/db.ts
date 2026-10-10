@@ -15,6 +15,7 @@ import type {
 import { program } from '../src/features/audi-with-you/program'
 import {
   courtesyCarFor,
+  deliveryOf,
   findReward,
   ledgerLabel,
   levelForPoints,
@@ -75,6 +76,7 @@ interface BookingRow {
   level_id: string
   choices: string
   code: string
+  tickets: number
   created_at: string
 }
 
@@ -178,6 +180,21 @@ export async function membershipsFor(db: D1Database, userId: string): Promise<Me
     .bind(userId)
     .all<MembershipRow>()
   return results
+}
+
+/** People on the user's account: members of their primary household (key user first), at least 1. */
+export async function accountSize(db: D1Database, userId: string): Promise<number> {
+  const row = await db
+    .prepare(
+      `SELECT COUNT(*) AS n FROM memberships
+        WHERE vehicle_id = (
+          SELECT vehicle_id FROM memberships WHERE user_id = ?
+           ORDER BY CASE role WHEN 'key' THEN 0 ELSE 1 END, created_at LIMIT 1
+        )`,
+    )
+    .bind(userId)
+    .first<{ n: number }>()
+  return Math.max(1, row?.n ?? 1)
 }
 
 export async function secondaryCount(db: D1Database, vehicleId: string): Promise<number> {
@@ -313,13 +330,16 @@ export function parseChoices(raw: string): Record<string, string> {
 }
 
 export function toBooking(row: BookingRow): RewardBooking {
+  const reward = findReward(program, row.reward_id)?.reward
   return {
     id: row.id,
     rewardId: row.reward_id,
-    rewardTitle: findReward(program, row.reward_id)?.reward.title ?? row.reward_id,
+    rewardTitle: reward?.title ?? row.reward_id,
     levelId: row.level_id,
     choices: parseChoices(row.choices),
     code: row.code,
+    tickets: row.tickets ?? 1,
+    delivery: deliveryOf(reward?.claim),
     createdAt: row.created_at,
   }
 }
@@ -327,7 +347,7 @@ export function toBooking(row: BookingRow): RewardBooking {
 export async function bookingsFor(db: D1Database, userId: string): Promise<RewardBooking[]> {
   const { results } = await db
     .prepare(
-      'SELECT id, reward_id, level_id, choices, code, created_at FROM bookings WHERE user_id = ? ORDER BY created_at DESC, rowid DESC',
+      'SELECT id, reward_id, level_id, choices, code, tickets, created_at FROM bookings WHERE user_id = ? ORDER BY created_at DESC, rowid DESC',
     )
     .bind(userId)
     .all<BookingRow>()

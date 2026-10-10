@@ -1,8 +1,9 @@
-// Booking flow for a reward of a reached level: choices in order, summary, confirm, then the code.
+// Booking flow for a reward of a reached level: choices in order, tickets, summary, confirm, then the
+// QR code (events and services) or the shipping confirmation (welcome kits), plus the concierge.
 // Booking never spends points, and the confirmation says so. Neutral chalk on graphite: the screen's
 // single lava element stays the LevelCard progress fill.
 import { useState } from 'react'
-import { CalendarCheck, Check, LoaderCircle, Lock } from 'lucide-react'
+import { CalendarCheck, Check, LoaderCircle, Lock, MessageCircle, Package } from 'lucide-react'
 import type { LevelId, MeResponse, ProgramReward, RewardBooking, RewardClaimConfig } from '@/shared/types'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -11,10 +12,12 @@ import { Separator } from '@/components/ui/separator'
 import { cn, formatPoints } from '@/lib/utils'
 import { ApiRequestError } from '@/state/api'
 import { useSession } from '@/state/session'
+import { bookingQrPayload } from '../engine'
 import { getLevel, isLevelReached, levelsInOrder, program } from '../program'
 import { bookingCopy } from './booking.copy.it'
 import { sharedCopy } from './copy.it'
 import { useRewardAvailability } from './hooks'
+import { QrCode } from './QrCode'
 
 const copy = bookingCopy.dialog
 
@@ -31,6 +34,11 @@ export const BOOKING_DIALOG_CLASS =
 /** The user's booking of a reward, if any. Tolerates a server that does not send bookings yet. */
 export function findBooking(me: MeResponse, rewardId: string): RewardBooking | null {
   return (me.bookings ?? []).find((b) => b.rewardId === rewardId) ?? null
+}
+
+/** People on the user's account (primary household: key user plus invited drivers), at least 1. */
+export function maxTicketsFor(me: MeResponse | null): number {
+  return Math.max(1, me?.households[0]?.members.length ?? 1)
 }
 
 /** A reward of program.it.json by id, with its level. */
@@ -64,8 +72,17 @@ function bookingError(err: unknown): string {
   return sharedCopy.genericError
 }
 
-function ChoiceSummary({ claim, choices }: { claim: RewardClaimConfig | undefined; choices: Record<string, string> }) {
+function ChoiceSummary({
+  claim,
+  choices,
+  tickets,
+}: {
+  claim: RewardClaimConfig | undefined
+  choices: Record<string, string>
+  tickets?: number
+}) {
   const rows = orderedChoices(claim, choices)
+  if (claim?.tickets && tickets) rows.push({ label: copy.ticketsLabel, value: copy.ticketsRow(tickets) })
   if (rows.length === 0) return null
   return (
     <dl className="grid gap-2 rounded-md border border-border p-3 text-sm">
@@ -76,6 +93,55 @@ function ChoiceSummary({ claim, choices }: { claim: RewardClaimConfig | undefine
         </div>
       ))}
     </dl>
+  )
+}
+
+/** What the user shows or receives: the QR code with the booking code, or the shipping confirmation. */
+export function BookingProof({ booking, compact = false }: { booking: RewardBooking; compact?: boolean }) {
+  if (booking.delivery === 'shipping') {
+    return (
+      <div data-testid="booking-shipping" className="flex items-start gap-3 rounded-md border border-border p-3">
+        <Package className="mt-0.5 size-5 shrink-0" aria-hidden />
+        <div className="min-w-0 text-sm">
+          <p className="font-bold">{copy.shippingTitle}</p>
+          <p className="text-pretty text-muted-foreground">{copy.shippingTo}</p>
+          <p className="text-pretty text-muted-foreground">{copy.shippingEta}</p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            {copy.codeLabel}: <span className="font-bold tabular-nums text-foreground">{booking.code}</span>
+          </p>
+        </div>
+      </div>
+    )
+  }
+  return (
+    <div className="flex flex-col items-center gap-2 text-center">
+      <div data-testid="booking-qr" className="rounded-md bg-white p-2">
+        <QrCode value={bookingQrPayload(booking)} size={compact ? 160 : 200} label={copy.qrLabel(booking.code)} />
+      </div>
+      <p data-testid="booking-code" className="font-display text-3xl font-bold tracking-wider tabular-nums">
+        {booking.code}
+      </p>
+      <p className="text-xs text-muted-foreground">{compact ? copy.qrHint : `${copy.qrHint}. ${copy.codeHint}`}</p>
+    </div>
+  )
+}
+
+/** Concierge placeholder: in the real service a person at the user's dealer answers. */
+export function Concierge() {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className="grid gap-2">
+      <Button type="button" variant="outline" className="h-11 w-full" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
+        <MessageCircle aria-hidden />
+        {bookingCopy.concierge.cta}
+      </Button>
+      {open && (
+        <div role="note" className="rounded-md border border-border p-3 text-pretty text-sm">
+          <p>{bookingCopy.concierge.body}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{bookingCopy.concierge.prototype}</p>
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -104,15 +170,10 @@ function Confirmation({
       </div>
       <Separator />
       <div className="grid gap-4 p-6">
-        <div>
-          <p className="text-xs uppercase tracking-widest text-muted-foreground">{copy.codeLabel}</p>
-          <p data-testid="booking-code" className="mt-1 font-display text-4xl font-bold tracking-wider tabular-nums">
-            {booking.code}
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">{copy.codeHint}</p>
-        </div>
-        <ChoiceSummary claim={reward.claim} choices={booking.choices} />
+        <BookingProof booking={booking} />
+        <ChoiceSummary claim={reward.claim} choices={booking.choices} tickets={booking.tickets} />
         <p className="text-pretty text-sm font-bold">{copy.noPointsSpent(formatPoints(points))}</p>
+        <Concierge />
       </div>
       <div className="p-6 pt-0">
         <DialogClose asChild>
@@ -133,7 +194,10 @@ export function BookingBody({ reward, levelId }: BookingTarget) {
   const { me, bookReward } = useSession()
   const claim = reward.claim
   const existing = me ? findBooking(me, reward.id) : null
-  const [choices, setChoices] = useState<Record<string, string>>({})
+  const [choices, setChoices] = useState<Record<string, string>>(() =>
+    Object.fromEntries((claim?.options ?? []).filter((o) => o.choices.length === 1).map((o) => [o.id, o.choices[0]])),
+  )
+  const [tickets, setTickets] = useState(1)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState<RewardBooking | null>(null)
@@ -155,6 +219,10 @@ export function BookingBody({ reward, levelId }: BookingTarget) {
     const n = availability?.seatsLeft?.[choice]
     return typeof n === 'number' ? n : null
   }
+  const maxTickets = claim?.tickets ? maxTicketsFor(me) : 1
+  const firstChoice = options[0] ? choices[options[0].id] : undefined
+  const seatsForFirst = firstChoice ? seatsFor(firstChoice) : null
+  const ticketChoices = Array.from({ length: maxTickets }, (_, i) => i + 1)
 
   const select = (optionId: string, value: string) => {
     setError(null)
@@ -167,7 +235,7 @@ export function BookingBody({ reward, levelId }: BookingTarget) {
     setError(null)
     try {
       const picked = Object.fromEntries(claim.options.map((o) => [o.id, choices[o.id] ?? '']))
-      const res = await bookReward({ rewardId: reward.id, choices: picked })
+      const res = await bookReward({ rewardId: reward.id, choices: picked, ...(claim.tickets ? { tickets } : {}) })
       setDone(res.booking)
     } catch (err) {
       setError(bookingError(err))
@@ -227,6 +295,36 @@ export function BookingBody({ reward, levelId }: BookingTarget) {
                 })}
               </fieldset>
             ))}
+            {complete && claim?.tickets && (
+              <fieldset className="grid gap-2" data-option="tickets">
+                <legend className="mb-1 text-xs uppercase tracking-widest text-muted-foreground">{copy.ticketsLabel}</legend>
+                <p className="-mt-1 mb-1 text-xs text-muted-foreground">{copy.ticketsHint}</p>
+                <div className="flex flex-wrap gap-2">
+                  {ticketChoices.map((n) => {
+                    const selected = tickets === n
+                    return (
+                      <button
+                        key={n}
+                        type="button"
+                        aria-pressed={selected}
+                        aria-label={copy.ticketsRow(n)}
+                        disabled={busy || (seatsForFirst !== null && n > seatsForFirst)}
+                        onClick={() => {
+                          setError(null)
+                          setTickets(n)
+                        }}
+                        className={cn(
+                          'flex size-11 items-center justify-center rounded-md border text-sm font-bold tabular-nums transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+                          selected ? 'border-foreground bg-foreground text-background' : 'border-border hover:bg-accent',
+                        )}
+                      >
+                        {n}
+                      </button>
+                    )
+                  })}
+                </div>
+              </fieldset>
+            )}
           </div>
         </>
       )}
@@ -236,7 +334,7 @@ export function BookingBody({ reward, levelId }: BookingTarget) {
           <Separator />
           <div className="grid gap-3 p-6">
             <h3 className="font-sans text-xs uppercase tracking-widest text-muted-foreground">{copy.summary}</h3>
-            <ChoiceSummary claim={claim} choices={choices} />
+            <ChoiceSummary claim={claim} choices={choices} tickets={tickets} />
           </div>
         </>
       )}

@@ -17,6 +17,8 @@ export const fasttrackBooking: RewardBooking = {
   levelId: 'quattro-circle',
   choices: { data: 'Martedì 13 ottobre, 8:30', concessionaria: 'Treviso' },
   code: 'AWY-3F9D',
+  tickets: 1,
+  delivery: 'qr',
   createdAt: '2026-10-09T09:00:00.000Z',
 }
 

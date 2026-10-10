@@ -5,6 +5,7 @@
 import type {
   ActionType,
   CourtesyCarOffer,
+  DeliveryKind,
   LevelId,
   LevelProgress,
   LevelRequirement,
@@ -12,6 +13,7 @@ import type {
   ProgramAction,
   ProgramLevel,
   ProgramReward,
+  RewardBooking,
   RewardClaimConfig,
   Role,
   ServiceKind,
@@ -78,6 +80,9 @@ export const ENGINE_COPY = {
     choiceMissing: (label: string) => `Manca un passaggio: ${lowerFirst(label)}.`,
     choiceInvalid: (label: string) => `${label}: questa opzione non è disponibile, scegline una tra quelle proposte.`,
     soldOut: "Posti esauriti per questa data: scegline un'altra.",
+    ticketsInvalid: (max: number) =>
+      max === 1 ? 'Puoi prenotare 1 biglietto.' : `Puoi prenotare da 1 a ${max} biglietti, uno per ogni persona sul tuo account.`,
+    seatsShort: (left: number) => (left === 1 ? 'Resta 1 posto per questa data.' : `Restano ${left} posti per questa data.`),
   },
 } as const
 
@@ -467,9 +472,19 @@ export function firstOptionId(claim: RewardClaimConfig): string | null {
   return claim.options[0]?.id ?? null
 }
 
+/** How a booked reward reaches the user (default: a QR code at the entrance). */
+export function deliveryOf(claim: RewardClaimConfig | undefined): DeliveryKind {
+  return claim?.delivery ?? 'qr'
+}
+
+/** Payload of the booking QR code: no personal data, only what the dealer needs to check it. */
+export function bookingQrPayload(booking: Pick<RewardBooking, 'code' | 'rewardId' | 'tickets'>): string {
+  return `AWY|${booking.code}|${booking.rewardId}|${booking.tickets}`
+}
+
 /**
  * Seats left for every choice of the first option, null when the reward is unlimited.
- * `taken` maps a first-option choice to the bookings already made for it.
+ * `taken` maps a first-option choice to the tickets already booked for it.
  */
 export function seatsLeftByChoice(claim: RewardClaimConfig, taken: Record<string, number>): Record<string, number> | null {
   const seats = claim.seatsPerChoice
@@ -488,8 +503,12 @@ export interface BookingCheckInput {
   choices: Record<string, string>
   /** The user already booked this reward. */
   alreadyBooked: boolean
-  /** Bookings of this reward with the same first-option value as `choices`. */
+  /** Tickets already booked for this reward with the same first-option value as `choices`. */
   seatsTakenForFirstChoice: number
+  /** Requested tickets (rewards with `claim.tickets`), default 1. */
+  tickets?: number
+  /** People on the user's account (key user plus invited drivers), at least 1. */
+  maxTickets?: number
 }
 
 export type BookingCheck =
@@ -505,6 +524,8 @@ export type BookingCheck =
       firstChoice: string
       /** Seats for this first choice, null when unlimited. */
       seatsPerChoice: number | null
+      /** People admitted (1 when the reward has no tickets). */
+      tickets: number
     }
   | { ok: false; status: 400 | 403 | 409; error: string; message: string }
 
@@ -538,10 +559,18 @@ export function checkBooking(program: Program, input: BookingCheckInput): Bookin
     choices[option.id] = value
   }
 
+  const maxTickets = claim.tickets ? Math.max(1, Math.floor(input.maxTickets ?? 1)) : 1
+  const tickets = input.tickets ?? 1
+  if (!Number.isInteger(tickets) || tickets < 1 || tickets > maxTickets) {
+    return reject(400, 'tickets_invalid', ENGINE_COPY.booking.ticketsInvalid(maxTickets))
+  }
+
   const firstChoice = choices[claim.options[0].id]
   const seats = typeof claim.seatsPerChoice === 'number' ? claim.seatsPerChoice : null
-  if (seats !== null && input.seatsTakenForFirstChoice >= seats) {
-    return reject(409, 'sold_out', ENGINE_COPY.booking.soldOut)
+  if (seats !== null) {
+    const left = seats - input.seatsTakenForFirstChoice
+    if (left <= 0) return reject(409, 'sold_out', ENGINE_COPY.booking.soldOut)
+    if (tickets > left) return reject(409, 'sold_out', ENGINE_COPY.booking.seatsShort(left))
   }
-  return { ok: true, levelId: level.id, reward, claim, choices, firstChoice, seatsPerChoice: seats }
+  return { ok: true, levelId: level.id, reward, claim, choices, firstChoice, seatsPerChoice: seats, tickets }
 }

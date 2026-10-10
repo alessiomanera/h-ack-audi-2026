@@ -27,11 +27,25 @@ export const bookingCopy = {
     codeHint: 'Lo ritrovi sempre in "I tuoi premi".',
     noPointsSpent: (points: string) => `Nessun punto speso: i tuoi ${points} punti restano tuoi.`,
     close: 'Chiudi',
+    ticketsLabel: 'Biglietti',
+    ticketsHint: 'Uno per ogni persona sul tuo account',
+    ticketsRow: (n: number) => (n === 1 ? '1 persona' : `${n} persone`),
+    qrHint: "Mostralo all'ingresso",
+    qrLabel: (code: string) => `QR code della prenotazione ${code}`,
+    shippingTitle: 'Spedizione confermata',
+    shippingTo: "All'indirizzo del tuo profilo myAudi",
+    shippingEta: 'Arriva entro 5 giorni lavorativi',
     errors: {
       forbidden: 'Questo premio si sblocca a un livello che non hai ancora raggiunto.',
       conflict: 'Hai già prenotato questo premio, oppure i posti sono finiti.',
       badChoice: 'Scegli un valore per ogni opzione.',
     },
+  },
+
+  concierge: {
+    cta: 'Contatta il concierge',
+    body: 'Nel servizio reale ti risponde una persona della tua concessionaria, per cambi di data, accessi e domande.',
+    prototype: 'Prototipo: nessun messaggio viene inviato.',
   },
 
   myBookings: {
@@ -41,6 +55,9 @@ export const bookingCopy = {
     empty: 'Quando raggiungi un livello, qui trovi i premi che prenoti. Prenotare non consuma punti.',
     bookedOn: (date: string) => `Prenotato il ${date}`,
     codeLabel: 'Codice',
+    showQr: 'Mostra il QR',
+    hideQr: 'Nascondi il QR',
+    shipped: 'Spedizione confermata, entro 5 giorni lavorativi',
   },
 
   levelRewards: {

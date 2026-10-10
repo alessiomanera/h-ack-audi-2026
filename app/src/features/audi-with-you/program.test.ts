@@ -191,15 +191,24 @@ describe('program.it.json', () => {
     for (const reward of rewards) expect(Object.keys(REWARD_KINDS)).toContain(reward.kind)
   })
 
-  it('gives every level exactly one welcome kit, picked up in a dealership', () => {
+  it('gives every level exactly one welcome kit, shipped home with no tickets', () => {
     for (const level of program.levels) {
       expect(level.rewards.filter((r) => r.kind === 'welcome_kit'), level.id).toHaveLength(1)
     }
     for (const kit of rewards.filter((r) => r.kind === 'welcome_kit')) {
       expect(kit.claim, kit.id).toBeDefined()
-      expect(kit.claim?.options[0]?.id).toBe('concessionaria')
+      expect(kit.claim?.delivery, kit.id).toBe('shipping')
+      expect(kit.claim?.options[0]?.id).toBe('spedizione')
+      expect(kit.claim?.tickets).toBeUndefined()
       expect(kit.claim?.seatsPerChoice).toBeUndefined()
     }
+  })
+
+  it('books the ski day with tickets and a QR code', () => {
+    const claim = rewardById('sline-dolomiti')?.claim
+    expect(claim?.tickets).toBe(true)
+    expect(claim?.delivery ?? 'qr').toBe('qr')
+    expect(claim?.seatsPerChoice).toBe(20)
   })
 
   it('puts the bookable rewards at the right levels', () => {

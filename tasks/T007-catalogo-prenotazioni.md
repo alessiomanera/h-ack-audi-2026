@@ -57,10 +57,10 @@ Richiesta di Alessio (10/10, 15:45): nella demo l'utente sceglie un'esperienza d
 
 ## Acceptance
 - [ ] Catalogo con almeno 7 esperienze, 3 prenotabili, sul sito live
-- [ ] Demo sci: Giulia (dopo F2) prenota "Una giornata Audi sulle Dolomiti" per 2 persone: QR leggibile da telefono, codice AWY, "Nessun punto speso", in "I tuoi premi"
-- [ ] Paolo (dopo F3) prenota la stessa esperienza per sé e Luca (2 biglietti)
-- [ ] Kit di benvenuto con conferma di spedizione a domicilio
-- [ ] Pulsante concierge dopo la prenotazione e in "I tuoi premi"
+- [x] Demo sci: Giulia (dopo F2) prenota "Una giornata Audi sulle Dolomiti" per 2 persone: QR leggibile da telefono, codice AWY, "Nessun punto speso", in "I tuoi premi"
+- [x] Paolo (dopo F3) prenota la stessa esperienza per sé e Luca (2 biglietti)
+- [x] Kit di benvenuto con conferma di spedizione a domicilio
+- [x] Pulsante concierge dopo la prenotazione e in "I tuoi premi"
 - [ ] F1, F2 e F3 di T004 ancora verdi sul sito live
 - [ ] Nessun file modificato fuori da `scope`
 
@@ -68,6 +68,15 @@ Richiesta di Alessio (10/10, 15:45): nella demo l'utente sceglie un'esperienza d
 ```
 cd app && cmd /c npm run check
 ```
+
+## Stato (10/10, 16:10, sessione di Evelyn)
+Fatto e verificato in locale (API reale su D1 locale, 190 test verdi, build ok), non ancora in produzione:
+- Contratto: `DeliveryKind`, `claim.delivery` e `claim.tickets`, `RewardBooking.tickets` e `delivery`, `BookingRequest.tickets`. Payload QR calcolato da `bookingQrPayload` (engine), non salvato.
+- Migrazione `0004_booking_tickets.sql`; posti contati come somma dei biglietti; 400 oltre il massimo, 409 se i posti non bastano.
+- Seed: Marco (senza PIN) guidatore invitato sulla Q3 di Giulia; il kit di Paolo è spedito a casa.
+- UI: selettore biglietti, QR grande con codice e "Mostralo all'ingresso", conferma di spedizione per i kit, concierge segnaposto, "I tuoi premi" con "Mostra il QR".
+- Kit (4 livelli): "Ricevi a casa", spedizione all'indirizzo del profilo myAudi. Dolomiti e Design Week con biglietti.
+Da fare: sezione "Esperienze" come catalogo (Prenota / Si sblocca a / Presto prenotabile); deploy con migrazione 0004 da parte di Alessio.
 
 ## Blockers
 (L'esecutore scrive qui se serve toccare file fuori da `scope`.)

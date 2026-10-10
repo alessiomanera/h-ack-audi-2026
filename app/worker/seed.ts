@@ -19,7 +19,8 @@ interface SeedUser {
   email: string
   name: string
   birthYear: number
-  persona: PersonaId
+  /** null: an invited family member who cannot log in (no PIN). */
+  persona: PersonaId | null
   daysAgo: number
 }
 
@@ -27,6 +28,8 @@ const USERS: SeedUser[] = [
   { id: 'u_paolo', email: 'paolo.bianchi@example.com', name: 'Paolo Bianchi', birthYear: 1974, persona: 'paolo', daysAgo: 1250 },
   { id: 'u_luca', email: 'luca.bianchi@example.com', name: 'Luca Bianchi', birthYear: 2005, persona: 'luca', daysAgo: 400 },
   { id: 'u_giulia', email: 'giulia.ferri@example.com', name: 'Giulia Ferri', birthYear: 1997, persona: 'giulia', daysAgo: 910 },
+  // Driver invited by Giulia on her Q3: her events book 2 tickets.
+  { id: 'u_marco', email: 'marco.ferri@example.com', name: 'Marco Ferri', birthYear: 1996, persona: null, daysAgo: 200 },
 ]
 
 const VEHICLES = [
@@ -38,6 +41,7 @@ const MEMBERSHIPS: { userId: string; vehicleId: string; role: Role; daysAgo: num
   { userId: 'u_paolo', vehicleId: 'v_bianchi_a3', role: 'key', daysAgo: 1250 },
   { userId: 'u_luca', vehicleId: 'v_bianchi_a3', role: 'secondary', daysAgo: 400 },
   { userId: 'u_giulia', vehicleId: 'v_ferri_q3', role: 'key', daysAgo: 330 },
+  { userId: 'u_marco', vehicleId: 'v_ferri_q3', role: 'secondary', daysAgo: 200 },
 ]
 
 type SeedLedger = [id: string, userId: string, action: ActionType, points: number, daysAgo: number, meta: LedgerMeta]
@@ -99,16 +103,18 @@ export const SEED_LEDGER: SeedLedger[] = [
   ['l_giulia_service_3', 'u_giulia', 'service', 300, 60, service('tagliando', 'Q3', 1)],
 ]
 
+const SHIP_TO_PROFILE = "All'indirizzo del tuo profilo myAudi"
+
 /** Past bookings. Booking never spends points. */
 const BOOKINGS = [
   {
-    // Paolo collected his quattro Circle welcome kit at the Treviso dealer.
+    // Paolo received his quattro Circle welcome kit at home.
     id: 'b_paolo_quattro_kit',
     userId: 'u_paolo',
     rewardId: 'quattro-kit',
     levelId: 'quattro-circle',
-    choices: { concessionaria: 'Treviso' },
-    firstChoice: 'Treviso',
+    choices: { spedizione: SHIP_TO_PROFILE },
+    firstChoice: SHIP_TO_PROFILE,
     code: 'AWY-P4OL',
     daysAgo: 50,
   },
@@ -123,7 +129,7 @@ function seedStatements(db: D1Database, now: Date, pinHash: string): D1PreparedS
         .prepare(
           'INSERT OR IGNORE INTO users (id, email, name, pin_hash, birth_year, persona_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
         )
-        .bind(u.id, u.email, u.name, pinHash, u.birthYear, u.persona, at(u.daysAgo)),
+        .bind(u.id, u.email, u.name, u.persona ? pinHash : null, u.birthYear, u.persona, at(u.daysAgo)),
     )
   }
   for (const v of VEHICLES) {

@@ -191,8 +191,8 @@ describe('FullPortal', () => {
       expect(within(fasttrack).getByText(bookingCopy.reward.booked)).toBeInTheDocument()
       expect(within(fasttrack).getByText('AWY-3F9D')).toBeInTheDocument()
     }
-    expect(quattro.getByRole('button', { name: 'Ritira in concessionaria' })).toBeInTheDocument()
-    expect(within(levels.getByRole('article', { name: 'Icon Circle' })).getByRole('button', { name: 'Ritira in concessionaria' })).toBeInTheDocument()
+    expect(quattro.getByRole('button', { name: 'Ricevi a casa' })).toBeInTheDocument()
+    expect(within(levels.getByRole('article', { name: 'Icon Circle' })).getByRole('button', { name: 'Ricevi a casa' })).toBeInTheDocument()
 
     const sline = within(levels.getByRole('article', { name: 'S line Club' }))
     expect(sline.queryByRole('button')).not.toBeInTheDocument()

@@ -188,15 +188,16 @@
           "description": "Ti aspetta quando entri in Icon Circle. Lo ritiri in concessionaria e non spendi punti: è il benvenuto.",
           "kind": "welcome_kit",
           "claim": {
-            "cta": "Ritira in concessionaria",
+            "cta": "Ricevi a casa",
+            "delivery": "shipping",
             "options": [
               {
-                "id": "concessionaria",
-                "label": "Scegli la concessionaria",
-                "choices": ["Treviso", "Padova", "Milano"]
+                "id": "spedizione",
+                "label": "Dove lo spediamo",
+                "choices": ["All'indirizzo del tuo profilo myAudi"]
               }
             ],
-            "confirmation": "Il tuo kit ti aspetta in concessionaria. Mostra il codice quando passi a ritirarlo. Nessun punto speso."
+            "confirmation": "Spedizione confermata: il kit arriva all'indirizzo del tuo profilo myAudi entro 5 giorni lavorativi. Nessun punto speso."
           }
         }
       ]
@@ -261,15 +262,16 @@
           "description": "Ti aspetta quando raggiungi quattro Circle. Lo ritiri in concessionaria e non spendi punti: è il regalo per il nuovo livello.",
           "kind": "welcome_kit",
           "claim": {
-            "cta": "Ritira in concessionaria",
+            "cta": "Ricevi a casa",
+            "delivery": "shipping",
             "options": [
               {
-                "id": "concessionaria",
-                "label": "Scegli la concessionaria",
-                "choices": ["Treviso", "Padova", "Milano"]
+                "id": "spedizione",
+                "label": "Dove lo spediamo",
+                "choices": ["All'indirizzo del tuo profilo myAudi"]
               }
             ],
-            "confirmation": "Il tuo kit ti aspetta in concessionaria. Mostra il codice quando passi a ritirarlo. Nessun punto speso."
+            "confirmation": "Spedizione confermata: il kit arriva all'indirizzo del tuo profilo myAudi entro 5 giorni lavorativi. Nessun punto speso."
           }
         }
       ]
@@ -308,7 +310,8 @@
               }
             ],
             "seatsPerChoice": 20,
-            "confirmation": "Ci vediamo in montagna. All'hub Audi ti aspettano accoglienza e lounge, poi la guida sulla neve con gli istruttori Audi. Mostra il codice all'arrivo. Nessun punto speso."
+            "tickets": true,
+            "confirmation": "Ci vediamo in montagna. All'hub Audi ti aspettano accoglienza e lounge, poi la guida sulla neve con gli istruttori Audi. Mostra il QR all'arrivo. Nessun punto speso."
           }
         },
         {
@@ -334,6 +337,7 @@
               }
             ],
             "seatsPerChoice": 30,
+            "tickets": true,
             "confirmation": "Il tuo posto alla Milano Design Week è riservato. Ti scriviamo appena le date sono confermate. Nessun punto speso."
           }
         },
@@ -364,15 +368,16 @@
           "description": "Ti aspetta quando raggiungi S line Club. Lo ritiri in concessionaria e non spendi punti: è il regalo per il nuovo livello.",
           "kind": "welcome_kit",
           "claim": {
-            "cta": "Ritira in concessionaria",
+            "cta": "Ricevi a casa",
+            "delivery": "shipping",
             "options": [
               {
-                "id": "concessionaria",
-                "label": "Scegli la concessionaria",
-                "choices": ["Treviso", "Padova", "Milano"]
+                "id": "spedizione",
+                "label": "Dove lo spediamo",
+                "choices": ["All'indirizzo del tuo profilo myAudi"]
               }
             ],
-            "confirmation": "Il tuo kit ti aspetta in concessionaria. Mostra il codice quando passi a ritirarlo. Nessun punto speso."
+            "confirmation": "Spedizione confermata: il kit arriva all'indirizzo del tuo profilo myAudi entro 5 giorni lavorativi. Nessun punto speso."
           }
         }
       ]
@@ -442,15 +447,16 @@
           "description": "Ti aspetta quando raggiungi RS Vanguard. Lo ritiri in concessionaria e non spendi punti: è il regalo per il nuovo livello.",
           "kind": "welcome_kit",
           "claim": {
-            "cta": "Ritira in concessionaria",
+            "cta": "Ricevi a casa",
+            "delivery": "shipping",
             "options": [
               {
-                "id": "concessionaria",
-                "label": "Scegli la concessionaria",
-                "choices": ["Treviso", "Padova", "Milano"]
+                "id": "spedizione",
+                "label": "Dove lo spediamo",
+                "choices": ["All'indirizzo del tuo profilo myAudi"]
               }
             ],
-            "confirmation": "Il tuo kit ti aspetta in concessionaria. Mostra il codice quando passi a ritirarlo. Nessun punto speso."
+            "confirmation": "Spedizione confermata: il kit arriva all'indirizzo del tuo profilo myAudi entro 5 giorni lavorativi. Nessun punto speso."
           }
         },
         {

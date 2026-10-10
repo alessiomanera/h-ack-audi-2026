@@ -91,9 +91,16 @@ export interface RewardClaimOption {
   choices: string[]
 }
 
+/** How a booked reward reaches the user: a QR code shown at the entrance, or home shipping (gadgets). */
+export type DeliveryKind = 'qr' | 'shipping'
+
 export interface RewardClaimConfig {
-  /** Button label, e.g. "Prenota", "Ritira in concessionaria". */
+  /** Button label, e.g. "Prenota", "Ricevi a casa". */
   cta: string
+  /** Default "qr". "shipping" confirms delivery to the address of the myAudi profile. */
+  delivery?: DeliveryKind
+  /** Events: the user picks 1 ticket per person on their account (key user plus invited drivers). */
+  tickets?: boolean
   /** Choices made in order; every option needs one value. */
   options: RewardClaimOption[]
   /** Limited rewards: seats for each choice of the FIRST option (demo data). */
@@ -274,6 +281,9 @@ export interface RewardBooking {
   choices: Record<string, string>
   /** Code shown to the user and to the dealer, e.g. "AWY-7K2Q". */
   code: string
+  /** People admitted with this booking (1 for gadgets and services). */
+  tickets: number
+  delivery: DeliveryKind
   createdAt: string
 }
 
@@ -362,6 +372,8 @@ export interface BookingRequest {
   rewardId: string
   /** Option id -> chosen value, one per option of the reward's claim config. */
   choices: Record<string, string>
+  /** Rewards with `claim.tickets`: 1 to the number of people on the user's account. Default 1. */
+  tickets?: number
 }
 
 export interface BookingResponse {
@@ -393,5 +405,5 @@ export interface RewardAvailability {
 // POST /api/invites/:code/accept                    -> MeResponse
 // POST /api/actions            ActionRequest        -> ActionResult
 // POST /api/demo/reset                              -> { ok: true }  (re-seeds the demo data)
-// POST /api/bookings           BookingRequest       -> BookingResponse  (403 level not reached, 409 already booked or sold out, 400 bad choice)
+// POST /api/bookings           BookingRequest       -> BookingResponse  (403 level not reached, 409 already booked or sold out, 400 bad choice or tickets)
 // GET  /api/rewards/:id/availability                -> RewardAvailability

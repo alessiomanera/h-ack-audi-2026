@@ -74,6 +74,8 @@ export const dolomitiBooking: RewardBooking = {
   levelId: 's-line-club',
   choices: { hub: "Cortina d'Ampezzo", data: 'Sabato 30 gennaio 2027' },
   code: 'AWY-7K2Q',
+  tickets: 2,
+  delivery: 'qr',
   createdAt: '2026-10-10T12:06:00.000Z',
 }
 
@@ -84,6 +86,8 @@ export const fasttrackBooking: RewardBooking = {
   levelId: 'quattro-circle',
   choices: { data: 'Martedì 13 ottobre, 8:30', concessionaria: 'Treviso' },
   code: 'AWY-3F9D',
+  tickets: 1,
+  delivery: 'qr',
   createdAt: '2026-10-09T09:00:00.000Z',
 }
 
