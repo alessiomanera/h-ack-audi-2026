@@ -65,7 +65,7 @@ function AuthenticatedContent({ me }: { me: MeResponse }) {
       <HowItWorksSection />
       <EarnPointsSection />
       <LevelsSection currentLevel={me.level.current} me={me} />
-      <ExperiencesSection userLevel={me.level.current} />
+      <ExperiencesSection userLevel={me.level.current} me={me} />
       <FamilySection me={me} />
       <HistorySection ledger={me.ledger} lifetimePoints={me.level.lifetimePoints} />
       <PassageSection me={me} />

@@ -56,7 +56,7 @@ Richiesta di Alessio (10/10, 15:45): nella demo l'utente sceglie un'esperienza d
    Poi `curl -X POST https://audi-with-you.<account>.workers.dev/api/demo/reset`, aspettare circa 30 secondi (propagazione) e rifare il reset.
 
 ## Acceptance
-- [ ] Catalogo con almeno 7 esperienze, 3 prenotabili, sul sito live
+- [ ] Catalogo con almeno 7 esperienze, 3 prenotabili, sul sito live (fatto in codice: 4 prenotabili, 3 "Presto prenotabile"; manca il deploy)
 - [x] Demo sci: Giulia (dopo F2) prenota "Una giornata Audi sulle Dolomiti" per 2 persone: QR leggibile da telefono, codice AWY, "Nessun punto speso", in "I tuoi premi"
 - [x] Paolo (dopo F3) prenota la stessa esperienza per sé e Luca (2 biglietti)
 - [x] Kit di benvenuto con conferma di spedizione a domicilio
@@ -76,7 +76,8 @@ Fatto e verificato in locale (API reale su D1 locale, 190 test verdi, build ok),
 - Seed: Marco (senza PIN) guidatore invitato sulla Q3 di Giulia; il kit di Paolo è spedito a casa.
 - UI: selettore biglietti, QR grande con codice e "Mostralo all'ingresso", conferma di spedizione per i kit, concierge segnaposto, "I tuoi premi" con "Mostra il QR".
 - Kit (4 livelli): "Ricevi a casa", spedizione all'indirizzo del profilo myAudi. Dolomiti e Design Week con biglietti.
-Da fare: sezione "Esperienze" come catalogo (Prenota / Si sblocca a / Presto prenotabile); deploy con migrazione 0004 da parte di Alessio.
+- Catalogo "Esperienze": ogni esperienza punta a un premio di livello (`rewardId`). Prenotabili: Conosci la tua Audi (Icon Circle, biglietti), driving experience su neve e ghiaccio (quattro Circle, 16 posti, biglietti), Una giornata Audi sulle Dolomiti (S line Club, card "Hub Audi in montagna"), Design Week (S line Club). "Presto prenotabile": Eventi Audi, atleti FISI, Nata all'H-ACK.
+Da fare: deploy con migrazione 0004 (Alessio), poi reset e prova dei flussi sul sito live.
 
 ## Blockers
 (L'esecutore scrive qui se serve toccare file fuori da `scope`.)

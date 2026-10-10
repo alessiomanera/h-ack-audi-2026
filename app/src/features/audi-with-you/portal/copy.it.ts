@@ -99,6 +99,7 @@ export const portalCopy = {
     fromLevel: (levelName: string) => `Da ${levelName}`,
     unlocked: 'Disponibile per te',
     limited: 'Posti limitati: accesso anticipato per livello',
+    comingSoon: 'Presto prenotabile',
   },
   family: {
     title: 'La tua famiglia',

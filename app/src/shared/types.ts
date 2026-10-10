@@ -148,6 +148,8 @@ export interface ProgramExperience {
   limited: boolean
   /** Place, e.g. "Dolomiti", "Milano". */
   place?: string
+  /** Bookable through this level reward (its claim and level). Absent: shown as "Presto prenotabile". */
+  rewardId?: string
 }
 
 export interface ProgramStep {

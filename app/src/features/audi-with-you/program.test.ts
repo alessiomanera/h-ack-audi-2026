@@ -305,3 +305,18 @@ describe('program.it.json', () => {
     for (const s of program.segments) expect(s.models.length).toBeGreaterThan(0)
   })
 })
+
+describe('T007: experience catalog', () => {
+  it('has at least 7 experiences, at least 3 bookable through a level reward with the same level', () => {
+    const items = program.experiences.items
+    expect(items.length).toBeGreaterThanOrEqual(7)
+    const bookable = items.filter((i) => i.rewardId)
+    expect(bookable.length).toBeGreaterThanOrEqual(3)
+    for (const item of bookable) {
+      const level = program.levels.find((l) => l.rewards.some((r) => r.id === item.rewardId))
+      expect(level?.id, item.id).toBe(item.minLevel)
+      expect(level?.rewards.find((r) => r.id === item.rewardId)?.claim, item.id).toBeDefined()
+    }
+    expect(items.find((i) => i.id === 'hub')?.rewardId).toBe('sline-dolomiti')
+  })
+})

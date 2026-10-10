@@ -6,7 +6,7 @@ import { Card } from '@/components/ui/card'
 import { cn, formatPoints } from '@/lib/utils'
 import { bonusReward, getLevel, isLevelReached, levelIndex, levelsInOrder, program } from '../program'
 import { bookingCopy } from '../shared/booking.copy.it'
-import { RewardClaimAction } from '../shared/BookingDialog'
+import { RewardClaimAction, findProgramReward } from '../shared/BookingDialog'
 import { BonusRewardCard } from '../shared/BonusRewardCard'
 import { portalCopy } from './copy.it'
 import { actionNotes, kindPoints, maxPoints, needsWelcomeKitLabel } from './metrics'
@@ -197,7 +197,7 @@ export function LevelsSection({ currentLevel, me = null }: { currentLevel: Level
   )
 }
 
-export function ExperiencesSection({ userLevel }: { userLevel: LevelId | null }) {
+export function ExperiencesSection({ userLevel, me = null }: { userLevel: LevelId | null; me?: MeResponse | null }) {
   const copy = portalCopy.experiences
   return (
     <Section id="esperienze" title={copy.title} intro={program.experiences.intro}>
@@ -206,8 +206,9 @@ export function ExperiencesSection({ userLevel }: { userLevel: LevelId | null })
           const fromLabel =
             levelIndex(program, item.minLevel) === 0 ? copy.forEveryone : copy.fromLevel(levelName(item.minLevel))
           const unlocked = userLevel ? isLevelReached(program, userLevel, item.minLevel) : null
+          const bookable = item.rewardId ? findProgramReward(item.rewardId) : null
           return (
-            <li key={item.id}>
+            <li key={item.id} data-experience={item.id}>
               <Card className="flex h-full flex-col gap-3 p-5" data-locked={unlocked === false || undefined}>
                 <div className="flex flex-wrap gap-2">
                   {unlocked === null && (
@@ -244,6 +245,11 @@ export function ExperiencesSection({ userLevel }: { userLevel: LevelId | null })
                       <Hourglass className="size-3.5 shrink-0" aria-hidden />
                       {copy.limited}
                     </p>
+                  )}
+                  {bookable ? (
+                    <RewardClaimAction reward={bookable.reward} levelId={bookable.levelId} me={me} className="pt-1" />
+                  ) : (
+                    <p className="pt-1 text-xs text-muted-foreground">{copy.comingSoon}</p>
                   )}
                 </div>
               </Card>

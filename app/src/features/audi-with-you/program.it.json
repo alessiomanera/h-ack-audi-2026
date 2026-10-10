@@ -160,7 +160,24 @@
           "id": "icon-sessions",
           "title": "Sessioni \"Conosci la tua Audi\"",
           "description": "Incluse nel programma: in concessionaria impari la tua Audi con chi la conosce meglio.",
-          "kind": "service"
+          "kind": "service",
+          "claim": {
+            "cta": "Prenota",
+            "tickets": true,
+            "options": [
+              {
+                "id": "concessionaria",
+                "label": "Scegli la concessionaria",
+                "choices": ["Treviso", "Padova", "Milano"]
+              },
+              {
+                "id": "data",
+                "label": "Scegli il giorno",
+                "choices": ["Sabato 17 ottobre, 10:00", "Sabato 24 ottobre, 10:00", "Sabato 7 novembre, 10:00"]
+              }
+            ],
+            "confirmation": "Ti aspettiamo in concessionaria per un'ora dedicata alla tua Audi. Mostra il QR all'accoglienza. Nessun punto speso."
+          }
         },
         {
           "id": "icon-events",
@@ -254,7 +271,21 @@
           "id": "quattro-driving",
           "title": "Moduli di Audi driving experience",
           "description": "Guida con gli istruttori Audi per conoscere la tua Audi su fondi a bassa aderenza, in sicurezza.",
-          "kind": "experience"
+          "kind": "experience",
+          "limited": true,
+          "claim": {
+            "cta": "Prenota",
+            "tickets": true,
+            "options": [
+              {
+                "id": "data",
+                "label": "Scegli la data",
+                "choices": ["Sabato 9 gennaio 2027", "Sabato 23 gennaio 2027", "Sabato 6 febbraio 2027"]
+              }
+            ],
+            "seatsPerChoice": 16,
+            "confirmation": "Ci vediamo sulla neve: gli istruttori Audi ti aspettano nell'area tecnica. Mostra il QR all'arrivo. Nessun punto speso."
+          }
         },
         {
           "id": "quattro-kit",
@@ -496,6 +527,7 @@
     "items": [
       {
         "id": "conosci",
+        "rewardId": "icon-sessions",
         "title": "Conosci la tua Audi",
         "description": "Un'ora in concessionaria per scoprire funzioni e servizi della tua Audi, con chi la conosce meglio.",
         "minLevel": "icon-circle",
@@ -512,6 +544,7 @@
       },
       {
         "id": "driving",
+        "rewardId": "quattro-driving",
         "title": "Audi driving experience su neve e ghiaccio",
         "description": "Guida con gli istruttori Audi su fondi a bassa aderenza e superfici ghiacciate.",
         "minLevel": "quattro-circle",
@@ -520,6 +553,7 @@
       },
       {
         "id": "hub",
+        "rewardId": "sline-dolomiti",
         "title": "Hub Audi in montagna",
         "description": "Accoglienza e lounge negli spazi Audi nel cuore delle località, d'inverno e d'estate.",
         "minLevel": "s-line-club",
@@ -528,6 +562,7 @@
       },
       {
         "id": "design-week",
+        "rewardId": "sline-designweek",
         "title": "Milano Design Week all'Audi Design Hub",
         "description": "Installazioni e talk con designer e architetti, con un ingresso riservato.",
         "minLevel": "s-line-club",
