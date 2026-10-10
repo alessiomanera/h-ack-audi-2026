@@ -1,7 +1,7 @@
 ---
 id: T007
 title: Catalogo esperienze e prenotazione premi (biglietti, QR, spedizione, concierge)
-status: todo
+status: doing
 owner: Alessio
 executor: claude
 branch: testing
