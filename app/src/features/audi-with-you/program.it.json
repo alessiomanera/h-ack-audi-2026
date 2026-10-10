@@ -176,7 +176,7 @@
                 "choices": ["Sabato 17 ottobre, 10:00", "Sabato 24 ottobre, 10:00", "Sabato 7 novembre, 10:00"]
               }
             ],
-            "confirmation": "Ti aspettiamo in concessionaria per un'ora dedicata alla tua Audi. Mostra il QR all'accoglienza. Nessun punto speso."
+            "confirmation": "Ti aspettiamo in concessionaria per un'ora dedicata alla tua Audi. Mostra il QR all'accoglienza."
           }
         },
         {
@@ -214,7 +214,7 @@
                 "choices": ["All'indirizzo del tuo profilo myAudi"]
               }
             ],
-            "confirmation": "Spedizione confermata: il kit arriva all'indirizzo del tuo profilo myAudi entro 5 giorni lavorativi. Nessun punto speso."
+            "confirmation": "Spedizione confermata: il kit arriva all'indirizzo del tuo profilo myAudi entro 5 giorni lavorativi."
           }
         }
       ]
@@ -250,7 +250,7 @@
                 "choices": ["Treviso", "Padova", "Milano"]
               }
             ],
-            "confirmation": "Prenotazione fatta. In officina ti aspetta l'accettazione prioritaria e, quando disponibile, l'auto di cortesia del tuo livello. Mostra il codice all'accettazione. Nessun punto speso."
+            "confirmation": "Prenotazione fatta. In officina ti aspetta l'accettazione prioritaria e, quando disponibile, l'auto di cortesia del tuo livello. Mostra il codice all'accettazione."
           }
         },
         {
@@ -284,7 +284,7 @@
               }
             ],
             "seatsPerChoice": 16,
-            "confirmation": "Ci vediamo sulla neve: gli istruttori Audi ti aspettano nell'area tecnica. Mostra il QR all'arrivo. Nessun punto speso."
+            "confirmation": "Ci vediamo sulla neve: gli istruttori Audi ti aspettano nell'area tecnica. Mostra il QR all'arrivo."
           }
         },
         {
@@ -302,7 +302,7 @@
                 "choices": ["All'indirizzo del tuo profilo myAudi"]
               }
             ],
-            "confirmation": "Spedizione confermata: il kit arriva all'indirizzo del tuo profilo myAudi entro 5 giorni lavorativi. Nessun punto speso."
+            "confirmation": "Spedizione confermata: il kit arriva all'indirizzo del tuo profilo myAudi entro 5 giorni lavorativi."
           }
         }
       ]
@@ -342,7 +342,7 @@
             ],
             "seatsPerChoice": 20,
             "tickets": true,
-            "confirmation": "Ci vediamo in montagna. All'hub Audi ti aspettano accoglienza e lounge, poi la guida sulla neve con gli istruttori Audi. Mostra il QR all'arrivo. Nessun punto speso."
+            "confirmation": "Ci vediamo in montagna. All'hub Audi ti aspettano accoglienza e lounge, poi la guida sulla neve con gli istruttori Audi. Mostra il QR all'arrivo."
           }
         },
         {
@@ -369,7 +369,7 @@
             ],
             "seatsPerChoice": 30,
             "tickets": true,
-            "confirmation": "Il tuo posto alla Milano Design Week è riservato. Ti scriviamo appena le date sono confermate. Nessun punto speso."
+            "confirmation": "Il tuo posto alla Milano Design Week è riservato. Ti scriviamo appena le date sono confermate."
           }
         },
         {
@@ -408,7 +408,7 @@
                 "choices": ["All'indirizzo del tuo profilo myAudi"]
               }
             ],
-            "confirmation": "Spedizione confermata: il kit arriva all'indirizzo del tuo profilo myAudi entro 5 giorni lavorativi. Nessun punto speso."
+            "confirmation": "Spedizione confermata: il kit arriva all'indirizzo del tuo profilo myAudi entro 5 giorni lavorativi."
           }
         }
       ]
@@ -487,7 +487,7 @@
                 "choices": ["All'indirizzo del tuo profilo myAudi"]
               }
             ],
-            "confirmation": "Spedizione confermata: il kit arriva all'indirizzo del tuo profilo myAudi entro 5 giorni lavorativi. Nessun punto speso."
+            "confirmation": "Spedizione confermata: il kit arriva all'indirizzo del tuo profilo myAudi entro 5 giorni lavorativi."
           }
         },
         {
@@ -509,7 +509,7 @@
               }
             ],
             "seatsPerChoice": 10,
-            "confirmation": "Richiesta registrata. Ti contattiamo per progettare il wrap insieme: nulla si applica finché non approvi il progetto. Nessun punto speso."
+            "confirmation": "Richiesta registrata. Ti contattiamo per progettare il wrap insieme: nulla si applica finché non approvi il progetto."
           }
         }
       ]
