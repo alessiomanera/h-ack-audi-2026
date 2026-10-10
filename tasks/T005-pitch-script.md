@@ -1,7 +1,7 @@
 ---
 id: T005
 title: Copione del pitch "Audi with you" (5 minuti, 2 voci) nella tab Pitch del Google Doc
-status: doing
+status: review
 owner: Evelyn
 executor: claude
 branch: testing
@@ -19,9 +19,9 @@ Pitch di massimo 5 minuti per 2 presentatori, diviso per argomenti, con la strut
 2. Stesso testo nella tab "Pitch" del Google Doc, in modalità suggerimento.
 
 ## Acceptance
-- [ ] Massimo 5 minuti (circa 650 parole parlate), due voci alternate, argomenti con tempi
-- [ ] Ogni numero ha una fonte; nessuno sconto, estrazione, punti per km; il prodotto non viene chiamato "app"
-- [ ] Testo nella tab Pitch del Doc
+- [x] Massimo 5 minuti (circa 650 parole parlate), due voci alternate, argomenti con tempi
+- [x] Ogni numero ha una fonte; nessuno sconto, estrazione, punti per km; il prodotto non viene chiamato "app"
+- [x] Testo nella tab Pitch del Doc
 
 ## Verify
 ```
