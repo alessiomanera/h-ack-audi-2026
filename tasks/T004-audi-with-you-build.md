@@ -39,3 +39,5 @@ cd app && cmd /c npm run check
 
 ## Blockers
 (L'esecutore scrive qui se serve toccare file fuori da `scope`.)
+- **Da Evelyn (T006, 10/10/2026), per Alessio:** il team ha fissato il sistema loyalty a **4 tier** (tab "sistema punti" del Doc): Icon Circle (0), quattro Circle (1.000), S line Club (2.500), RS Vanguard (5.000 e un passaggio in officina negli ultimi 12 mesi). **Contano solo i punti degli ultimi 36 mesi**, i più vecchi si annullano; gli stessi punti si **usano** per premi ed experience senza far scendere di livello. `program.it.json` ha ancora 3 livelli (Start, Plus, Vorsprung) e la regola "i punti non si spendono e non scadono": il copione del pitch (`pitch/script.md`) e la demo devono dire la stessa cosa. Punti per azione, soglie e prezzi dei premi: `knowledge/research/brief4/sistema-punteggio.md`.
+

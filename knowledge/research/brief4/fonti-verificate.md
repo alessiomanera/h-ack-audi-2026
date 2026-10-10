@@ -126,6 +126,16 @@ Affidabilità: **alta** = fonte primaria (azienda, ente, autorità) o grande tes
 | Land Rover ownership | Land Rover Media, 2013 | US | primaria | alta (dato 2013) | [media.landrover.com](https://media.landrover.com/en-us/blog/2013/land-rover-ownership-has-its-privileges) | OK |
 | Concorsi a premio | MIMIT | IT | primaria | alta | [mimit.gov.it](https://www.mimit.gov.it/it/mercato-e-consumatori/concorrenza-e-commercio/manifestazioni-a-premio/concorsi-a-premio) | OK |
 
+## Sistema di punteggio (T006, sistema-punteggio.md)
+
+| Fonte | Editore, anno | Paese | Tipo | Affidabilità | Link | Stato |
+|---|---|---|---|---|---|---|
+| Lufthansa Miles & More program changes 2024 | One Mile at a Time | EU | secondaria | alta | [onemileatatime.com](https://onemileatatime.com/news/lufthansa-miles-more-changes/) | OK |
+| World of Hyatt milestones | Hyatt, 2023 | US | primaria | alta | [investors.hyatt.com](https://investors.hyatt.com/news/investor-news/news-details/2023/World-of-Hyatt-Redefines-Loyalty-by-Adding-More-Rewards-More-Milestones-More-Choice-and-More-Opportunities-to-Gift-Benefits-to-Loved-Ones/default.aspx) | OK (blocca i bot) |
+| World of Hyatt 2024 changes | The Points Guy | US | secondaria | alta | [thepointsguy.com](https://thepointsguy.com/news/world-of-hyatt-2024-changes) | OK |
+| Do Marriott points expire? | AwardWallet | US | secondaria | alta | [awardwallet.com](https://awardwallet.com/hotels/marriott-bonvoy/do-marriott-points-expire/) | OK |
+| Sephora Beauty Insider review | Beans | US | secondaria | media | [trybeans.com](https://www.trybeans.com/blog/sephora-beauty-insider-loyalty-program-review) | OK |
+
 ## Fonti scartate dalla versione originale
 
 Questi link della prima versione davano errore 404 (pagina inesistente) o non sostenevano il fatto citato, e sono stati sostituiti o eliminati:

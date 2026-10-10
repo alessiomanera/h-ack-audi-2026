@@ -46,3 +46,5 @@ cmd /c npm run check
   6. **SB01 "8% contro 22-25%":** senza fonte verificata, tolto dagli spazi bianchi.
   7. **A01:** la procedura myAudi per l'usato da privato è documentata solo per Irlanda e USA; non scrivere "(Audi Italia, 2026)".
   Fonti aggiornate: `knowledge/research/brief4/fonti-verificate.md`.
+- **Da Evelyn (T006, 10/10/2026):** le correzioni elencate sopra sono state applicate in T006: `pitch/outline.md` riscritta in linea con `pitch/script.md` (8 slide, 4 tier); da `pitch/kpi-brief4.md` tolti gli obiettivi a 6 mesi inventati e i benchmark H01, H02, G02; da `pitch/qa-giuria-brief4.md` e `knowledge/research/brief4/verifica.md` tolti G02, H01, H02, SB01 e corretti E02, E03, E05, A01.
+
