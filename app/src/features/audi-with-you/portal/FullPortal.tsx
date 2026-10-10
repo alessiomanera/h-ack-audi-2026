@@ -62,7 +62,6 @@ function AuthenticatedContent({ me }: { me: MeResponse }) {
           <MyBookingsList bookings={me.bookings ?? []} />
         </div>
       </Section>
-      <HowItWorksSection />
       <EarnPointsSection />
       <LevelsSection currentLevel={me.level.current} me={me} />
       <ExperiencesSection userLevel={me.level.current} me={me} />

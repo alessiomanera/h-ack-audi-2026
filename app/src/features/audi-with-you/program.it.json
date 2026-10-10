@@ -7,12 +7,12 @@
     {
       "id": "entra",
       "title": "Entra",
-      "body": "Ti registri come titolare, oppure accetti l'invito di chi in famiglia ha l'Audi. Ricevi 100 punti di benvenuto e il kit del tuo livello."
+      "body": "Ti registri come titolare o accetti l'invito di chi ha l'Audi in famiglia: 100 punti."
     },
     {
       "id": "cura",
       "title": "Cura",
-      "body": "Porti l'Audi in un'officina ufficiale (tagliando, gomme, check invernale) o monti un accessorio originale in concessionaria. Se la tua Audi ha più di 2 anni, i punti dell'officina raddoppiano."
+      "body": "Officina ufficiale e accessori originali valgono punti. Doppi se l'Audi ha più di 2 anni."
     },
     {
       "id": "partecipa",
@@ -22,7 +22,7 @@
     {
       "id": "sali",
       "title": "Sali di livello",
-      "body": "I punti non si spendono: si sommano e decidono il tuo livello. Contano quelli degli ultimi 3 anni. Quando passi alla tua prossima Audi, livello e storico vengono con te."
+      "body": "I punti degli ultimi 3 anni decidono il livello. Non si spendono e vengono con te sulla prossima Audi."
     }
   ],
   "actions": [
@@ -587,21 +587,12 @@
     ]
   },
   "rules": [
-    "Contano i punti degli ultimi 3 anni: ogni punto esce dal conteggio 36 mesi dopo averlo guadagnato.",
     "I punti non si spendono: si sommano e decidono il livello.",
     "Prenotare un premio non consuma punti.",
-    "Livelli: Icon Circle da 0 punti, quattro Circle da 1.000, S line Club da 2.500, RS Vanguard da 5.000 con almeno un passaggio in officina ufficiale negli ultimi 12 mesi.",
+    "Contano i punti degli ultimi 3 anni: ogni punto esce dal conteggio 36 mesi dopo averlo guadagnato.",
     "Punti fissi per ogni azione, mai in base agli euro spesi: il livello non si compra.",
-    "Il livello è personale: ogni guidatore della famiglia ha il suo profilo, il suo storico e il suo livello.",
-    "Partecipano il titolare dell'Audi (acquisto, leasing o noleggio) e i guidatori che invita in myAudi. Nel prototipo: fino a 5 guidatori invitati per ogni Audi (da verificare con le regole di myAudi in Italia).",
-    "Quando un guidatore invitato prende la sua prima Audi: 1.000 punti a lui e 500 a chi l'ha invitato.",
-    "I punti arrivano da azioni verificabili nella rete ufficiale Audi: passaggi in officina, accessori originali montati in concessionaria, articoli Audi Collection, permute, sessioni, eventi con check-in, inviti accettati, ricariche.",
-    "Limiti: Audi Collection al massimo 4 articoli premiati al mese, ricariche premiate una volta al mese (con almeno 4 ricariche), eventi al massimo 6 premiati all'anno, permuta una volta per ogni Audi.",
-    "I kit di benvenuto arrivano quando raggiungi un livello: te li spediamo a casa, senza spendere punti.",
     "Nessun punto per chilometri, stile di guida o dati di telemetria.",
     "Nessuno sconto e nessun credito in euro: i premi sono servizi, priorità ed esperienze.",
-    "Le esperienze a posti limitati si prenotano per livello, con accesso anticipato: nessuna estrazione, nessuna classifica.",
-    "Quando passi alla tua prossima Audi, nuova o usata e con qualsiasi formula, livello e storico vengono con te.",
     "Premi, servizi e partnership sono proposte da verificare con Audi Italia e con la rete ufficiale."
   ]
 }

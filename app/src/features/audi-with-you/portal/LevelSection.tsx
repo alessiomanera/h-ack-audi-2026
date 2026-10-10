@@ -58,7 +58,6 @@ export function LevelSection({ me }: { me: MeResponse }) {
                           </Badge>
                         )}
                       </div>
-                      <p className="text-sm text-pretty text-muted-foreground">{reward.description}</p>
                     </li>
                   ))}
                 </ul>

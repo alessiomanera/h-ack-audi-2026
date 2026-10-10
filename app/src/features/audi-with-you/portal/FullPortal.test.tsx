@@ -56,7 +56,6 @@ describe('FullPortal', () => {
     expect(titles).toEqual([
       'Il tuo livello',
       'I tuoi premi',
-      'Come funziona',
       'Guadagna punti',
       'Livelli e premi',
       'Esperienze',
@@ -289,5 +288,16 @@ describe('portal metrics', () => {
     expect(needsWelcomeKitLabel(kit)).toBe(true)
     expect(needsWelcomeKitLabel({ ...kit, title: 'Kit di benvenuto: portachiavi Audi' })).toBe(false)
     expect(needsWelcomeKitLabel({ ...kit, kind: 'service' })).toBe(false)
+  })
+})
+
+describe('FullPortal: lean copy', () => {
+  it('keeps the signed-in portal short: reward titles without descriptions, at most 8 rules', () => {
+    const { container } = renderPortal('authenticated', lucaMe)
+    const words = (container.textContent ?? '').trim().split(/\s+/).length
+    expect(words).toBeLessThan(1200)
+    expect(program.rules.length).toBeLessThanOrEqual(8)
+    const dolomiti = levelsInOrder(program).flatMap((l) => l.rewards).find((r) => r.id === 'sline-dolomiti')
+    expect(screen.queryByText(dolomiti?.description ?? '')).not.toBeInTheDocument()
   })
 })

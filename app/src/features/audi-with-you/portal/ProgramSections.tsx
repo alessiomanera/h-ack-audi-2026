@@ -56,16 +56,12 @@ export function EarnPointsSection() {
                       : copy.points(formatPoints(maxPoints(action)))}
                   </p>
                 </div>
-                <p className="text-sm text-pretty text-muted-foreground">{action.description}</p>
                 {kinds.length > 1 && (
                   <ul className="space-y-1 text-sm tabular-nums">
                     {kinds.map((k) => (
                       <li key={k.kind}>{bookingCopy.earn.kindPoints(k.label, formatPoints(k.points))}</li>
                     ))}
                   </ul>
-                )}
-                {action.examples && action.examples.length > 0 && (
-                  <p className="text-xs text-subtle">{action.examples.join(', ')}</p>
                 )}
                 {notes.length > 0 && (
                   <div className="mt-auto flex flex-wrap gap-2 pt-2">
@@ -136,10 +132,9 @@ export function LevelsSection({ currentLevel, me = null }: { currentLevel: Level
                     {copy.courtesyCar}
                   </p>
                   <p className="mt-2 font-bold">{level.courtesyCar.label}</p>
-                  <p className="mt-1 text-sm text-pretty">{level.courtesyCar.description}</p>
                 </div>
               </div>
-              <ul className="space-y-4 p-6">
+              <ul className="space-y-3 p-6">
                 {level.rewards
                   .filter((reward) => !reward.bonus)
                   .map((reward) => (
@@ -156,13 +151,7 @@ export function LevelsSection({ currentLevel, me = null }: { currentLevel: Level
                             {copy.welcomeKit}
                           </Badge>
                         )}
-                        {reward.note && (
-                          <Badge variant="outline" className="rounded-sm font-medium">
-                            {reward.note}
-                          </Badge>
-                        )}
                       </div>
-                      <p className="mt-1 text-sm text-pretty text-muted-foreground">{reward.description}</p>
                       {reward.limited && (
                         <p className="mt-2 flex items-center gap-1.5 text-xs text-foreground">
                           <Hourglass className="size-3.5 shrink-0" aria-hidden />
@@ -232,7 +221,6 @@ export function ExperiencesSection({ userLevel, me = null }: { userLevel: LevelI
                 <h3 className={cn('text-base font-bold', unlocked === false && 'text-muted-foreground')}>
                   {item.title}
                 </h3>
-                <p className="text-sm text-muted-foreground">{item.description}</p>
                 <div className="mt-auto space-y-1.5 pt-2">
                   {item.place && (
                     <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -294,10 +282,7 @@ export function PassageSection({ me }: { me: MeResponse | null }) {
         {copy.withYou.map((item) => (
           <li key={item.title} className="flex gap-3 rounded-lg border p-4">
             <Check className="mt-0.5 size-4 shrink-0" aria-hidden />
-            <div>
-              <p className="font-medium">{item.title}</p>
-              <p className="mt-1 text-sm text-muted-foreground">{item.body}</p>
-            </div>
+            <p className="font-medium">{item.title}</p>
           </li>
         ))}
       </ul>
