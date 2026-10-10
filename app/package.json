@@ -1,0 +1,56 @@
+{
+  "name": "audi-with-you",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Audi with you: loyalty prototype for H-ACK Brief 4 (single-page webapp + Cloudflare Worker API on D1).",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "wrangler types && tsc -b",
+    "test": "vitest run",
+    "check": "wrangler types && tsc -b && vitest run",
+    "cf-typegen": "wrangler types",
+    "db:migrate:local": "wrangler d1 migrations apply audi-with-you --local",
+    "db:migrate:remote": "wrangler d1 migrations apply audi-with-you --remote",
+    "db:seed:local": "wrangler d1 execute audi-with-you --local --file=./migrations/seed.sql",
+    "db:seed:remote": "wrangler d1 execute audi-with-you --remote --file=./migrations/seed.sql",
+    "deploy": "vite build && wrangler deploy"
+  },
+  "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.19",
+    "@radix-ui/react-label": "^2.1.11",
+    "@radix-ui/react-separator": "^1.1.11",
+    "@radix-ui/react-slot": "^1.3.0",
+    "@radix-ui/react-tabs": "^1.1.17",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.24.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router": "^8.2.0",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.6.0"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.63.1",
+    "@tailwindcss/vite": "^4.3.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "jsdom": "^29.1.1",
+    "tailwindcss": "^4.3.2",
+    "typescript": "~6.0.2",
+    "vite": "^8.1.1",
+    "vitest": "^4.1.10",
+    "wrangler": "^4.149.0"
+  },
+  "allowScripts": {
+    "workerd@1.20261006.1": true,
+    "esbuild@0.28.2": true
+  }
+}
