@@ -202,7 +202,7 @@
         {
           "id": "icon-kit",
           "title": "Kit di benvenuto: portachiavi Audi",
-          "description": "Ti aspetta quando entri in Icon Circle. Lo ritiri in concessionaria e non spendi punti: è il benvenuto.",
+          "description": "Ti aspetta quando entri in Icon Circle. Te lo spediamo a casa e non spendi punti: è il benvenuto.",
           "kind": "welcome_kit",
           "claim": {
             "cta": "Ricevi a casa",
@@ -290,7 +290,7 @@
         {
           "id": "quattro-kit",
           "title": "Kit di benvenuto: borraccia e accessori da viaggio",
-          "description": "Ti aspetta quando raggiungi quattro Circle. Lo ritiri in concessionaria e non spendi punti: è il regalo per il nuovo livello.",
+          "description": "Ti aspetta quando raggiungi quattro Circle. Te lo spediamo a casa e non spendi punti: è il regalo per il nuovo livello.",
           "kind": "welcome_kit",
           "claim": {
             "cta": "Ricevi a casa",
@@ -396,7 +396,7 @@
         {
           "id": "sline-kit",
           "title": "Kit di benvenuto: cura e pulizia della tua Audi",
-          "description": "Ti aspetta quando raggiungi S line Club. Lo ritiri in concessionaria e non spendi punti: è il regalo per il nuovo livello.",
+          "description": "Ti aspetta quando raggiungi S line Club. Te lo spediamo a casa e non spendi punti: è il regalo per il nuovo livello.",
           "kind": "welcome_kit",
           "claim": {
             "cta": "Ricevi a casa",
@@ -475,7 +475,7 @@
         {
           "id": "rs-kit",
           "title": "Kit di benvenuto: profumatore per l'abitacolo",
-          "description": "Ti aspetta quando raggiungi RS Vanguard. Lo ritiri in concessionaria e non spendi punti: è il regalo per il nuovo livello.",
+          "description": "Ti aspetta quando raggiungi RS Vanguard. Te lo spediamo a casa e non spendi punti: è il regalo per il nuovo livello.",
           "kind": "welcome_kit",
           "claim": {
             "cta": "Ricevi a casa",
@@ -554,10 +554,10 @@
       {
         "id": "hub",
         "rewardId": "sline-dolomiti",
-        "title": "Hub Audi in montagna",
-        "description": "Accoglienza e lounge negli spazi Audi nel cuore delle località, d'inverno e d'estate.",
+        "title": "Una giornata Audi sulle Dolomiti",
+        "description": "Accoglienza e lounge nell'hub Audi, deposito sci e un modulo di Audi driving experience sulla neve.",
         "minLevel": "s-line-club",
-        "limited": false,
+        "limited": true,
         "place": "Cortina d'Ampezzo, Alta Badia, Madonna di Campiglio"
       },
       {
@@ -597,7 +597,7 @@
     "Quando un guidatore invitato prende la sua prima Audi: 1.000 punti a lui e 500 a chi l'ha invitato.",
     "I punti arrivano da azioni verificabili nella rete ufficiale Audi: passaggi in officina, accessori originali montati in concessionaria, articoli Audi Collection, permute, sessioni, eventi con check-in, inviti accettati, ricariche.",
     "Limiti: Audi Collection al massimo 4 articoli premiati al mese, ricariche premiate una volta al mese (con almeno 4 ricariche), eventi al massimo 6 premiati all'anno, permuta una volta per ogni Audi.",
-    "I kit di benvenuto arrivano quando raggiungi un livello: li ritiri in concessionaria, senza spendere punti.",
+    "I kit di benvenuto arrivano quando raggiungi un livello: te li spediamo a casa, senza spendere punti.",
     "Nessun punto per chilometri, stile di guida o dati di telemetria.",
     "Nessuno sconto e nessun credito in euro: i premi sono servizi, priorità ed esperienze.",
     "Le esperienze a posti limitati si prenotano per livello, con accesso anticipato: nessuna estrazione, nessuna classifica.",

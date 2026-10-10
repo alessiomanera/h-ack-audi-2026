@@ -80,7 +80,7 @@ export const portalCopy = {
   },
   levels: {
     title: 'Livelli e premi',
-    intro: 'I punti degli ultimi 3 anni decidono il livello. A ogni livello: servizi, priorità, esperienze e un kit di benvenuto da ritirare in concessionaria.',
+    intro: 'I punti degli ultimi 3 anni decidono il livello. A ogni livello: servizi, priorità, esperienze e un kit di benvenuto spedito a casa.',
     threshold: (points: string) => `Da ${points} punti`,
     courtesyCar: 'Auto di cortesia',
     current: 'Il tuo livello',

@@ -223,6 +223,8 @@ export function BookingBody({ reward, levelId }: BookingTarget) {
   const firstChoice = options[0] ? choices[options[0].id] : undefined
   const seatsForFirst = firstChoice ? seatsFor(firstChoice) : null
   const ticketChoices = Array.from({ length: maxTickets }, (_, i) => i + 1)
+  // A first choice with fewer seats left than the tickets picked earlier caps the request.
+  const ticketsToBook = seatsForFirst !== null && seatsForFirst > 0 ? Math.min(tickets, seatsForFirst) : tickets
 
   const select = (optionId: string, value: string) => {
     setError(null)
@@ -235,7 +237,7 @@ export function BookingBody({ reward, levelId }: BookingTarget) {
     setError(null)
     try {
       const picked = Object.fromEntries(claim.options.map((o) => [o.id, choices[o.id] ?? '']))
-      const res = await bookReward({ rewardId: reward.id, choices: picked, ...(claim.tickets ? { tickets } : {}) })
+      const res = await bookReward({ rewardId: reward.id, choices: picked, ...(claim.tickets ? { tickets: ticketsToBook } : {}) })
       setDone(res.booking)
     } catch (err) {
       setError(bookingError(err))
@@ -301,7 +303,7 @@ export function BookingBody({ reward, levelId }: BookingTarget) {
                 <p className="-mt-1 mb-1 text-xs text-muted-foreground">{copy.ticketsHint}</p>
                 <div className="flex flex-wrap gap-2">
                   {ticketChoices.map((n) => {
-                    const selected = tickets === n
+                    const selected = ticketsToBook === n
                     return (
                       <button
                         key={n}
@@ -334,7 +336,7 @@ export function BookingBody({ reward, levelId }: BookingTarget) {
           <Separator />
           <div className="grid gap-3 p-6">
             <h3 className="font-sans text-xs uppercase tracking-widest text-muted-foreground">{copy.summary}</h3>
-            <ChoiceSummary claim={claim} choices={choices} tickets={tickets} />
+            <ChoiceSummary claim={claim} choices={choices} tickets={ticketsToBook} />
           </div>
         </>
       )}
