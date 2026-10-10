@@ -6,6 +6,7 @@
 import { useSearchParams } from 'react-router'
 import { useMediaQuery } from '@/state/useMediaQuery'
 import { DemoPanel } from './shared/DemoPanel'
+import { InviteAcceptBanner } from './shared/InviteAcceptBanner'
 import { FullPortal } from './portal/FullPortal'
 import { TabView } from './tab/TabView'
 
@@ -23,6 +24,7 @@ export function AudiWithYouPage() {
   const { mode, isDesktop } = useViewMode()
   return (
     <>
+      <InviteAcceptBanner />
       {mode === 'tab' ? <TabView framed={isDesktop} /> : <FullPortal />}
       <DemoPanel />
     </>

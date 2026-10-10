@@ -11,7 +11,7 @@
     {
       "id": "cura",
       "title": "Cura",
-      "body": "Porti l'Audi in un'officina ufficiale: tagliando, gomme, check invernale. Dopo i 2 anni i punti raddoppiano."
+      "body": "Porti l'Audi in un'officina ufficiale: tagliando, gomme, check invernale. Se la tua Audi ha più di 2 anni, i punti raddoppiano."
     },
     {
       "id": "partecipa",
@@ -20,7 +20,7 @@
     },
     {
       "id": "sali",
-      "title": "Sali e passa",
+      "title": "Sali di livello",
       "body": "I punti non si spendono: si sommano e decidono il tuo livello. Livello e storico ti seguono fino alla tua prossima Audi."
     }
   ],
@@ -73,7 +73,7 @@
     {
       "type": "charging",
       "title": "Ricarica con Audi",
-      "description": "Ogni sessione di ricarica con il servizio di ricarica Audi.",
+      "description": "Ogni sessione con il servizio di ricarica Audi.",
       "points": 5,
       "enabled": true,
       "monthlyCap": 20
@@ -169,14 +169,14 @@
         {
           "id": "vorsprung-early",
           "title": "Accesso anticipato alle esperienze a posti limitati",
-          "description": "Prenoti prima degli altri: meet and greet FISI, prima fila alla Milano Design Week, guida su ghiaccio nelle Dolomiti.",
+          "description": "Prenoti in anticipo: meet and greet FISI, prima fila alla Milano Design Week, guida su ghiaccio nelle Dolomiti.",
           "kind": "access",
           "limited": true
         },
         {
           "id": "vorsprung-partner",
           "title": "Dolomiti Superski",
-          "description": "Un vantaggio partner sulle piste delle Dolomiti.",
+          "description": "Un servizio dedicato sulle piste delle Dolomiti, con il partner Audi.",
           "kind": "partner",
           "note": "da negoziare"
         },

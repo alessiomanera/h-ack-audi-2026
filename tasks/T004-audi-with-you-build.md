@@ -5,7 +5,7 @@ status: doing
 owner: Alessio
 executor: claude
 branch: testing
-scope: app/**, tasks/T004-*.md
+scope: app/**, tasks/T004-*.md, .github/workflows/**
 depends_on: T003
 ---
 
