@@ -11,9 +11,9 @@ Tutte le voci seguenti sono classificate rigorosamente come **INFERENZA** basata
 ### Spazio Bianco 1 · L'accoglienza del secondo proprietario nell'usato tra privati
 - **Inferenza:** Nessun costruttore automobilistico premium possiede oggi un percorso strutturato di onboarding e fidelizzazione per chi acquista un veicolo usato direttamente da un privato.
 - **Sostegno dai finding:**
-  - Il 56,3% di tutti i passaggi di proprieta in Italia avviene direttamente tra privati (finding E02), muovendo oltre 1,7 milioni di vetture l'anno fuori dai radar delle reti ufficiali.
-  - Il rapporto tra compravendita di usato e nuovo in Italia e superiore a 2 a 1 (finding E01).
-  - Audi copre in modo eccellente l'usato venduto in concessionaria con Prima Scelta :plus (finding A02), ma chi compra da privato affronta una frizione burocratica (verifica fisica documenti in concessionaria per ottenere il ruolo di utente principale su myAudi, finding A01).
+  - Nei primi cinque mesi del 2026 il 56,3% dei passaggi di proprieta di auto usate in Italia e avvenuto tra privati o aziende, senza operatore professionale (UNRAE, finding E02).
+  - Nel 2024 sono passate di mano circa 2 auto usate per ogni auto nuova immatricolata (UNRAE, finding E01).
+  - Audi copre in modo eccellente l'usato venduto in concessionaria con Prima Scelta :plus (finding A02), ma chi compra da privato senza il codice veicolo a 10 cifre deve passare da concessionario o assistenza per diventare utente principale su myAudi (procedura documentata in Irlanda e USA, da confermare per l'Italia; finding A01).
   - Questo cliente under 35 guida un'Audi reale ogni giorno ma per la casa madre e un fantasma fino a quando non ha un guasto grave. Accoglierlo con un check-up di benvenuto, certificazione digitale o accesso alla community colmerebbe il divario generazionale.
 
 ### Spazio Bianco 2 · La fedelta misurata sullo stile di vita e sulle passioni, non sulla spesa dell'auto
@@ -26,15 +26,14 @@ Tutte le voci seguenti sono classificate rigorosamente come **INFERENZA** basata
 ### Spazio Bianco 3 · La protezione del cliente nel momento critico della transizione elettrica
 - **Inferenza:** Il passaggio all'elettrico e il momento in cui la fedelta tradizionale crolla drammaticamente; i costruttori non offrono un accompagnamento rassicurante post-acquisto che premi e guidi l'utente nei primi mesi di ricarica e convivenza con la batteria.
 - **Sostegno dai finding:**
-  - Il tasso di abbandono della marca nel passaggio dal motore termico a quello elettrico o ibrido raggiunge il 64% (LexisNexis, finding E05).
-  - In Italia la penetrazione dell'elettrico resta inferiore alla media europea (8% contro 25% nel 2026, team briefing e UNRAE).
-  - Audi charging offre una rete eccellente ma e percepita solo come un contratto di fornitura (finding A04). Trasformare i primi 1.000 km o le prime ricariche in momenti di tutoraggio e gamification positiva ridurrebbe l'ansia e blinderebbe la retention.
+  - Negli USA il tasso di abbandono della marca nel passaggio dal motore termico a quello elettrico o ibrido raggiunge il 64% (LexisNexis 2025, dato USA, finding E05).
+  - Audi charging e oggi un servizio di ricarica a contratto (finding A04). Trasformare i primi 1.000 km o le prime ricariche in momenti di tutoraggio e gamification positiva ridurrebbe l'ansia e blinderebbe la retention.
 
 ### Spazio Bianco 4 · Circolarita, longevita e cura dell'auto come nuovo status
-- **Inferenza:** Mentre il lusso outdoor (Arc'teryx, Patagonia) ha fatto della riparabilita, della manutenzione e della durata nel tempo il supremo indicatore di responsabilita e stile (finding C04, C05), l'automotive insiste quasi esclusivamente sull'obsolescenza programmata e sulla spinta a cambiare auto ogni 3 anni.
+- **Inferenza:** Mentre il lusso outdoor (Arc'teryx, Patagonia) ha fatto della riparabilita, della manutenzione e della durata nel tempo il supremo indicatore di responsabilita e stile (finding C04, C05), la fedelta automotive e ancora legata soprattutto al momento del riacquisto (finding A08).
 - **Sostegno dai finding:**
-  - La Gen Z e profondamente attenta alla sostenibilita autentica e all'impatto ambientale (finding E04).
-  - Valorizzare e premiare chi mantiene la propria Audi efficiente nel tempo attraverso la manutenzione programmata (Quality Time, finding A03) intercetta la nuova sensibilita generazionale senza richiedere sconti commerciali.
+  - La sostenibilita e un fattore decisivo di acquisto per il 64% dei consumatori (Capgemini 2025, finding E04).
+  - Valorizzare e premiare chi mantiene la propria Audi efficiente nel tempo attraverso la manutenzione in rete (Audi Service Station, finding A03) intercetta la nuova sensibilita generazionale senza richiedere sconti commerciali.
 
 ---
 
@@ -52,7 +51,7 @@ Da sottoporre durante la giornata nelle sessioni di feedback ai tavoli (come da 
 ### Per i mentor Jakala (Jakala, Esperti Automotive, Loyalty, CRM, UX e KPI)
 - **Tema:** Meccaniche di loyalty, compliance normativa, journey utente e metriche di retention.
 - **Domande:**
-  1. "Considerando il DPR 430/2001 in Italia, come giudicate la scelta strategica di evitare cataloghi premi fisici (che richiedono il 20% di fideiussione al MIMIT) puntando invece su tier di status, accessi preferenziali ad asset partner ed esperienze, in modo da rientrare nelle esenzioni dell'art. 6?"
+  1. "Un'operazione a premio in Italia richiede una cauzione del 20% del valore dei premi (DPR 430/2001). Una membership fatta di livelli di status, accessi prioritari agli asset Audi ed esperienze rientra in questa disciplina? Come la impostereste per restare semplici e in regola?"
   2. "Per il target under 35 che guida vetture usate o vetture aziendali/noleggiate (ANIASA), quale metrica di ingaggio intermedio (frequenza d'uso dell'ecosistema digitale, referral rate, partecipazione a eventi) ritenete piu correlata all'effettivo riacquisto futuro di una nuova vettura del marchio?"
   3. "Qual e il punto di equilibrio ideale nel customer journey per invitare il secondo proprietario (che ha comprato da privato) a registrarsi su myAudi senza fargli percepire la verifica come un controllo inquisitorio o un costo?"
 
