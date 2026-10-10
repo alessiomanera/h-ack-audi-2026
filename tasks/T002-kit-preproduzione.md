@@ -1,7 +1,7 @@
 ---
 id: T002
 title: Kit pre-produzione Brief 4 verifica numeri, outline 10 slide, KPI, QA giuria
-status: doing
+status: review
 owner: Alessio
 executor: antigravity
 branch: testing
@@ -24,12 +24,12 @@ Preparazione del kit di pre-produzione indipendente dall'idea per il Brief 4 (Fi
 7. Consegna finale con status review, board update e ship.
 
 ## Acceptance
-- [ ] Tabella di verifica numeri completa in `knowledge/research/brief4/verifica.md` con verdetti e frasi pronte per slide
-- [ ] Analisi controesempi su affermazioni assolute documentata
-- [ ] `pitch/outline.md` riscritta con max 10 slide, timing 5:00, criteri giuria e dati verificati
-- [ ] `pitch/kpi-brief4.md` con 10-12 KPI divisi nei 4 gruppi sui canali esistenti
-- [ ] `pitch/qa-giuria-brief4.md` con 3 domande per giurato/mentor e prove utili collegate
-- [ ] Nessun file modificato fuori da `scope`
+- [x] Tabella di verifica numeri completa in `knowledge/research/brief4/verifica.md` con verdetti e frasi pronte per slide
+- [x] Analisi controesempi su affermazioni assolute documentata
+- [x] `pitch/outline.md` riscritta con max 10 slide, timing 5:00, criteri giuria e dati verificati
+- [x] `pitch/kpi-brief4.md` con 10-12 KPI divisi nei 4 gruppi sui canali esistenti
+- [x] `pitch/qa-giuria-brief4.md` con 3 domande per giurato/mentor e prove utili collegate
+- [x] Nessun file modificato fuori da `scope`
 
 ## Verify
 ```
