@@ -1,7 +1,7 @@
 ---
 id: T001
 title: Deep research Brief 4 panorama loyalty e stato dell'arte
-status: doing
+status: review
 owner: Alessio
 executor: antigravity
 branch: testing
@@ -23,10 +23,10 @@ Ricerca approfondita sul panorama attuale della fidelizzazione Audi, competitor 
 6. Consegna finale minuto 60.
 
 ## Acceptance
-- [ ] Cartella knowledge/research/brief4 creata con README.md, findings.md, esiste-gia.md, spazi-bianchi.md, sources.md
-- [ ] Findings A-H strutturati con ID, fatto, fonte, data, affidabilita, inferenza, flag
-- [ ] Nessuna violazione dei Don't di brief senza opportuno flag [DON'T]
-- [ ] Nessun file modificato fuori da `scope`
+- [x] Cartella knowledge/research/brief4 creata con README.md, findings.md, esiste-gia.md, spazi-bianchi.md, sources.md
+- [x] Findings A-H strutturati con ID, fatto, fonte, data, affidabilita, inferenza, flag
+- [x] Nessuna violazione dei Don't di brief senza opportuno flag [DON'T]
+- [x] Nessun file modificato fuori da `scope`
 
 ## Verify
 ```
