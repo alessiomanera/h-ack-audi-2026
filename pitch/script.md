@@ -1,6 +1,6 @@
 # Pitch "Audi with you": copione per 2 voci (massimo 5 minuti)
 
-Task [T005](../tasks/T005-pitch-script.md). Stesso testo nella tab "Pitch" del Google Doc. Ritmo di riferimento: circa 130 parole al minuto; il parlato qui sotto è di circa 605 parole (4 minuti e 40), più le azioni della demo: si chiude a 4:55, con 5 secondi di margine. **A** e **B** sono i due presentatori (da assegnare). Le parti in corsivo sono indicazioni di regia, non si leggono.
+Task [T005](../tasks/T005-pitch-script.md). Stesso testo nella tab "Pitch" del Google Doc. Ritmo di riferimento: circa 130 parole al minuto; il parlato qui sotto è di circa 600 parole (circa 4 minuti e 40), più le azioni della demo: si chiude a 4:55, con 5 secondi di margine. Aggiornato il 10/10 alle 16:30 sulla demo live (punti che non si spendono, prenotazione Dolomiti). **A** e **B** sono i due presentatori (da assegnare). Le parti in corsivo sono indicazioni di regia, non si leggono.
 
 ## Scaletta
 
@@ -38,27 +38,33 @@ Stamattina il direttore marketing di Audi Italia ci ha dato due numeri: fidelizz
 
 **Entra.** Paolo invita Luca come utente secondario in myAudi. Cento punti a testa.
 
-**Cura.** Ogni passaggio in un'officina ufficiale vale punti: tagliando, gomme, check invernale. Dopo il secondo anno valgono il doppio, perché è lì che molti clienti lasciano la rete.
+**Cura.** Ogni passaggio in un'officina ufficiale vale punti: tagliando, gomme, check invernale. Se l'Audi ha più di due anni valgono il doppio, perché è lì che molti clienti lasciano la rete.
 
 **Partecipa.** Sessioni "Conosci la tua Audi" in concessionaria, driving experience, eventi Audi con check-in.
 
-**Sali.** Quattro livelli, da Icon Circle a RS Vanguard. Contano solo i punti degli ultimi tre anni: chi continua a prendersi cura dell'Audi sale, chi smette scende. E i punti si usano anche per premi ed experience, senza perdere il livello.
+**Sali.** Quattro livelli, da Icon Circle a RS Vanguard. Contano solo i punti degli ultimi tre anni: chi continua a prendersi cura dell'Audi sale, chi smette scende. E i punti non si spendono mai: si sommano e basta.
 
-E i premi? Niente sconti, niente crediti in euro, niente estrazioni: tempo e accesso. Fast lane al service, auto di cortesia di un segmento superiore, gli hub Audi di Cortina, Alta Badia e Madonna di Campiglio. E per RS Vanguard, a posti limitati: gli atleti FISI, la prima fila alla Design Week, il ghiaccio nelle Dolomiti.
+E i premi? Niente sconti, niente estrazioni: tempo e accesso, sbloccati dal livello. Fast track in officina, auto di cortesia di un segmento superiore e, a posti limitati, le Dolomiti, la Design Week, gli atleti FISI.
 
 ## 4. Il prototipo (B, 2:30-3:30)
 
-*Demo dal vivo: tab "Audi with you" in myAudi, poi il portale web. Se la rete non va, screenshot di riserva.*
+*Demo dal vivo con il pannello `?demo=1`: tab "Audi with you" in myAudi. Prima del pitch: "Reset demo". Se la rete non va, screenshot di riserva.*
 
-**B:** Ve lo facciamo vedere. Questa è la sezione Audi with you dentro myAudi. Luca ha accettato l'invito di Paolo: ha il suo profilo, il suo storico e il suo livello, separati da quelli del padre.
+**B:** Questa è la sezione Audi with you dentro myAudi. Luca ha il suo profilo, il suo storico e il suo livello, separati da quelli del padre.
 
-*(azione: simulare un service sull'A3)*
+*(azione: Luca, "Tagliando")*
 
-Paolo porta l'A3 al cambio gomme. L'auto ha più di due anni: punti doppi, e il livello sale davanti a noi. Con il livello cambia anche l'auto di cortesia: un segmento in più.
+Luca porta l'A3 a fare il tagliando. L'auto ha più di due anni: seicento punti, e Luca sale a quattro Circle. Mentre l'A3 è in officina, guida una A5.
 
-*(azione: aprire il portale)*
+*(azione: passare a Giulia, poi "Accessorio" ed "Evento")*
 
-Questo è il portale: livello, storico, esperienze sbloccate, la famiglia. E il giorno in cui Luca prenderà la sua prima Audi, nuova o usata, profilo, storico e livello saranno già lì. Il concessionario lo conoscerà già.
+Giulia ha 29 anni e una Q3. Monta un accessorio originale, va a un evento Audi: entra in S line Club. E sblocca una giornata Audi sulle Dolomiti.
+
+*(azione: "Prenota": hub, data, 2 biglietti, conferma)*
+
+Sceglie hub, data e due biglietti, per lei e per Marco. Ecco il QR da mostrare all'ingresso. Nessun punto speso.
+
+E il giorno in cui Luca prenderà la sua prima Audi, profilo, storico e livello saranno già lì.
 
 ## 5. Perché solo Audi (A, 3:30-4:05)
 
@@ -66,7 +72,7 @@ Questo è il portale: livello, storico, esperienze sbloccate, la famiglia. E il 
 
 **A:** Perché funziona solo per Audi? Perché non inventa niente: attiva ciò che Audi ha già. Gli utenti secondari di myAudi. La rete di concessionarie. E asset che in Italia ha solo Audi: le Dolomiti, la FISI, la Design Week.
 
-È semplice: quattro livelli, punti solo da azioni che Audi registra già, nessun dato di guida e nessuna telemetria. Ed è sostenibile: la base sono servizi replicabili per tutti, gli asset più scarsi vanno solo al livello più alto.
+È semplice: quattro livelli, punti solo da azioni che Audi registra già, nessun dato di guida e nessuna telemetria. Ed è sostenibile: la base sono servizi replicabili per tutti, gli asset più scarsi vanno ai livelli più alti, a posti limitati.
 
 ## 6. Impatto (B, 4:05-4:35)
 
@@ -95,12 +101,12 @@ Questo è il portale: livello, storico, esperienze sbloccate, la famiglia. E il 
 | myAudi permette utenti secondari oltre al titolare | Audi USA, myAudi Vehicle Functions (in [direzione Brief 4](../knowledge/decisions/2026-10-10-direzione-brief4.md)); procedura italiana da confermare |
 | Dopo il secondo anno molti clienti lasciano le officine ufficiali | Mentor Jakala, orale ([note il mentor Jakala](../knowledge/decisions/2026-10-10-mentor-jakala-brief4.md)), nessun numero: per questo nel pitch non c'è una percentuale |
 | Hub montani, aree tecniche, FISI, Design Week | [Brief ufficiale](../knowledge/fixed/brief.md), sezione 2 |
-| Punti, tier, premi, finestra di 3 anni | [sistema-punteggio.md](../knowledge/research/brief4/sistema-punteggio.md) (T006), dalla tab "sistema punti" del Doc |
+| Punti, tier, premi, finestra di 3 anni | [sistema-punteggio.md](../knowledge/research/brief4/sistema-punteggio.md) (T006), dalla tab "sistema punti" del Doc; decisione di Alessio del 10/10 ore 15:30 (T004): i punti non si spendono, prenotare non consuma punti |
 
 ## Da verificare prima del pitch
 
 - Chi è A e chi è B.
-- La demo segue il flusso reale del pannello `?demo=1` (T004): adattare le battute della sezione 4 se cambia. **Il prototipo ha ancora 3 livelli (Start, Plus, Vorsprung) e "i punti non si spendono": va aggiornato ai 4 tier prima del pitch.**
+- La demo segue il flusso reale del pannello `?demo=1` (T004, T007), verificato sul sito live il 10/10 alle 16:20: Luca tagliando +600 e A5 di cortesia; Giulia accessorio ed evento, S line Club, prenotazione Dolomiti per 2 con QR. Fare "Reset demo" subito prima del pitch.
 - Utenti secondari di myAudi in Italia: chiedere conferma ai mentor Audi o Jakala.
 - Nome "Audi with you" libero (verifica in corso nel team).
 - Prova con il timer: se si sfora, tagliare prima la lista dei premi in cima alla sezione 3, poi la frase sulla sostenibilità della sezione 5.

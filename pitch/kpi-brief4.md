@@ -53,8 +53,8 @@ Quadro strategico dei KPI per misurare l'efficacia del programma fedelta rivolto
 - **Come si misura con i canali esistenti:** Metriche di traffico e sessioni loggate sul portale web Audi misurate con la suite di analytics aziendale.
 - **Benchmark confermato:** Nessun benchmark pubblico per piattaforme loyalty automotive basate sul web.
 
-### KPI 9: Tasso di riscatto delle esperienze negli asset territoriali (Experience Redemption Rate)
-- **Definizione:** Percentuale di pass per esperienze esclusive (hub montani, sessioni formative, ingressi prioritari) effettivamente utilizzati sul territorio.
+### KPI 9: Tasso di utilizzo delle esperienze prenotate negli asset territoriali (Experience Show-up Rate)
+- **Definizione:** Percentuale di prenotazioni (prenotare non consuma punti) per esperienze esclusive (hub montani, sessioni formative, ingressi prioritari) effettivamente utilizzate sul territorio.
 - **Come si misura con i canali esistenti:** Scansione del QR pass all'accoglienza degli hub montani (Cortina, Badia, Campiglio) o all'Audi Design Hub durante il FuoriSalone.
 - **Benchmark confermato:** L'Audi Design Hub ha registrato 170.000 visitatori complessivi alla Design Week (speech di apertura / brief, 2026, finding A07).
 

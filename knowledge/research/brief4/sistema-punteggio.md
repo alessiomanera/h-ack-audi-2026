@@ -2,10 +2,12 @@
 
 Task [T006](../../../tasks/T006-sistema-punteggio.md) · Proposta di Evelyn (sessione Claude), 10/10/2026, da validare con il team. Parte dalla tab "sistema punti" del Google Doc (4 tier) e dalla decisione del team: **contano solo i punti degli ultimi 3 anni, quelli più vecchi si annullano**. I numeri dei punti sono una proposta di progetto, non dati: sono calibrati sui profili della demo (sezione 6).
 
+> **Decisione del 10/10/2026, ore 15:30 (Alessio, T004).** Adottati i tier, le soglie, la finestra di 36 mesi e i punti per azione di questo documento, **senza punti spendibili**: i punti si sommano e basta, ogni livello sblocca premi ed esperienze che si prenotano senza consumare punti. Il "secondo contatore" e la sezione 4 (costo in punti dei premi) sono superati: restano qui come alternativa valutata e scartata. Il prototipo e il copione seguono la decisione.
+
 ## In breve
 
-- **Un'azione, due contatori.** Ogni punto guadagnato vale due volte: fa salire di **livello** e si può **usare per premi ed experience**. Usare i punti non fa mai scendere di livello.
-- **Finestra mobile di 36 mesi.** Il livello si calcola sui punti degli ultimi 3 anni; ogni punto si annulla 36 mesi dopo essere stato guadagnato, sia per il livello sia per i premi.
+- **Un'azione, un contatore (decisione del 10/10).** Ogni punto guadagnato fa salire di **livello** e non si spende mai. I premi e le esperienze si sbloccano con il livello e si prenotano senza consumare punti.
+- **Finestra mobile di 36 mesi.** Il livello si calcola sui punti degli ultimi 3 anni; ogni punto esce dal conteggio 36 mesi dopo essere stato guadagnato.
 - **Si sale prendendosi cura dell'Audi, non comprando.** Nessun tier si ottiene acquistando un modello, nessuna spesa in euro dà punti.
 - **Quattro tier:** Icon Circle (0), quattro Circle (1.000), S line Club (2.500), RS Vanguard (5.000).
 
@@ -67,7 +69,7 @@ Soglie calcolate sui punti guadagnati negli ultimi 36 mesi. I punti usati per i 
 
 ---
 
-## 4. Il punteggio di premi ed experience
+## 4. Il punteggio di premi ed experience (superato il 10/10: i premi non costano punti)
 
 **Criterio di prezzo.** Il costo in punti cresce con il costo reale per Audi o per la concessionaria e con la scarsità dei posti, ed è espresso in **mesi di cura media**: un cliente costante guadagna circa 1.000 punti l'anno (sezione 6), quindi un premio da 500 punti vale circa sei mesi. Nessun premio ha un valore in euro e nessun premio è uno sconto.
 

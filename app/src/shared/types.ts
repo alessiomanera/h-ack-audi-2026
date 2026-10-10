@@ -255,7 +255,7 @@ export interface CourtesyCarOffer {
   rule: CourtesyCarRule
   /** The user's own vehicle model, e.g. "A3". */
   ownModel: string
-  /** Suggested courtesy model, e.g. "A4" (same as ownModel at Start). */
+  /** Suggested courtesy model, e.g. "A5" (same segment as ownModel at Icon Circle). */
   offeredModel: string
 }
 
