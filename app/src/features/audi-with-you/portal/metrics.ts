@@ -1,6 +1,7 @@
 // Pure helpers that turn a MeResponse into the numbers the full version shows.
-import type { LedgerEntry, LevelId, MeResponse, ProgramReward } from '@/shared/types'
-import { getLevel, LEVEL_ORDER, program } from '../program'
+import type { LedgerEntry, LevelId, MeResponse, ProgramAction, ProgramLevel, ProgramReward } from '@/shared/types'
+import { bonusReward, getLevel, program } from '../program'
+import { portalCopy } from './copy.it'
 
 export interface PortalMetrics {
   totalPoints: number
@@ -25,20 +26,59 @@ export function computeMetrics(me: MeResponse): PortalMetrics {
   }
 }
 
-export interface NextReward {
-  levelName: string
-  rewards: ProgramReward[]
+/**
+ * Rules of an action as short Italian labels: service multiplier, once (per user or per vehicle),
+ * both sides, monthly cap. Points are always flat per action.
+ */
+export function actionNotes(action: ProgramAction): string[] {
+  const copy = portalCopy.earn
+  const notes: string[] = []
+  if (action.multiplier) notes.push(copy.multiplier(action.multiplier.factor, action.multiplier.olderThanYears))
+  if (action.oncePerVehicle) notes.push(copy.oncePerVehicle)
+  // invite is once per invitee: "a te e a chi entra" says it better than "una volta".
+  else if (action.once && !action.bothSides) notes.push(copy.once)
+  if (action.bothSides) notes.push(copy.bothSides)
+  if (action.monthlyCap) notes.push(copy.monthlyCap(action.monthlyCap))
+  return notes
 }
 
-/** First rewards of the next level, null at the top level. */
-export function nextReward(me: MeResponse, count = 2): NextReward | null {
+/** A welcome kit whose title does not already say "Kit di benvenuto": the UI adds that label. */
+export function needsWelcomeKitLabel(reward: ProgramReward): boolean {
+  const label = portalCopy.levels.welcomeKit.toLowerCase()
+  return reward.kind === 'welcome_kit' && !reward.title.toLowerCase().includes(label)
+}
+
+export interface NextReward {
+  levelId: LevelId
+  levelName: string
+  /** A few rewards of the next level (the welcome kit included), without the bonus reward. */
+  rewards: ProgramReward[]
+  /** The program's bonus reward (the custom wrap) when the next level is the one that unlocks it. */
+  bonus: ProgramReward | null
+}
+
+/**
+ * Up to `max` rewards of a level to preview: the first privileges, plus the welcome kit when the level has one.
+ * The bonus reward is left out: the UI shows it as its own card.
+ */
+export function previewRewards(level: ProgramLevel, max: number): ProgramReward[] {
+  const rewards = level.rewards.filter((r) => !r.bonus)
+  const kit = rewards.find((r) => r.kind === 'welcome_kit')
+  if (!kit || max < 1) return rewards.slice(0, max)
+  return [...rewards.filter((r) => r !== kit).slice(0, max - 1), kit]
+}
+
+/** "Prossimo traguardo": the next level, a preview of its rewards and its bonus reward. Null at the top level. */
+export function nextReward(me: MeResponse, count = 3): NextReward | null {
   if (!me.level.next) return null
   const level = getLevel(program, me.level.next)
-  return { levelName: level.name, rewards: level.rewards.slice(0, count) }
-}
-
-export function isUnlocked(userLevel: LevelId, minLevel: LevelId): boolean {
-  return LEVEL_ORDER.indexOf(userLevel) >= LEVEL_ORDER.indexOf(minLevel)
+  const bonus = bonusReward(program)
+  return {
+    levelId: level.id,
+    levelName: level.name,
+    rewards: previewRewards(level, count),
+    bonus: bonus && bonus.level.id === level.id ? bonus.reward : null,
+  }
 }
 
 export interface MonthBucket {

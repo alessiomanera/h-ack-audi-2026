@@ -67,10 +67,22 @@ interface InviteRow {
   model: string
 }
 
-const ACTION_TYPES: readonly ActionType[] = ['join', 'invite', 'service', 'session', 'event', 'charging']
+// A Record keyed by ActionType: adding a new action without listing it here fails typecheck,
+// so ledger rows are never silently dropped by toLedgerEntry.
+const ACTION_TYPES: Record<ActionType, true> = {
+  join: true,
+  invite: true,
+  service: true,
+  accessory: true,
+  merch: true,
+  trade_in: true,
+  session: true,
+  event: true,
+  charging: true,
+}
 
 function isActionType(v: string): v is ActionType {
-  return (ACTION_TYPES as readonly string[]).includes(v)
+  return Object.hasOwn(ACTION_TYPES, v)
 }
 
 export function parseMeta(raw: string): LedgerMeta {

@@ -3,10 +3,20 @@
 
 // ---------- Program (shape of features/audi-with-you/program.it.json) ----------
 
-export type LevelId = 'start' | 'plus' | 'vorsprung'
+/** A level id from program.it.json. Level order is `program.levels` sorted by threshold; code never hardcodes an id. */
+export type LevelId = string
 
 /** Ledger action types. `join` and `invite` are granted by the system, the rest come from Audi data. */
-export type ActionType = 'join' | 'invite' | 'service' | 'session' | 'event' | 'charging'
+export type ActionType =
+  | 'join'
+  | 'invite'
+  | 'service'
+  | 'accessory'
+  | 'merch'
+  | 'trade_in'
+  | 'session'
+  | 'event'
+  | 'charging'
 
 /** Actions the demo panel can simulate through POST /api/actions. */
 export type SimulatedActionType = Exclude<ActionType, 'join'>
@@ -26,12 +36,23 @@ export interface ProgramAction {
   bothSides?: boolean
   /** service: points multiplied when the vehicle is older than `olderThanYears`. */
   multiplier?: { olderThanYears: number; factor: number; label: string }
-  /** charging: maximum number of rewarded occurrences per calendar month. */
+  /** Any action (merch, charging): maximum number of rewarded occurrences per calendar month. */
   monthlyCap?: number
+  /** trade_in: granted at most once per vehicle. */
+  oncePerVehicle?: boolean
   examples?: string[]
 }
 
-export type RewardKind = 'service' | 'experience' | 'recognition' | 'partner' | 'courtesy_car' | 'access'
+export type RewardKind =
+  | 'service'
+  | 'experience'
+  | 'recognition'
+  | 'partner'
+  | 'courtesy_car'
+  | 'access'
+  /** Object given once on reaching the level (portachiavi, borraccia...). Never redeemed with points. */
+  | 'welcome_kit'
+  | 'design'
 
 export interface ProgramReward {
   id: string
@@ -44,6 +65,10 @@ export interface ProgramReward {
   limited?: boolean
   /** Free-text status label, e.g. "da negoziare". */
   note?: string
+  /** Bonus reward shown as a highlighted card (chalk, never lava), e.g. the custom wrap. */
+  bonus?: boolean
+  /** Public image path, e.g. "/rewards/wrap-demo.jpg". The UI hides it when the file is missing. */
+  image?: string
 }
 
 export interface CourtesyCarRule {
@@ -250,6 +275,8 @@ export interface ActionRequest {
     eventName?: string
     /** invite simulation: name of the fictional family member who joins. */
     inviteeName?: string
+    /** accessory / merch: item name for the ledger label, e.g. "Barre portatutto". */
+    itemName?: string
   }
 }
 

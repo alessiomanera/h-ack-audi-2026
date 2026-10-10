@@ -1,10 +1,12 @@
 // Demo panel, visible only with ?demo=1: switch persona, simulate Audi events, reset the demo.
-// A simulated service opens the courtesy car moment: the car you drive while yours is in the workshop.
+// After an event a dialog tells the moment: the courtesy car while yours is in the workshop (service),
+// the carry over of level and history (trade in) and what a new level unlocks ("Hai sbloccato").
+// Dialogs stay chalk on graphite: the screen's single lava element is the LevelCard progress fill.
 import { useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
-import { ChevronDown, LoaderCircle, RotateCcw, Wrench } from 'lucide-react'
-import type { ActionRequest, ActionResult, PersonaId, ServiceKind } from '@/shared/types'
+import { ArrowLeftRight, ChevronDown, LoaderCircle, RotateCcw, Sparkles, Wrench } from 'lucide-react'
+import type { ActionRequest, ActionResult, PersonaId, ProgramReward } from '@/shared/types'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -39,6 +41,9 @@ const ACTIONS: DemoAction[] = [
     label: copy.actions.checkInvernale,
     req: { type: 'service', meta: { serviceKind: 'check_invernale' } },
   },
+  { id: 'accessory', label: copy.actions.accessory, req: { type: 'accessory', meta: { itemName: copy.accessoryItem } } },
+  { id: 'merch', label: copy.actions.merch, req: { type: 'merch', meta: { itemName: copy.merchItem } } },
+  { id: 'trade-in', label: copy.actions.tradeIn, req: { type: 'trade_in' } },
   { id: 'dealer', label: copy.actions.dealer, req: { type: 'session', meta: { sessionKind: 'dealer' } } },
   {
     id: 'driving',
@@ -56,68 +61,143 @@ function initiallyOpen(): boolean {
   return window.matchMedia('(min-width: 768px)').matches
 }
 
-interface ServiceMoment {
-  kind: ServiceKind
+/** The simulated event and what the server answered. */
+interface ActionMoment {
+  action: DemoAction
   result: ActionResult
 }
 
-function ServiceDialog({ moment, onClose }: { moment: ServiceMoment | null; onClose: () => void }) {
+/** True when the result deserves a dialog: courtesy car, new level or trade in carry over. */
+function hasMoment(result: ActionResult): boolean {
+  return result.courtesyCar !== null || result.levelUp !== null || result.entry?.action === 'trade_in'
+}
+
+function MomentDialog({ moment, onClose }: { moment: ActionMoment | null; onClose: () => void }) {
   return (
     <Dialog open={moment !== null} onOpenChange={(open) => !open && onClose()}>
-      {moment && <ServiceDialogBody moment={moment} />}
+      {moment && <MomentDialogBody moment={moment} />}
     </Dialog>
   )
 }
 
-function ServiceDialogBody({ moment }: { moment: ServiceMoment }) {
+function Marker({ children }: { children: string }) {
+  return (
+    <span className="inline-flex shrink-0 items-center rounded-sm border border-border px-1.5 py-0.5 text-[10px] uppercase tracking-widest text-muted-foreground">
+      {children}
+    </span>
+  )
+}
+
+/** "Hai sbloccato": every reward of the new level, welcome kit included, bonus marked as such. */
+function UnlockedRewards({ rewards, levelName }: { rewards: ProgramReward[]; levelName: string }) {
+  const c = copy.moment
+  return (
+    <section aria-label={c.unlocked} className="grid gap-3 p-6">
+      <div>
+        <h3 className="flex items-center gap-2 font-display text-lg font-bold leading-snug">
+          <Sparkles className="size-4" aria-hidden />
+          {c.unlocked}
+        </h3>
+        <p className="mt-1 text-pretty text-sm text-muted-foreground">{c.unlockedIntro(levelName)}</p>
+      </div>
+      <ul className="grid gap-2">
+        {rewards.map((r) => (
+          <li
+            key={r.id}
+            data-bonus={r.bonus === true}
+            className={cn(
+              'flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-sm border px-3 py-2',
+              r.bonus ? 'border-foreground/60' : 'border-border',
+            )}
+          >
+            <span className="min-w-0 text-pretty text-sm font-bold">{r.title}</span>
+            <span className="flex flex-wrap gap-1">
+              {r.bonus && <Marker>{sharedCopy.bonus.eyebrow}</Marker>}
+              {r.kind === 'welcome_kit' && <Marker>{c.welcomeKit}</Marker>}
+              {r.limited && !r.bonus && <Marker>{c.limited}</Marker>}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+function MomentDialogBody({ moment }: { moment: ActionMoment }) {
   const c = copy.service
-  const { result, kind } = moment
+  const m = copy.moment
+  const { result, action } = moment
   const offer = result.courtesyCar
   const me = result.me
   const level = getLevel(program, me.level.current)
   const next = me.level.next ? getLevel(program, me.level.next) : null
+  const newLevel = result.levelUp ? getLevel(program, result.levelUp) : null
   const total = useCountUp(me.level.points, { initial: Math.max(0, me.level.points - result.awarded), duration: 1200 })
 
+  const serviceKind = action.req.type === 'service' ? action.req.meta?.serviceKind : undefined
+  const tradeIn = result.entry?.action === 'trade_in'
   const service = getAction(program, 'service')
   const doubled =
-    service.multiplier !== undefined && result.awarded >= service.points * service.multiplier.factor
-  const title =
-    result.awarded > 0 ? c.headline(c[kind], formatPoints(result.awarded)) : c.headlineNoPoints(c[kind])
+    serviceKind !== undefined &&
+    service.multiplier !== undefined &&
+    result.awarded >= service.points * service.multiplier.factor
+  const points = formatPoints(result.awarded)
+
+  let eyebrow: string = m.eyebrow
+  let title: string = result.awarded > 0 ? m.headline(action.label, points) : action.label
+  if (serviceKind) {
+    eyebrow = c.eyebrow
+    title = result.awarded > 0 ? c.headline(c[serviceKind], points) : c.headlineNoPoints(c[serviceKind])
+  } else if (tradeIn) {
+    eyebrow = m.tradeInEyebrow
+    title = m.tradeInHeadline(points)
+  }
+  const EyebrowIcon = serviceKind ? Wrench : tradeIn ? ArrowLeftRight : Sparkles
   const nextBetter = next && offer && next.courtesyCar.label !== offer.rule.label ? next : null
 
   return (
     <DialogContent className="max-h-[90dvh] max-w-md gap-0 overflow-y-auto rounded-lg bg-card p-0">
       <div className="p-6 pb-5">
         <p className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground">
-          <Wrench className="size-4" aria-hidden />
-          {c.eyebrow}
+          <EyebrowIcon className="size-4" aria-hidden />
+          {eyebrow}
         </p>
-        <DialogTitle className="mt-3 pr-6 font-display text-2xl font-bold leading-tight">{title}</DialogTitle>
-        <DialogDescription className="mt-2">
+        <DialogTitle className="mt-3 text-balance pr-6 font-display text-2xl font-bold leading-tight">{title}</DialogTitle>
+        <DialogDescription className="mt-2 text-pretty">
           {doubled && service.multiplier ? `${service.multiplier.label}. ` : ''}
           <span className="tabular-nums">{c.total(formatPoints(total), level.name)}</span>
         </DialogDescription>
-        {result.levelUp && (
+        {newLevel && (
           <span className="mt-3 inline-flex items-center rounded-sm bg-foreground px-2 py-0.5 text-xs font-bold text-background">
-            {c.levelUpBadge(getLevel(program, result.levelUp).name)}
+            {c.levelUpBadge(newLevel.name)}
           </span>
         )}
+        {tradeIn && <p className="mt-4 text-pretty font-display text-lg font-bold leading-snug">{m.tradeInCarryOver}</p>}
       </div>
 
       {offer && (
         <>
           <Separator />
           <div className="grid gap-4 p-6">
-            <p className="font-display text-lg font-bold leading-snug">
+            <p className="text-balance font-display text-lg font-bold leading-snug">
               {offer.offeredModel !== offer.ownModel
                 ? c.whileInService(offer.ownModel, offer.offeredModel)
                 : c.sameModel(offer.ownModel)}
             </p>
             <CourtesyCarCard offer={offer} />
             {nextBetter && (
-              <p className="text-sm text-muted-foreground">{c.nextLevel(nextBetter.name, nextBetter.courtesyCar.label)}</p>
+              <p className="text-pretty text-sm text-muted-foreground">
+                {c.nextLevel(nextBetter.name, nextBetter.courtesyCar.label)}
+              </p>
             )}
           </div>
+        </>
+      )}
+
+      {newLevel && newLevel.rewards.length > 0 && (
+        <>
+          <Separator />
+          <UnlockedRewards rewards={newLevel.rewards} levelName={newLevel.name} />
         </>
       )}
 
@@ -136,7 +216,7 @@ function DemoPanelBody() {
   const { status, me, loginAs, runAction, resetDemo } = useSession()
   const [open, setOpen] = useState(initiallyOpen)
   const [busy, setBusy] = useState<string | null>(null)
-  const [moment, setMoment] = useState<ServiceMoment | null>(null)
+  const [moment, setMoment] = useState<ActionMoment | null>(null)
   const loggedIn = status === 'authenticated' && me !== null
   const currentName = me ? firstName(me.user.name) : null
 
@@ -167,8 +247,7 @@ function DemoPanelBody() {
         const level = getLevel(program, result.levelUp)
         toast(copy.levelUp(level.name), { description: level.tagline })
       }
-      const kind = action.req.meta?.serviceKind
-      if (action.req.type === 'service' && kind && result.courtesyCar) setMoment({ kind, result })
+      if (hasMoment(result)) setMoment({ action, result })
     })
 
   const reset = () =>
@@ -262,7 +341,7 @@ function DemoPanelBody() {
           </div>
         )}
       </aside>
-      <ServiceDialog moment={moment} onClose={() => setMoment(null)} />
+      <MomentDialog moment={moment} onClose={() => setMoment(null)} />
     </>
   )
 }

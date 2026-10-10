@@ -33,6 +33,7 @@ export const COPY = {
   },
   notices: {
     keyOnly: 'In myAudi solo il titolare può invitare.',
+    tradeInKeyOnly: 'In myAudi solo il titolare può registrare la permuta della sua Audi.',
     slotsFull: 'Hai già 5 utenti secondari: è il massimo in myAudi.',
     noVehicle: 'Nessuna Audi collegata al tuo profilo.',
   },

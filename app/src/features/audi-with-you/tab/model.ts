@@ -1,5 +1,6 @@
 // Pure helpers for the TabView: derive what the compact view shows from MeResponse and the program.
-import type { Household, MeResponse, ProgramReward } from '@/shared/types'
+import type { ActionType, Household, MeResponse, Program, ProgramAction, ProgramReward } from '@/shared/types'
+import { previewRewards } from '../portal/metrics'
 import { getAction, getLevel, program } from '../program'
 
 /** The first household is the primary one (contract). */
@@ -38,12 +39,20 @@ export interface NextReward {
   rewards: ProgramReward[]
 }
 
-/** First rewards of the next level, or null at the top level. */
+/** A preview of the next level (first privilege plus welcome kit, never the bonus), or null at the top level. */
 export function nextReward(me: MeResponse, max = 2): NextReward | null {
   const { next, pointsToNext } = me.level
   if (next === null || pointsToNext === null) return null
   const level = getLevel(program, next)
-  return { levelName: level.name, pointsToNext, rewards: level.rewards.slice(0, max) }
+  return { levelName: level.name, pointsToNext, rewards: previewRewards(level, max) }
+}
+
+/** Actions that have no tile of their own (service and family have one; join is automatic). */
+const TILE_ACTIONS: ReadonlySet<ActionType> = new Set<ActionType>(['join', 'invite', 'service'])
+
+/** Other enabled actions, listed under the tiles with their flat points and caps. */
+export function otherActions(p: Program): ProgramAction[] {
+  return p.actions.filter((a) => a.enabled && !TILE_ACTIONS.has(a.type))
 }
 
 /** First name of the household's key user, when it is not me. */

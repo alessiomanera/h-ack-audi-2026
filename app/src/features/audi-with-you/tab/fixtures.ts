@@ -1,4 +1,5 @@
 // Fictional MeResponse fixtures for tests and previews. Emails end with @example.com.
+// Level ids follow program.it.json: icon-circle, quattro-circle, s-line-club, rs-vanguard.
 import type { Household, MeResponse } from '@/shared/types'
 import { getLevel, program } from '../program'
 
@@ -8,17 +9,17 @@ const lucaHousehold: Household = {
   vehicle,
   myRole: 'secondary',
   members: [
-    { userId: 'u-paolo', name: 'Paolo', role: 'key', points: 300, level: 'start', isMe: false },
-    { userId: 'u-luca', name: 'Luca', role: 'secondary', points: 750, level: 'plus', isMe: true },
+    { userId: 'u-paolo', name: 'Paolo', role: 'key', points: 600, level: 'quattro-circle', isMe: false },
+    { userId: 'u-luca', name: 'Luca', role: 'secondary', points: 750, level: 'quattro-circle', isMe: true },
   ],
   secondarySlots: { used: 1, max: 5 },
   pendingInvites: [],
 }
 
-/** Luca, 21, drives the family A3 as secondary user. Level Plus. */
+/** Luca, 21, drives the family A3 as secondary user. Level quattro Circle, next S line Club. */
 export const lucaMe: MeResponse = {
   user: { id: 'u-luca', email: 'luca@example.com', name: 'Luca', birthYear: 2005, createdAt: '2026-09-01T10:00:00.000Z' },
-  level: { current: 'plus', next: 'vorsprung', points: 750, pointsToNext: 750, progress: 0.25 },
+  level: { current: 'quattro-circle', next: 's-line-club', points: 750, pointsToNext: 750, progress: 0.25 },
   households: [lucaHousehold],
   ledger: [
     {
@@ -54,13 +55,18 @@ export const lucaMe: MeResponse = {
       createdAt: '2026-09-01T10:00:00.000Z',
     },
   ],
-  courtesyCar: { level: 'plus', rule: getLevel(program, 'plus').courtesyCar, ownModel: 'A3', offeredModel: 'A5' },
+  courtesyCar: {
+    level: 'quattro-circle',
+    rule: getLevel(program, 'quattro-circle').courtesyCar,
+    ownModel: 'A3',
+    offeredModel: 'A5',
+  },
 }
 
-/** Paolo, key user of the same A3. Level Start. */
+/** Paolo, key user of the same A3 (seed: 600 points). Level quattro Circle. */
 export const paoloMe: MeResponse = {
   user: { id: 'u-paolo', email: 'paolo@example.com', name: 'Paolo', birthYear: 1968, createdAt: '2026-08-15T10:00:00.000Z' },
-  level: { current: 'start', next: 'plus', points: 300, pointsToNext: 200, progress: 0.6 },
+  level: { current: 'quattro-circle', next: 's-line-club', points: 600, pointsToNext: 900, progress: 0.1 },
   households: [
     {
       ...lucaHousehold,
@@ -86,18 +92,35 @@ export const paoloMe: MeResponse = {
       createdAt: '2026-08-15T10:00:00.000Z',
     },
   ],
-  courtesyCar: { level: 'start', rule: getLevel(program, 'start').courtesyCar, ownModel: 'A3', offeredModel: 'A3' },
+  courtesyCar: {
+    level: 'quattro-circle',
+    rule: getLevel(program, 'quattro-circle').courtesyCar,
+    ownModel: 'A3',
+    offeredModel: 'A5',
+  },
+}
+
+/** Paolo after the trade in (demo flow F3): S line Club, next milestone RS Vanguard. */
+export const paoloTradeInMe: MeResponse = {
+  ...paoloMe,
+  level: { current: 's-line-club', next: 'rs-vanguard', points: 1600, pointsToNext: 1400, progress: 100 / 1500 },
+  courtesyCar: {
+    level: 's-line-club',
+    rule: getLevel(program, 's-line-club').courtesyCar,
+    ownModel: 'A3',
+    offeredModel: 'Q4 e-tron',
+  },
 }
 
 /** Luca after reaching the top level. */
-export const lucaVorsprungMe: MeResponse = {
+export const lucaTopMe: MeResponse = {
   ...lucaMe,
-  level: { current: 'vorsprung', next: null, points: 1600, pointsToNext: null, progress: 1 },
+  level: { current: 'rs-vanguard', next: null, points: 3200, pointsToNext: null, progress: 1 },
   courtesyCar: {
-    level: 'vorsprung',
-    rule: getLevel(program, 'vorsprung').courtesyCar,
+    level: 'rs-vanguard',
+    rule: getLevel(program, 'rs-vanguard').courtesyCar,
     ownModel: 'A3',
-    offeredModel: 'Q4 e-tron',
+    offeredModel: 'A6 e-tron',
   },
 }
 

@@ -3,10 +3,14 @@ import { MemoryRouter } from 'react-router'
 import { describe, expect, it, vi } from 'vitest'
 import type { ActionResult, CreateInviteResponse, MeResponse } from '@/shared/types'
 import { SessionTestProvider, type SessionStatus, type SessionValue } from '@/state/session'
+import { bonusReward, getAction, program } from '../program'
 import { tabCopy } from './copy.it'
-import { lucaMe, lucaVorsprungMe, paoloMe, withVehicleAge } from './fixtures'
-import { fullVersionSearch, servicePoints } from './model'
+import { lucaMe, lucaTopMe, paoloMe, paoloTradeInMe, withVehicleAge } from './fixtures'
+import { fullVersionSearch, nextReward, otherActions, servicePoints } from './model'
 import { TabView } from './TabView'
+
+const serviceTitle = getAction(program, 'service').title
+const serviceButton = () => screen.getByRole('button', { name: (name) => name.includes(serviceTitle) })
 
 // Shared components belong to another stream: replace them with light doubles so this test
 // checks only the TabView layout and wiring.
@@ -29,6 +33,13 @@ vi.mock('../shared/InviteButton', async () => {
   return {
     InviteButton: ({ label, className }: { label?: string; className?: string }) =>
       createElement('button', { type: 'button', className, 'data-testid': 'invite-button' }, label),
+  }
+})
+vi.mock('../shared/BonusRewardCard', async () => {
+  const { createElement } = await import('react')
+  return {
+    BonusRewardCard: ({ reward, levelName, variant }: { reward: { title: string }; levelName: string; variant?: string }) =>
+      createElement('article', { 'aria-label': reward.title, 'data-variant': variant }, levelName),
   }
 })
 vi.mock('../shared/CourtesyCarCard', async () => {
@@ -87,6 +98,22 @@ describe('TabView model', () => {
     expect(servicePoints(lucaMe)).toMatchObject({ points: 400, multiplied: true })
     expect(servicePoints(withVehicleAge(lucaMe, 1))).toMatchObject({ points: 200, multiplied: false })
   })
+
+  it('previews the next level with its welcome kit and never the bonus', () => {
+    const luca = nextReward(lucaMe)
+    expect(luca).toMatchObject({ levelName: 'S line Club', pointsToNext: 750 })
+    expect(luca?.rewards.map((r) => r.kind)).toContain('welcome_kit')
+    expect(nextReward(paoloTradeInMe)?.rewards.some((r) => r.bonus)).toBe(false)
+    expect(nextReward(lucaTopMe)).toBeNull()
+  })
+
+  it('lists the actions without a tile, new ones included', () => {
+    const types = otherActions(program).map((a) => a.type)
+    expect(types).toEqual(expect.arrayContaining(['accessory', 'merch', 'trade_in', 'session', 'event', 'charging']))
+    expect(types).not.toContain('join')
+    expect(types).not.toContain('invite')
+    expect(types).not.toContain('service')
+  })
 })
 
 describe.each([false, true])('TabView (framed=%s)', (framed) => {
@@ -112,11 +139,15 @@ describe.each([false, true])('TabView (framed=%s)', (framed) => {
     expect(screen.getByText('A3 del 2021, utente secondario')).toBeInTheDocument()
     expect(screen.getByTestId('level-card')).toHaveAttribute('data-variant', 'compact')
 
-    expect(screen.getByText('Al livello Vorsprung')).toBeInTheDocument()
-    expect(screen.getByText('ancora 750 punti')).toBeInTheDocument()
-    expect(screen.getByText('Weekend di 48 ore')).toBeInTheDocument()
+    const next = within(screen.getByRole('region', { name: tabCopy.next.title }))
+    expect(next.getByText('S line Club')).toBeInTheDocument()
+    expect(next.getByText('ancora 750 punti')).toBeInTheDocument()
+    for (const reward of nextReward(lucaMe)?.rewards ?? []) {
+      expect(next.getByText(reward.title)).toBeInTheDocument()
+    }
+    expect(next.getByText(/Kit di benvenuto/)).toBeInTheDocument()
 
-    const service = screen.getByRole('button', { name: /Porta l'Audi in officina/ })
+    const service = serviceButton()
     expect(within(service).getByText('+400 punti')).toBeInTheDocument()
     expect(within(service).getByText('Punti doppi')).toBeInTheDocument()
     expect(screen.getByText('Sei nella famiglia di Paolo')).toBeInTheDocument()
@@ -133,7 +164,7 @@ describe.each([false, true])('TabView (framed=%s)', (framed) => {
 
   it('opens the workshop dialog with the courtesy car at the current level', () => {
     renderTab(makeSession('authenticated', lucaMe), framed)
-    fireEvent.click(screen.getByRole('button', { name: /Porta l'Audi in officina/ }))
+    fireEvent.click(serviceButton())
     const dialog = screen.getByRole('dialog')
     expect(within(dialog).getByText(tabCopy.actions.service.courtesyTitle)).toBeInTheDocument()
     expect(within(dialog).getByTestId('courtesy-car')).toHaveTextContent('A5')
@@ -144,15 +175,40 @@ describe.each([false, true])('TabView (framed=%s)', (framed) => {
     renderTab(makeSession('authenticated', withVehicleAge(paoloMe, 1)), framed)
     expect(screen.getByText('A3 del 2025, titolare')).toBeInTheDocument()
     expect(screen.getByTestId('invite-button')).toHaveTextContent(tabCopy.actions.family.button)
-    const service = screen.getByRole('button', { name: /Porta l'Audi in officina/ })
+    const service = serviceButton()
     expect(within(service).getByText('+200 punti')).toBeInTheDocument()
     expect(within(service).queryByText('Punti doppi')).not.toBeInTheDocument()
   })
 
-  it('shows the top level state at Vorsprung', () => {
-    renderTab(makeSession('authenticated', lucaVorsprungMe), framed)
+  it('shows the top level state at RS Vanguard', () => {
+    renderTab(makeSession('authenticated', lucaTopMe), framed)
+    expect(screen.getByRole('region', { name: tabCopy.next.topLabel })).toBeInTheDocument()
     expect(screen.getByText(tabCopy.next.topTitle)).toBeInTheDocument()
     expect(screen.queryByText(/ancora .* punti/)).not.toBeInTheDocument()
+  })
+
+  it('shows the bonus reward teaser', () => {
+    renderTab(makeSession('authenticated', lucaMe), framed)
+    const bonus = bonusReward(program)
+    expect(bonus?.reward.title).toBe('Wrap personalizzato')
+    const teaser = screen.getByRole('article', { name: 'Wrap personalizzato' })
+    expect(teaser).toHaveAttribute('data-variant', 'teaser')
+    expect(teaser).toHaveTextContent('RS Vanguard')
+  })
+
+  it('lists the other actions with flat points and caps', () => {
+    renderTab(makeSession('authenticated', lucaMe), framed)
+    const list = within(screen.getByRole('list', { name: tabCopy.actions.more.title }))
+    const row = (type: 'accessory' | 'merch' | 'trade_in') => {
+      const action = getAction(program, type)
+      const item = list.getByText(action.title).closest('li')
+      expect(item).not.toBeNull()
+      return within(item as HTMLElement)
+    }
+    expect(row('accessory').getByText('+100 punti')).toBeInTheDocument()
+    expect(row('merch').getByText('Max 4 al mese')).toBeInTheDocument()
+    expect(row('trade_in').getByText('Una volta per ogni Audi')).toBeInTheDocument()
+    expect(list.queryByText(getAction(program, 'join').title)).not.toBeInTheDocument()
   })
 
   it('logs out from the header', () => {

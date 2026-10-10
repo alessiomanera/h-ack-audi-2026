@@ -12,7 +12,7 @@ import { AuthPanel } from '../shared/AuthPanel'
 import { LevelCard } from '../shared/LevelCard'
 import { tabCopy } from './copy.it'
 import { fullVersionSearch } from './model'
-import { ActionTiles, NextRewardSection, RecentPoints, TabHeader } from './TabSections'
+import { ActionTiles, BonusTeaser, NextRewardSection, RecentPoints, TabHeader } from './TabSections'
 
 function useFullVersionSearch(): string {
   const [params] = useSearchParams()
@@ -70,6 +70,7 @@ function AuthenticatedState({ me }: { me: MeResponse }) {
       <TabHeader me={me} />
       <LevelCard me={me} variant="compact" />
       <NextRewardSection me={me} />
+      <BonusTeaser />
       <ActionTiles me={me} />
       <RecentPoints me={me} />
       <div className="space-y-2">

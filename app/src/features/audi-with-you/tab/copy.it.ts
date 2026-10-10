@@ -19,8 +19,8 @@ export const tabCopy = {
     logoutError: 'Non è stato possibile uscire. Riprova.',
   },
   next: {
-    title: 'Prossimo premio',
-    atLevel: (level: string) => `Al livello ${level}`,
+    title: 'Prossimo traguardo',
+    topLabel: 'Traguardo raggiunto',
     remaining: (points: string) => `ancora ${points} punti`,
     topTitle: 'Sei al livello più alto',
     topBody: 'Tutti i premi del tuo livello sono attivi. Livello e storico ti seguono anche nella tua prossima Audi.',
@@ -28,6 +28,10 @@ export const tabCopy = {
   actions: {
     title: 'Cosa puoi fare',
     points: (points: string) => `+${points} punti`,
+    more: {
+      title: 'Altri modi per fare punti',
+      hint: 'Punti fissi per ogni azione registrata da Audi.',
+    },
     service: {
       doubled: 'Punti doppi',
       perVisit: (points: string) => `${points} punti a ogni passaggio in officina ufficiale`,

@@ -1,15 +1,18 @@
+import { Gift } from 'lucide-react'
 import type { MeResponse } from '@/shared/types'
+import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { formatPoints } from '@/lib/utils'
+import { BonusRewardCard } from '../shared/BonusRewardCard'
 import { CourtesyCarCard } from '../shared/CourtesyCarCard'
 import { LevelCard } from '../shared/LevelCard'
 import { portalCopy } from './copy.it'
-import { computeMetrics, nextReward } from './metrics'
+import { computeMetrics, needsWelcomeKitLabel, nextReward } from './metrics'
 import { Section } from './Section'
 
 const copy = portalCopy.level
 
-/** Section 1: the level card plus the metrics row, the next reward and the courtesy car (desktop extras). */
+/** Section 1: the level card plus the metrics row, the next milestone (with the bonus card) and the courtesy car. */
 export function LevelSection({ me }: { me: MeResponse }) {
   const metrics = computeMetrics(me)
   const next = nextReward(me)
@@ -35,15 +38,23 @@ export function LevelSection({ me }: { me: MeResponse }) {
         </div>
         <div className="flex flex-col gap-6 lg:col-span-5">
           <Card className="p-6">
-            <p className="text-xs tracking-wide text-muted-foreground uppercase">{copy.nextReward.title}</p>
             {next ? (
               <>
-                <h3 className="mt-2 text-lg font-bold">{copy.nextReward.atLevel(next.levelName)}</h3>
+                <h3 className="text-lg font-bold text-balance">{copy.nextReward.title(next.levelName)}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{copy.nextReward.intro}</p>
                 <ul className="mt-4 space-y-3">
                   {next.rewards.map((reward) => (
-                    <li key={reward.id}>
-                      <p className="font-medium">{reward.title}</p>
-                      <p className="text-sm text-muted-foreground">{reward.description}</p>
+                    <li key={reward.id} data-reward-kind={reward.kind}>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {reward.kind === 'welcome_kit' && <Gift className="size-4 shrink-0" aria-hidden />}
+                        <p className="font-medium">{reward.title}</p>
+                        {needsWelcomeKitLabel(reward) && (
+                          <Badge variant="outline" className="rounded-sm font-medium">
+                            {portalCopy.levels.welcomeKit}
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-sm text-pretty text-muted-foreground">{reward.description}</p>
                     </li>
                   ))}
                 </ul>
@@ -54,9 +65,13 @@ export function LevelSection({ me }: { me: MeResponse }) {
                 )}
               </>
             ) : (
-              <p className="mt-2">{copy.nextReward.top}</p>
+              <>
+                <h3 className="text-lg font-bold text-balance">{copy.nextReward.topTitle}</h3>
+                <p className="mt-2 text-pretty">{copy.nextReward.top}</p>
+              </>
             )}
           </Card>
+          {next?.bonus && <BonusRewardCard reward={next.bonus} levelName={next.levelName} variant="card" />}
           {me.courtesyCar && (
             <div className="space-y-2">
               <p className="text-xs tracking-wide text-muted-foreground uppercase">{copy.courtesyCar}</p>

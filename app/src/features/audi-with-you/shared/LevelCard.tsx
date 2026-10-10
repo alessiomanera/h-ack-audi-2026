@@ -1,15 +1,48 @@
 // The member card: level, name, animated points and progress. Holds the screen's single lava element
 // (the PointsProgress fill), so no other element on a screen with a LevelCard may use the signal color.
-import type { MeResponse } from '@/shared/types'
+// The level path is a row of separate 1px hairline circles, one per program level: filled in chalk up to
+// the current level, outline above. They never overlap, so they never read as the brand logo.
+import type { LevelId, MeResponse } from '@/shared/types'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { cn, formatPoints } from '@/lib/utils'
-import { getLevel, program } from '../program'
+import { getLevel, levelIndex, levelsInOrder, program } from '../program'
 import { sharedCopy } from './copy.it'
 import { firstName, useCountUp } from './hooks'
 import { PointsProgress } from './PointsProgress'
 
 const copy = sharedCopy.level
+
+/** One hairline circle per level, in threshold order: filled for every level reached, outline above. */
+export function LevelRings({ current, size = 'md' }: { current: LevelId; size?: 'sm' | 'md' }) {
+  const levels = levelsInOrder(program)
+  const reached = levelIndex(program, current)
+  const currentLevel = levels[reached]
+  return (
+    <div
+      role="img"
+      aria-label={copy.ringsLabel(reached + 1, levels.length, currentLevel?.name ?? current)}
+      data-testid="level-rings"
+      className="flex items-center gap-2"
+    >
+      {levels.map((l, i) => {
+        const filled = i <= reached
+        return (
+          <span
+            key={l.id}
+            data-testid="level-ring"
+            data-filled={filled}
+            className={cn(
+              'block shrink-0 rounded-full border',
+              size === 'md' ? 'size-3.5' : 'size-3',
+              filled ? 'border-foreground bg-foreground' : 'border-muted-foreground bg-transparent',
+            )}
+          />
+        )
+      })}
+    </div>
+  )
+}
 
 export function LevelCard({ me, variant = 'full' }: { me: MeResponse; variant?: 'compact' | 'full' }) {
   const level = getLevel(program, me.level.current)
@@ -23,14 +56,19 @@ export function LevelCard({ me, variant = 'full' }: { me: MeResponse; variant?: 
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="text-xs uppercase tracking-widest text-muted-foreground">{copy.eyebrow}</p>
-          <h2 className={cn('mt-2 font-display font-bold leading-none', full ? 'text-4xl md:text-5xl' : 'text-3xl')}>
+          <h2
+            className={cn('mt-2 text-balance font-display font-bold leading-none', full ? 'text-4xl md:text-5xl' : 'text-3xl')}
+          >
             {level.name}
           </h2>
+          <div className={full ? 'mt-4' : 'mt-3'}>
+            <LevelRings current={me.level.current} size={full ? 'md' : 'sm'} />
+          </div>
         </div>
         <p className="shrink-0 pt-0.5 text-sm text-foreground">{firstName(me.user.name)}</p>
       </div>
 
-      {full && <p className="mt-3 text-sm text-muted-foreground">{level.tagline}</p>}
+      {full && <p className="mt-3 text-pretty text-sm text-muted-foreground">{level.tagline}</p>}
 
       <div className={cn('flex items-baseline gap-2', full ? 'mt-8' : 'mt-5')}>
         <span

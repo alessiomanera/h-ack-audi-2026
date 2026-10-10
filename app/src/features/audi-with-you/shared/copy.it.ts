@@ -19,6 +19,7 @@ export const sharedCopy = {
     progressLabel: 'Avanzamento verso il prossimo livello',
     progressText: (points: string, toNext: string, level: string) => `${points} punti, ancora ${toNext} per ${level}`,
     progressTop: (points: string) => `${points} punti, livello più alto raggiunto`,
+    ringsLabel: (position: number, total: number, level: string) => `Livello ${position} di ${total}: ${level}`,
   },
 
   auth: {
@@ -74,6 +75,13 @@ export const sharedCopy = {
     electric: 'Elettrica, se disponibile',
   },
 
+  bonus: {
+    eyebrow: 'Premio bonus',
+    unlocksAt: (level: string) => `Si sblocca a ${level}`,
+    limited: 'Posti limitati, assegnati in anticipo per livello',
+    imageAlt: (title: string) => `${title}, immagine di esempio`,
+  },
+
   demo: {
     badge: 'Demo',
     title: 'Simula eventi Audi',
@@ -88,11 +96,16 @@ export const sharedCopy = {
       checkInvernale: 'Check invernale',
       dealer: 'Sessione in concessionaria',
       driving: 'Audi driving experience',
-      event: 'Check-in evento',
+      event: 'Evento',
+      accessory: 'Accessorio',
+      merch: 'Audi Collection',
+      tradeIn: 'Permuta',
       charging: 'Ricarica',
       invite: 'Invita un familiare',
     },
     eventName: 'Serata Audi in concessionaria',
+    accessoryItem: 'Barre portatutto',
+    merchItem: 'Zaino Audi Collection',
     inviteeName: 'Marta',
     reset: 'Reset demo',
     resetDone: 'Demo ripristinata',
@@ -100,7 +113,7 @@ export const sharedCopy = {
     nowYouAre: (name: string) => `Ora sei ${name}`,
     awarded: (points: string) => `+${points} punti`,
     nothingAwarded: 'Nessun punto questa volta.',
-    levelUp: (level: string) => `Sei passato a ${level}`,
+    levelUp: (level: string) => `Nuovo livello: ${level}`,
     service: {
       eyebrow: 'Officina ufficiale Audi',
       tagliando: 'Tagliando',
@@ -114,6 +127,17 @@ export const sharedCopy = {
       nextLevel: (level: string, rule: string) => `Al livello ${level}: ${rule.toLowerCase()}.`,
       levelUpBadge: (level: string) => `Nuovo livello: ${level}`,
       close: 'Continua',
+    },
+    moment: {
+      eyebrow: 'Audi with you',
+      tradeInEyebrow: 'Permuta in concessionaria',
+      headline: (action: string, points: string) => `${action}: +${points} punti`,
+      tradeInHeadline: (points: string) => `Permuta registrata: +${points} punti`,
+      tradeInCarryOver: 'Livello e storico vengono con te sulla nuova Audi.',
+      unlocked: 'Hai sbloccato',
+      unlockedIntro: (level: string) => `Da oggi in ${level}:`,
+      welcomeKit: 'In regalo',
+      limited: 'Posti limitati',
     },
   },
 

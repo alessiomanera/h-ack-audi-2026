@@ -30,6 +30,14 @@ Prototipo cliccabile del Brief 4: una tab "Audi with you" dentro l'app myAudi (m
 - [ ] Test Vitest del motore punti verdi, typecheck verde
 - [ ] Nessuno sconto, credito in euro, estrazione, punti per km, riferimento F1; il prodotto non si chiama mai "app"
 - [ ] URL workers.dev funzionante
+- [ ] Quattro livelli dal Doc (Icon Circle 0, quattro Circle 500, S line Club 1500, RS Vanguard 3000), raggiunti solo con i punti; ordine e id solo da `program.it.json`, nessun id di livello nel codice
+- [ ] Punti fissi per azione, mai per euro: officina +200 (x2 oltre 2 anni), accessorio +100, Audi Collection +50 (max 4/mese), permuta +1000 (una volta per Audi), ricarica +5 (max 20/mese), evento +100, sessione +150, ingresso +100, invito +100 a entrambi
+- [ ] I punti non si spendono: nessun riscatto o checkout; i kit di benvenuto arrivano al cambio livello
+- [ ] Premio bonus "Wrap personalizzato" a RS Vanguard (card chalk, immagine nascosta se manca), posti limitati per accesso anticipato
+- [ ] LevelCard con quattro cerchi hairline (uno pieno per livello raggiunto), unico elemento lava della schermata
+- [ ] F1 Luca: Tagliando, +400, quattro Circle, "Mentre la tua A3 è in officina, guidi una A5"
+- [ ] F2 Giulia (1350): Accessorio + Evento, S line Club, toast e "Hai sbloccato"
+- [ ] F3 Paolo: Permuta, +1000, S line Club, "Livello e storico vengono con te sulla nuova Audi", "Prossimo traguardo: RS Vanguard" con il wrap
 - [ ] Nessun file modificato fuori da `scope`
 
 ## Verify

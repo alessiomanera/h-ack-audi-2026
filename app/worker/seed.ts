@@ -47,16 +47,18 @@ const charging = (userId: string, prefix: string, days: number[]): SeedLedger[] 
   days.map((d, i) => [`l_${prefix}_charging_${i + 1}`, userId, 'charging', 5, d, {}])
 
 const LEDGER: SeedLedger[] = [
-  // Paolo Bianchi: 100 + 100 + 400 = 600 (Plus)
+  // Paolo Bianchi: 100 + 100 + 400 = 600 (quattro Circle). Demo: Permuta +1000 -> 1600 (S line Club).
   ['l_paolo_join', 'u_paolo', 'join', 100, 200, {}],
   ['l_paolo_invite_luca', 'u_paolo', 'invite', 100, 120, { side: 'inviter', name: 'Luca Bianchi', inviteeId: 'u_luca' }],
   ['l_paolo_service_1', 'u_paolo', 'service', 400, 60, tagliandoA3],
-  // Luca Bianchi: 100 + 100 + 100 + 4 x 5 = 320 (Start)
+  // Luca Bianchi: 100 + 100 + 100 + 4 x 5 = 320 (Icon Circle). Demo: Tagliando x2 +400 -> 720 (quattro Circle).
   ['l_luca_join', 'u_luca', 'join', 100, 120, {}],
   ['l_luca_invite', 'u_luca', 'invite', 100, 120, { side: 'invitee', name: 'Paolo Bianchi', inviterId: 'u_paolo' }],
   ['l_luca_event_1', 'u_luca', 'event', 100, 45, { eventName: 'Audi Night in concessionaria' }],
   ...charging('u_luca', 'luca', [40, 25, 12, 3]),
-  // Giulia Ferri: 100 + 200 + 200 + 150 + 150 + 300 + 50 = 1150 (Plus)
+  // Giulia Ferri: join 100 + sessions 300 + events 300 + services 400 + charging 10 x 5 + accessory 100
+  // + merch 2 x 50 = 1350 (quattro Circle). Demo: Accessorio +100 -> 1450, Evento +100 -> 1550 (S line Club).
+  // No merch entry within the last 35 days, so the monthly merch cap never bites in the demo.
   ['l_giulia_join', 'u_giulia', 'join', 100, 210, {}],
   ['l_giulia_session_1', 'u_giulia', 'session', 150, 190, { sessionKind: 'dealer' }],
   ['l_giulia_event_1', 'u_giulia', 'event', 100, 180, { eventName: 'Audi alla Milano Design Week' }],
@@ -65,6 +67,9 @@ const LEDGER: SeedLedger[] = [
   ['l_giulia_service_2', 'u_giulia', 'service', 200, 100, { serviceKind: 'gomme', vehicleModel: 'Q3', multiplied: false, factor: 1 }],
   ['l_giulia_session_2', 'u_giulia', 'session', 150, 80, { sessionKind: 'driving_experience' }],
   ['l_giulia_event_3', 'u_giulia', 'event', 100, 60, { eventName: 'Audi hub di Cortina' }],
+  ['l_giulia_merch_1', 'u_giulia', 'merch', 50, 70, { itemName: 'Zaino da viaggio' }],
+  ['l_giulia_merch_2', 'u_giulia', 'merch', 50, 50, { itemName: 'Cappellino' }],
+  ['l_giulia_accessory_1', 'u_giulia', 'accessory', 100, 40, { itemName: 'Barre portatutto' }],
   ...charging('u_giulia', 'giulia', [170, 150, 130, 110, 90, 70, 50, 30, 15, 5]),
 ]
 

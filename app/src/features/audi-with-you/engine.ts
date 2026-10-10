@@ -6,11 +6,10 @@ import type {
   LevelId,
   LevelProgress,
   Program,
-  ProgramLevel,
   ServiceKind,
   SessionKind,
 } from '../../shared/types'
-import { getAction, getLevel } from './program'
+import { getAction, getLevel, levelsInOrder } from './program'
 
 /** Italian labels and notices produced by the engine. */
 export const ENGINE_COPY = {
@@ -30,23 +29,36 @@ export const ENGINE_COPY = {
   event: (name: string) => `Check-in evento: ${name}`,
   eventDefaultName: 'Evento in concessionaria',
   charging: 'Ricarica Audi',
+  accessory: (itemName: string | null) =>
+    itemName ? `Accessorio originale Audi: ${itemName}` : 'Accessorio originale Audi',
+  merch: (itemName: string | null) => (itemName ? `Audi Collection: ${itemName}` : 'Audi Collection'),
+  tradeIn: (vehicleModel: string | null) =>
+    vehicleModel ? `Permuta della tua ${vehicleModel} per una nuova Audi` : 'Permuta per una nuova Audi',
   notice: {
     disabled: 'Questa azione non è attiva nel programma in questo momento.',
     alreadyJoined: 'Hai già ricevuto i punti di benvenuto.',
     alreadyInvited: 'I punti per questo invito sono già stati assegnati.',
     chargingCap: (cap: number) =>
       `Hai già ${cap} ricariche premiate questo mese. Il conteggio riparte il mese prossimo.`,
+    merchCap: (cap: number) =>
+      `Hai già ${cap} acquisti Audi Collection premiati questo mese. Il conteggio riparte il mese prossimo.`,
+    monthlyCap: (cap: number) =>
+      `Questa attività è già stata premiata ${cap} volte questo mese. Il conteggio riparte il mese prossimo.`,
+    alreadyTradedIn: 'Hai già ricevuto i punti per la permuta di questa Audi.',
   },
 } as const
 
-// ---------- Levels ----------
-
-function levelsByThreshold(program: Program): ProgramLevel[] {
-  return [...program.levels].sort((a, b) => a.threshold - b.threshold)
+/** Italian notice for an action that reached its monthly cap. */
+function monthlyCapNotice(type: ActionType, cap: number): string {
+  if (type === 'charging') return ENGINE_COPY.notice.chargingCap(cap)
+  if (type === 'merch') return ENGINE_COPY.notice.merchCap(cap)
+  return ENGINE_COPY.notice.monthlyCap(cap)
 }
 
+// ---------- Levels ----------
+
 export function levelForPoints(program: Program, points: number): LevelId {
-  const levels = levelsByThreshold(program)
+  const levels = levelsInOrder(program)
   let current = levels[0]
   for (const level of levels) {
     if (points >= level.threshold) current = level
@@ -55,7 +67,7 @@ export function levelForPoints(program: Program, points: number): LevelId {
 }
 
 export function levelProgress(program: Program, points: number): LevelProgress {
-  const levels = levelsByThreshold(program)
+  const levels = levelsInOrder(program)
   const currentId = levelForPoints(program, points)
   const index = levels.findIndex((l) => l.id === currentId)
   const current = levels[index]
@@ -97,8 +109,10 @@ export interface AwardInput {
   alreadyJoined?: boolean
   /** invite: points for this inviter/invitee pair were already granted. */
   alreadyAwardedForInvitee?: boolean
-  /** charging: rewarded charging entries already in this calendar month. */
-  chargingThisMonth?: number
+  /** Actions with `monthlyCap` (merch, charging): rewarded entries of THIS action type in the current calendar month. */
+  thisMonth?: number
+  /** trade_in: points were already granted for a trade-in of this vehicle (by anyone). */
+  alreadyTradedIn?: boolean
 }
 
 export interface Award {
@@ -117,7 +131,10 @@ function none(notice: string): Award {
 export function computeAward(program: Program, input: AwardInput): Award {
   const action = getAction(program, input.type)
   if (!action.enabled) return none(ENGINE_COPY.notice.disabled)
+  // Points are flat per action, never proportional to money spent.
   const base: Award = { points: action.points, notice: null, multiplied: false, factor: 1 }
+  const cap = action.monthlyCap
+  if (typeof cap === 'number' && (input.thisMonth ?? 0) >= cap) return none(monthlyCapNotice(input.type, cap))
 
   switch (input.type) {
     case 'join':
@@ -131,15 +148,13 @@ export function computeAward(program: Program, input: AwardInput): Award {
       }
       return base
     }
-    case 'charging': {
-      const cap = action.monthlyCap
-      if (cap !== undefined && (input.chargingThisMonth ?? 0) >= cap) {
-        return none(ENGINE_COPY.notice.chargingCap(cap))
-      }
-      return base
-    }
+    case 'trade_in':
+      return action.oncePerVehicle && input.alreadyTradedIn ? none(ENGINE_COPY.notice.alreadyTradedIn) : base
+    case 'accessory':
+    case 'merch':
     case 'session':
     case 'event':
+    case 'charging':
       return base
   }
 }
@@ -229,5 +244,11 @@ export function ledgerLabel(program: Program, type: ActionType, meta: LedgerMeta
       return ENGINE_COPY.event(str(meta, 'eventName') ?? ENGINE_COPY.eventDefaultName)
     case 'charging':
       return ENGINE_COPY.charging
+    case 'accessory':
+      return ENGINE_COPY.accessory(str(meta, 'itemName'))
+    case 'merch':
+      return ENGINE_COPY.merch(str(meta, 'itemName'))
+    case 'trade_in':
+      return ENGINE_COPY.tradeIn(str(meta, 'vehicleModel'))
   }
 }

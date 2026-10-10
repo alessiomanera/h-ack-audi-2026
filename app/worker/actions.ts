@@ -27,7 +27,16 @@ import { HttpError, isRecord, json, readJsonObject, type Ctx } from './http'
 import { requireUser } from './session'
 import { optionalText } from './validate'
 
-const SIMULATED: readonly SimulatedActionType[] = ['invite', 'service', 'session', 'event', 'charging']
+const SIMULATED: readonly SimulatedActionType[] = [
+  'invite',
+  'service',
+  'accessory',
+  'merch',
+  'trade_in',
+  'session',
+  'event',
+  'charging',
+]
 const SERVICE_KINDS: readonly ServiceKind[] = ['tagliando', 'gomme', 'check_invernale']
 const SESSION_KINDS: readonly SessionKind[] = ['dealer', 'driving_experience']
 
@@ -46,6 +55,54 @@ const skipped = (notice: string | null): Outcome => ({ entry: null, notice, extr
 
 function newEntry(user: UserRow, now: Date, action: NewLedgerRow['action'], points: number, meta: LedgerMeta): NewLedgerRow {
   return { id: crypto.randomUUID(), userId: user.id, action, points, meta, createdAt: now.toISOString() }
+}
+
+/** Rewarded entries of one action type for this user since the start of the current calendar month. */
+async function countThisMonth(db: D1Database, userId: string, action: SimulatedActionType, now: Date): Promise<number> {
+  const row = await db
+    .prepare('SELECT COUNT(*) AS n FROM ledger WHERE user_id = ? AND action = ? AND points > 0 AND created_at >= ?')
+    .bind(userId, action, monthStartUtc(now).toISOString())
+    .first<{ n: number }>()
+  return row?.n ?? 0
+}
+
+/** True when trade-in points were already granted for this vehicle, to any user. */
+async function vehicleTradedIn(db: D1Database, vehicleId: string): Promise<boolean> {
+  const row = await db
+    .prepare("SELECT 1 AS hit FROM ledger WHERE action = 'trade_in' AND json_extract(meta, '$.vehicleId') = ? LIMIT 1")
+    .bind(vehicleId)
+    .first<{ hit: number }>()
+  return row !== null
+}
+
+/** Flat-points purchase (accessory, merch) with an optional item name for the ledger label. */
+async function simulatePurchase(
+  db: D1Database,
+  user: UserRow,
+  type: 'accessory' | 'merch',
+  meta: Record<string, unknown>,
+  now: Date,
+): Promise<Outcome> {
+  const thisMonth = await countThisMonth(db, user.id, type, now)
+  const award = computeAward(program, { type, now, thisMonth })
+  if (award.points === 0) return skipped(award.notice)
+  const itemName = optionalText(meta.itemName, 60)
+  const entryMeta: LedgerMeta = itemName ? { itemName } : {}
+  return { entry: newEntry(user, now, type, award.points, entryMeta), notice: null, extra: [] }
+}
+
+/** Trade-in of the key user's Audi: once per vehicle. Vehicle and household stay as they are. */
+async function simulateTradeIn(db: D1Database, user: UserRow, households: MembershipRow[], now: Date): Promise<Outcome> {
+  const household = households.find((h) => h.role === 'key')
+  if (!household) return skipped(COPY.notices.tradeInKeyOnly)
+  const alreadyTradedIn = await vehicleTradedIn(db, household.id)
+  const award = computeAward(program, { type: 'trade_in', now, alreadyTradedIn })
+  if (award.points === 0) return skipped(award.notice)
+  return {
+    entry: newEntry(user, now, 'trade_in', award.points, { vehicleId: household.id, vehicleModel: household.model }),
+    notice: null,
+    extra: [],
+  }
 }
 
 function slug(name: string): string {
@@ -172,15 +229,19 @@ export async function runAction(ctx: Ctx): Promise<Response> {
       break
     }
     case 'charging': {
-      const row = await db
-        .prepare("SELECT COUNT(*) AS n FROM ledger WHERE user_id = ? AND action = 'charging' AND created_at >= ?")
-        .bind(user.id, monthStartUtc(now).toISOString())
-        .first<{ n: number }>()
-      const award = computeAward(program, { type, now, chargingThisMonth: row?.n ?? 0 })
+      const thisMonth = await countThisMonth(db, user.id, type, now)
+      const award = computeAward(program, { type, now, thisMonth })
       outcome =
         award.points > 0 ? { entry: newEntry(user, now, type, award.points, {}), notice: null, extra: [] } : skipped(award.notice)
       break
     }
+    case 'accessory':
+    case 'merch':
+      outcome = await simulatePurchase(db, user, type, meta, now)
+      break
+    case 'trade_in':
+      outcome = await simulateTradeIn(db, user, households, now)
+      break
     case 'invite':
       outcome = await simulateInvite(db, user, households, meta, now)
       break

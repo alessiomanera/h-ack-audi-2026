@@ -1,7 +1,7 @@
-// Sections of the authenticated TabView: header, next reward, action tiles, recent points.
+// Sections of the authenticated TabView: header, next milestone, bonus teaser, action tiles, recent points.
 // Neutral surfaces only: the screen's single lava element lives in LevelCard.
 import { useId } from 'react'
-import { ChevronRight, Gift, LogOut, UserPlus, Users, Wrench } from 'lucide-react'
+import { ChevronRight, Flag, Gift, LogOut, UserPlus, Users, Wrench } from 'lucide-react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -17,11 +17,13 @@ import {
 import { formatDate, formatPoints } from '@/lib/utils'
 import type { MeResponse } from '@/shared/types'
 import { useSession } from '@/state/session'
-import { getAction, getLevel, program } from '../program'
+import { actionNotes } from '../portal/metrics'
+import { bonusReward, getAction, getLevel, program } from '../program'
+import { BonusRewardCard } from '../shared/BonusRewardCard'
 import { CourtesyCarCard } from '../shared/CourtesyCarCard'
 import { InviteButton } from '../shared/InviteButton'
 import { tabCopy } from './copy.it'
-import { firstName, keyUserName, nextReward, primaryHousehold, servicePoints } from './model'
+import { firstName, keyUserName, nextReward, otherActions, primaryHousehold, servicePoints } from './model'
 
 const sectionLabel = 'text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground'
 const tile = 'flex min-h-40 flex-col items-start gap-2 rounded-lg border border-border bg-card p-4 text-left'
@@ -69,15 +71,15 @@ export function NextRewardSection({ me }: { me: MeResponse }) {
     <section aria-labelledby={titleId} className="rounded-lg border border-border bg-card p-4">
       <div className="flex items-start gap-3">
         <span className="flex size-10 shrink-0 items-center justify-center rounded-md border border-border">
-          <Gift className="size-5" aria-hidden />
+          <Flag className="size-5" aria-hidden />
         </span>
         <div className="min-w-0 flex-1">
           <h2 id={titleId} className={sectionLabel}>
-            {tabCopy.next.title}
+            {next ? tabCopy.next.title : tabCopy.next.topLabel}
           </h2>
           {next ? (
             <p className="mt-1 flex flex-wrap items-baseline justify-between gap-x-3 text-sm">
-              <span className="font-bold">{tabCopy.next.atLevel(next.levelName)}</span>
+              <span className="font-bold">{next.levelName}</span>
               <span className="tabular-nums text-muted-foreground">
                 {tabCopy.next.remaining(formatPoints(next.pointsToNext))}
               </span>
@@ -89,12 +91,15 @@ export function NextRewardSection({ me }: { me: MeResponse }) {
       </div>
       {next ? (
         <ul className="mt-3 space-y-2">
-          {next.rewards.map((reward) => (
-            <li key={reward.id} className="flex items-start gap-2 text-sm">
-              <ChevronRight className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
-              <span>{reward.title}</span>
-            </li>
-          ))}
+          {next.rewards.map((reward) => {
+            const Icon = reward.kind === 'welcome_kit' ? Gift : ChevronRight
+            return (
+              <li key={reward.id} data-reward-kind={reward.kind} className="flex items-start gap-2 text-sm">
+                <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
+                <span>{reward.title}</span>
+              </li>
+            )
+          })}
         </ul>
       ) : (
         <p className="mt-3 text-sm text-muted-foreground">
@@ -207,6 +212,50 @@ function FamilyTile({ me }: { me: MeResponse }) {
   )
 }
 
+/** The program's bonus reward (the custom wrap) as a compact chalk teaser. */
+export function BonusTeaser() {
+  const bonus = bonusReward(program)
+  if (!bonus) return null
+  return <BonusRewardCard reward={bonus.reward} levelName={bonus.level.name} variant="teaser" />
+}
+
+/** Enabled actions without a tile: flat points per action, caps from program.it.json. */
+function MoreActions() {
+  const titleId = useId()
+  const actions = otherActions(program)
+  if (actions.length === 0) return null
+  return (
+    <div className="rounded-lg border border-border bg-card">
+      <div className="px-4 pb-1 pt-3">
+        <h3 id={titleId} className="text-sm font-bold">
+          {tabCopy.actions.more.title}
+        </h3>
+        <p className="text-xs text-muted-foreground">{tabCopy.actions.more.hint}</p>
+      </div>
+      <ul aria-labelledby={titleId} className="divide-y divide-border">
+        {actions.map((action) => {
+          const notes = actionNotes(action)
+          return (
+            <li
+              key={action.type}
+              data-action={action.type}
+              className="flex min-h-14 items-center justify-between gap-3 px-4 py-3"
+            >
+              <div className="min-w-0">
+                <p className="text-sm">{action.title}</p>
+                {notes.length > 0 && <p className="text-xs text-muted-foreground">{notes.join(', ')}</p>}
+              </div>
+              <span className="shrink-0 text-sm font-bold tabular-nums">
+                {tabCopy.actions.points(formatPoints(action.points))}
+              </span>
+            </li>
+          )
+        })}
+      </ul>
+    </div>
+  )
+}
+
 export function ActionTiles({ me }: { me: MeResponse }) {
   const titleId = useId()
   return (
@@ -218,6 +267,7 @@ export function ActionTiles({ me }: { me: MeResponse }) {
         <ServiceTile me={me} />
         <FamilyTile me={me} />
       </div>
+      <MoreActions />
     </section>
   )
 }
