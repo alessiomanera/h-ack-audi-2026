@@ -6,8 +6,8 @@ Task: [T003](../../../tasks/T003-research-bonus-punti.md) · Ricerca di Evelyn (
 
 1. Quasi tutti i marchi premium usano **tre tipi di bonus**: denaro (bonus sul riacquisto, sconti presso partner, crediti), **tempo e comodità** (valet, auto di cortesia, lounge) ed **esperienze e accesso** (corsi di guida, eventi, anteprime, visite in fabbrica).
 2. Il Brief 4 esclude il primo tipo (niente sconti né logiche promozionali). Restano tempo, accesso, esperienze e **riconoscimento simbolico** (badge, targhe, oggetti firmati), che sono anche i più economici da sostenere.
-3. **Audi usa già i punti in India** (Audi Club Rewards, convertibili in servizi e vantaggi presso partner) e le **estrazioni a premio nel Regno Unito** (Audi Presents) e con la F1 (Team Card). Non abbiamo trovato un programma a punti di Audi Italia.
-4. I precedenti più vicini a un'idea "solo Audi" sono il **corso di guida regalato ai nuovi proprietari** (Land Rover), la **targa per i chilometri percorsi** (Mercedes) e il **disegno originale dei designer** come premio per chi porta nuovi clienti (Polestar). Vanno adattati agli asset italiani, non copiati.
+3. **Audi usa già i punti in India** (Audi Club Rewards, convertibili in servizi e vantaggi presso partner) e le **estrazioni a premio nel Regno Unito** (Audi Presents) e con la F1 (Team Card). Non abbiamo trovato un programma a punti di Audi Italia, e il mentor Jakala conferma che oggi non esiste un club né un programma loyalty in Italia.
+4. I precedenti più utili sono la **priorità e il tempo** (Lexus, Genesis), il **corso di guida al nuovo proprietario** (Land Rover), la **targa per i chilometri** (Mercedes) e il **disegno originale dei designer** per chi porta nuovi clienti (Polestar). Vanno adattati agli asset italiani e ai tre livelli di "Audi with you", non copiati.
 5. Due zone grigie da chiedere ai mentor: i **crediti in servizi** (ricarica, officina) contano come "sconto"? Le **estrazioni a premio** rientrano nei concorsi a premio del DPR 430/2001?
 
 ---
@@ -83,27 +83,48 @@ Dalla ricerca T001 ([findings.md](findings.md)):
 
 ## 5. Rosa di bonus per il nostro sistema a punti (proposta del team)
 
-Tutto ciò che segue è **Inferenza**: ogni bonus parte da un precedente verificato e da un asset Audi italiano del brief, ma va validato con i mentor. Nessuno è uno sconto.
+Allineata alla direzione **"Audi with you"** ([direzione Brief 4](../../decisions/2026-10-10-direzione-brief4.md), da decidere alle 13:00) e alle note del mentor Jakala ([note il mentor Jakala](../../decisions/2026-10-10-mentor-jakala-brief4.md)), che sono opinioni orali e non fonti primarie. Tre indicazioni del mentor cambiano la rosa:
+- **Gli asset sono scarsi** (Dolomiti, FISI, Design Week, show car): vanno solo ai livelli alti o per merito; alla base servono **vantaggi di servizio replicabili**.
+- **Bundle sì, sconti no**: Audi ha già incluso servizi (per esempio la ricarica a muro con l'elettrico). Questo risponde in parte al dubbio sui crediti in servizi: meglio un servizio incluso che un credito in euro.
+- **Il referral secco annoia**: ha senso solo se il contatto arriva già qualificato, come il figlio che guida l'Audi di famiglia.
 
-| # | Bonus | Precedente | Asset Audi Italia (brief) | Costo per Audi | Da chiedere a |
-|---|---|---|---|---|---|
-| 1 | **Benvenuto sul ghiaccio**: una sessione breve nelle aree tecniche della driving experience per chi entra nel programma, anche chi ha comprato un'Audi usata da un privato | Lezione gratuita Land Rover | 2 aree tecniche nelle destinazioni montane | Medio (slot già esistenti, capienza limitata) | il referente Audi Italia (Audi) |
-| 2 | **Status in montagna**: accesso riservato o prioritario negli hub di Cortina, Alta Badia e Madonna di Campiglio (area lounge riservata, deposito sci, accoglienza dedicata) | Lounge Lexus Encore, Miles & More | 3 hub con lounge per ospiti e clienti | Basso (spazi già aperti) | il referente Audi Italia (Audi) |
-| 3 | **Targhe e badge di percorso**: riconoscimento per anni di possesso o traguardi, anche sull'usato, con un segno fisico in concessionaria | Mercedes High Mileage Award, Strava Local Legends | Rete di concessionarie; Audi Service Station | Molto basso | i mentor Jakala (Jakala) |
-| 4 | **Posto in prima fila alla Design Week**: talk o workshop riservati all'Audi Design Hub | Anteprime Audi Sport drivers club, inviti Tesla | Audi Design Hub (palinsesto aperto a proposte) | Basso | il referente Audi Italia (Audi) |
-| 5 | **Incontro con gli azzurri**: sessione con atleti FISI, previa approvazione della federazione | Incontri con i piloti dell'Audi Sport drivers club | FISI (atleti disponibili previa condivisione dei progetti) | Medio, quantità limitata | il referente Audi Italia (Audi) |
-| 6 | **Porta un amico, ricevi un segno del design Audi**: per chi porta nuovi membri, un oggetto firmato dal design Audi o un invito alla Design Week, mai credito | Bozzetto originale Polestar | Audi Design Hub, team design | Basso | Chiappa (Verba) |
-| 7 | **Un weekend con un'altra Audi**: prova di un modello diverso dalla propria auto, per esempio un elettrico prima della transizione | Porsche Rental Program; finding E05 (cambio di marca nel passaggio all'elettrico) | Concessionarie, Audi Performance Tour | Medio (flotta demo della rete) | il referente Audi Italia (Audi) |
-| 8 | **Una serata con la R26**: sessione privata con la show car in concessionaria | Eventi AMG Private Lounge | Show car R26, Audi Performance Tour | Basso | il referente Audi Italia (Audi) |
+Tutto ciò che segue è **Inferenza**: ogni bonus parte da un precedente verificato (sezioni 2 e 3) e da un asset Audi italiano del brief. Nessuno è uno sconto.
 
-**Come si guadagnano i punti (per la meccanica, non reward):** i precedenti premiano visite e check-in in luoghi del marchio (Team Card F1, The North Face C03), service in rete (Audi India, Mercedes Amex), anniversari e chilometri (Mercedes High Mileage), referral (Polestar, Tesla) e costanza (Strava). Premiare i chilometri richiede il consenso esplicito sui dati del veicolo (G03): meglio partire da azioni che l'utente dichiara o registra (visita a un hub, service, evento).
+### Livello base: tempo e servizio, replicabili per tutti
+
+| Bonus | Precedente | Dove vive | Costo per Audi |
+|---|---|---|---|
+| **Priorità al service** (fast lane, slot dedicati per gomme e check invernale) | Lexus Encore, Genesis Service Valet, Porsche (priorità sull'auto di cortesia) | Concessionaria; fast lane già su audi.it (mentor) | Basso |
+| **Sessioni gratuite in concessionaria** per chi guida l'Audi di famiglia (come usare l'auto, ricarica, sicurezza invernale) | Land Rover (lezione al nuovo proprietario); Apple "Today at Apple" (nella direzione Brief 4) | Concessionaria | Basso |
+| **Badge e traguardi di percorso** (anni con Audi, passaggi in rete, primo inverno) con un segno fisico consegnato in concessionaria | Mercedes High Mileage Award, Strava Local Legends | myAudi, sezione "Audi with you"; concessionaria | Molto basso |
+| **Inviti liberi** a eventi aperti (Audi Performance Tour con la show car R26, roadshow) | Inviti AMG Private Lounge; mentor: "l'invito libero è sempre possibile" | Concessionarie, roadshow | Molto basso |
+
+### Livello medio: esperienze con capienza ampia
+
+| Bonus | Precedente | Dove vive | Costo per Audi |
+|---|---|---|---|
+| **Moduli brevi di driving experience** su neve e ghiaccio | Land Rover Experience, Audi Sport drivers club | 2 aree tecniche nelle destinazioni montane | Medio |
+| **Accesso riservato negli hub montani** (accoglienza dedicata, area lounge) | Lounge Lexus Encore, status Miles & More | 3 hub a Cortina, Alta Badia, Madonna di Campiglio | Basso |
+| **Un weekend con un'altra Audi**, per esempio un elettrico prima del cambio auto | Porsche Rental Program; E05 (cambio di marca nel passaggio all'elettrico) | Flotta demo della rete | Medio |
+
+### Livello alto: asset scarsi, per merito
+
+| Bonus | Precedente | Dove vive | Costo per Audi |
+|---|---|---|---|
+| **Incontro con gli azzurri FISI** (previa approvazione della federazione) | Incontri con i piloti dell'Audi Sport drivers club; mentor: meet and greet già fatti, audience limitata | FISI | Medio, posti limitati |
+| **Posto in prima fila alla Design Week** (talk o workshop all'Audi Design Hub) | Anteprime Audi Sport drivers club, inviti Tesla alle presentazioni | Audi Design Hub | Basso, posti limitati |
+| **Un segno del design Audi** per chi porta in famiglia un nuovo guidatore qualificato (oggetto firmato, mai credito) | Bozzetto originale Polestar | Team design Audi, Design Hub | Basso |
+
+**Per merito, non per estrazione:** le estrazioni (Audi Presents, Team Card F1, CUPRA Tribe) premiano la fortuna e rientrano nei concorsi a premio. Assegnare gli asset scarsi a chi raggiunge il livello alto è più coerente con la fedeltà. **Da evitare:** livelli per importo speso (Mercedes Circle), crediti in euro, sconti presso partner, token crypto.
+
+**Come si guadagnano i punti:** coerente con la meccanica minima della direzione Brief 4 (entrare in famiglia, portare l'Audi in rete, partecipare con check-in). I precedenti confermano questi tipi di azione: service in rete (Audi India, Mercedes Amex), visite e check-in (Team Card F1, The North Face C03), anniversari (Mercedes High Mileage), costanza (Strava). Niente punti per chilometri o telemetria senza consenso esplicito (G03).
 
 ---
 
 ## 6. Domande per i mentor
 
-- **il referente Audi Italia (Audi Italia):** quanti slot di driving experience e quanti posti negli hub e alla Design Week si possono riservare ai membri di un programma? Audi Italia può offrire prove di altri modelli tramite la rete?
-- **i mentor Jakala (Jakala):** un credito di ricarica o di service conta come "sconto" per il Brief 4? Un programma fatto di esperienze e status rientra nelle operazioni a premio del DPR 430/2001? Meglio evitare del tutto le estrazioni?
+- **il referente Audi Italia (Audi Italia):** quanti moduli di driving experience e quanti posti negli hub e alla Design Week si possono riservare al livello alto? Si possono offrire prove di altri modelli tramite la rete?
+- **i mentor Jakala (Jakala):** un programma fatto di priorità, esperienze e status rientra nelle operazioni a premio del DPR 430/2001? Le sessioni in concessionaria sono sostenibili per i dealer?
 - **Chiappa (Verba):** quale di questi bonus "parla" davvero a un 25enne senza sembrare elitario?
 
 ---
