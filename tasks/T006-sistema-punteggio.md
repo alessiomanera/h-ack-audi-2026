@@ -1,7 +1,7 @@
 ---
 id: T006
 title: Sistema di punteggio a 4 tier (finestra di 3 anni) e pulizia dei dati in conflitto con il pitch
-status: doing
+status: review
 owner: Evelyn
 executor: claude
 branch: testing
@@ -21,9 +21,9 @@ La tab "sistema punti" del Google Doc definisce 4 tier (Icon Circle, quattro Cir
 4. Nota in T004: il prototipo ha ancora 3 livelli e "i punti non si spendono".
 
 ## Acceptance
-- [ ] Tabelle: punti per azione, punti per premio ed experience, soglie dei 4 tier, criterio motivato con fonti
-- [ ] Nessun tier ottenibile comprando un modello, nessuna supervalutazione della permuta, nessuno sconto
-- [ ] Copione e tab Pitch con 4 tier; nessun dato eliminato in T001 rimasto nei file del pitch
+- [x] Tabelle: punti per azione, punti per premio ed experience, soglie dei 4 tier, criterio motivato con fonti
+- [x] Nessun tier ottenibile comprando un modello, nessuna supervalutazione della permuta, nessuno sconto
+- [x] Copione e tab Pitch con 4 tier; nessun dato eliminato in T001 rimasto nei file del pitch
 
 ## Verify
 ```
