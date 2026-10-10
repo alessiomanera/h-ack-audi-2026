@@ -46,6 +46,7 @@
 - [findings.md](findings.md): schede dei finding (A01-H03), con fatto, fonte, affidabilità, rilevanza, inferenza e flag.
 - [esiste-gia.md](esiste-gia.md): iniziative già esistenti di Audi e dei concorrenti (anti-doppione).
 - [spazi-bianchi.md](spazi-bianchi.md): opportunità non coperte e domande per i mentor.
+- [bonus-reward.md](bonus-reward.md): bonus usati da Audi e dai marchi premium, filtro contro il brief e rosa di bonus per il nostro sistema a punti (T003).
 - [fonti-verificate.md](fonti-verificate.md): registro di tutte le fonti, con link e stato della verifica.
 
 ---

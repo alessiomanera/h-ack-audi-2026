@@ -1,6 +1,6 @@
 # Fonti verificate: ricerca sul Brief 4
 
-Registro unico delle fonti usate in [findings.md](findings.md), [esiste-gia.md](esiste-gia.md) e [spazi-bianchi.md](spazi-bianchi.md). Sostituisce il vecchio `sources.md`.
+Registro unico delle fonti usate in [findings.md](findings.md), [esiste-gia.md](esiste-gia.md), [spazi-bianchi.md](spazi-bianchi.md) e [bonus-reward.md](bonus-reward.md). Sostituisce il vecchio `sources.md`.
 
 **Come è stato verificato (10/10/2026, Evelyn):** ogni link è stato aperto con una richiesta automatica e ritrovato con un motore di ricerca; il contenuto è stato confrontato con il "Fatto" della scheda. Stato:
 - **OK**: la pagina risponde e conferma il fatto.
@@ -98,6 +98,33 @@ Affidabilità: **alta** = fonte primaria (azienda, ente, autorità) o grande tes
 | Scheda | Fonte | Editore, anno | Paese | Tipo | Affidabilità | Link | Stato |
 |---|---|---|---|---|---|---|---|
 | H01 | S&P Global Mobility 2025 Loyalty Awards | S&P Global, 14/01/2026 | US | primaria | alta | [press.spglobal.com](https://press.spglobal.com/2026-01-14-S-P-Global-Mobility-2025-Loyalty-Awards-Reveal-Divergent-Paths-to-Customer-Retention-General-Motors-and-Tesla-Secure-Top-Honors) | OK |
+
+## Bonus e reward (T003, bonus-reward.md)
+
+| Fonte | Editore, anno | Paese | Tipo | Affidabilità | Link | Stato |
+|---|---|---|---|---|---|---|
+| Audi Club Rewards | Mobility Outlook, 2022 | IN | secondaria | media-alta | [mobilityoutlook.com](https://mobilityoutlook.com/news/audi-india-launches-audi-club-rewards-programme-for-its-customers) | OK |
+| Audi Club Rewards | Audi India, 2022 | IN | primaria | alta | [audi.in](https://www.audi.in/in/web/en/customer-area/news/2022/June/AudiIndialauncheAudiClubRewards.html) | OK (blocca i bot) |
+| Audi Presents | Sytner (concessionario Audi UK) | UK | secondaria | media | [sytner.co.uk](https://www.sytner.co.uk/audi/audi-presents) | OK |
+| Audi Sport drivers club | Audi MediaCenter | DE | primaria | alta | [audi-mediacenter.com](https://audi-mediacenter.com/en/press-releases/audi-sport-drivers-club-exclusive-customer-program-off-to-successful-start-11104) | OK (blocca i bot) |
+| Audi Revolut F1 Team Card | The Race, 2026 | Global | secondaria | alta | [the-race.com](https://www.the-race.com/extra/audi-to-bring-fan-events-across-singapore-ahead-of-the-grand-prix/) | OK |
+| BMW Points, conversione in credito | BMWBLOG, 2020 | DE / EU | secondaria | media-alta | [bmwblog.com](https://www.bmwblog.com/2020/10/15/bmw-points-electric-drive/) | OK |
+| Mercedes-Benz Credit Card | WardsAuto | US | secondaria | alta | [wardsauto.com](https://www.wardsauto.com/news/archive-wards-american-express-mercedes-launch-credit-cards/778969/) | OK |
+| Mercedes High Mileage Award | auto motor und sport | DE | secondaria | alta | [auto-motor-und-sport.de](https://www.auto-motor-und-sport.de/oldtimer/mercedes-vergibt-orden-fuer-hohe-kilometerstaende/) | OK |
+| Mercedes-Benz Circle | The Korea Times, 2026 | KR | secondaria | alta | [koreatimes.co.kr](https://www.koreatimes.co.kr/amp/business/companies/20260527/mercedes-benz-korea-expands-customer-experience-beyond-vehicle-ownership) | OK |
+| Porsche Privilege | Motorist, 2024 | SG | secondaria | media-alta | [motorist.sg](https://www.motorist.sg/article/3481/porsche-singapore-launches-porsche-privilege-programme-for-both-customers-and-fans) | OK |
+| Porsche Privilege | Porsche | SG | primaria | alta | [privilege.porsche.com](https://privilege.porsche.com/en) | OK |
+| Porsche Owners Benefits | Porsche Centre Nanaimo | CA | secondaria | media | [nanaimo.porsche.ca](https://nanaimo.porsche.ca/en/about-us/porsche-owners-benefits) | OK (blocca i bot) |
+| Lexus Encore | WhichCar | AU | secondaria | media-alta | [whichcar.com.au](https://www.whichcar.com.au/news/lexus-gives-its-encore-program-the-luxury-treatment) | OK (blocca i bot) |
+| Genesis Experience | Genesis USA | US | primaria | alta | [genesis.com](https://www.genesis.com/us/en/genesis-experience) | OK |
+| Volvo Care Loyalty | Tires & Parts | AE | secondaria | media | [tiresandparts.net](https://tiresandparts.net/news/al-futtaim-trading-enterprises-volvo-cars-introduces-the-volvo-care-loyalty-programme/) | OK |
+| Polestar Referral | Polestar, 2022 | UK / EU | primaria | alta | [polestar.com](https://www.polestar.com/uk/news/all-aboard-the-polestar-referral-programme/) | OK |
+| Polestar Referral | InsideEVs, 2022 | Global | secondaria | alta | [insideevs.com](https://insideevs.com/news/589346/polestar-launches-referral-program/) | OK |
+| Tesla Referral, Roadster | Electrek, 2017 | Global | secondaria | alta | [electrek.co](https://electrek.co/2017/07/12/next-gen-roadster-10-discount-appears-in-referral-program-free-for-50-referrals/) | OK |
+| Tesla Referral, Phase 9 | Tesla | Global | primaria | alta | [tesla.com](https://www.tesla.com/support/referral-program/phase-9) | OK (blocca i bot) |
+| Storia dei referral Tesla | Tesla Motors Club (forum) | Global | secondaria | media | [teslamotorsclub.com](https://teslamotorsclub.com/tmc/threads/history-of-referral-program-rewards.301199) | OK (blocca i bot) |
+| Land Rover ownership | Land Rover Media, 2013 | US | primaria | alta (dato 2013) | [media.landrover.com](https://media.landrover.com/en-us/blog/2013/land-rover-ownership-has-its-privileges) | OK |
+| Concorsi a premio | MIMIT | IT | primaria | alta | [mimit.gov.it](https://www.mimit.gov.it/it/mercato-e-consumatori/concorrenza-e-commercio/manifestazioni-a-premio/concorsi-a-premio) | OK |
 
 ## Fonti scartate dalla versione originale
 

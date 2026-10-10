@@ -1,7 +1,7 @@
 ---
 id: T003
 title: Ricerca sui bonus utilizzabili nel sistema a punti (Audi e marchi premium)
-status: doing
+status: review
 owner: Evelyn
 executor: claude
 branch: testing
@@ -21,9 +21,9 @@ Il Brief 4 chiede meccaniche a punti e reward rilevanti per gli under 35, senza 
 4. Shortlist di bonus per il nostro sistema a punti, legata agli asset Audi italiani.
 
 ## Acceptance
-- [ ] `knowledge/research/brief4/bonus-reward.md` con tabella dei bonus esistenti, filtro brief e shortlist
-- [ ] Ogni fatto ha una fonte raggiungibile registrata in `fonti-verificate.md`
-- [ ] Nessun file modificato fuori da `scope`
+- [x] `knowledge/research/brief4/bonus-reward.md` con tabella dei bonus esistenti, filtro brief e shortlist
+- [x] Ogni fatto ha una fonte raggiungibile registrata in `fonti-verificate.md`
+- [x] Nessun file modificato fuori da `scope`
 
 ## Verify
 ```
