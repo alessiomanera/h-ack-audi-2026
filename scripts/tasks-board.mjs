@@ -2,7 +2,10 @@
 // Regenerates tasks/BOARD.md from the frontmatter of tasks/T###-*.md. No dependencies.
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { ROOT } from "./history.mjs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 const DIR = join(ROOT, "tasks");
 const ORDER = ["doing", "review", "todo", "done"];

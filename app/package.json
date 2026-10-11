@@ -50,5 +50,6 @@
   "allowScripts": {
     "workerd@1.20261006.1": true,
     "esbuild@0.28.2": true
-  }
+  },
+  "license": "UNLICENSED"
 }

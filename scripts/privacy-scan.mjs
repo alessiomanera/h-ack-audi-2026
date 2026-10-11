@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 // Blocks secrets and personal data before they reach git.
 //   node scripts/privacy-scan.mjs --staged   (pre-commit: staged content only)
-//   node scripts/privacy-scan.mjs --all      (every tracked file; used by `npm run ship` and the final privacy gate)
+//   node scripts/privacy-scan.mjs --all      (every tracked file; used in CI)
 // Exit 1 on findings. Em-dashes in authored files are reported as warnings only.
 import { execFileSync } from "node:child_process";
 import { findings } from "./lib/privacy.mjs";
 
 const BINARY = /\.(png|jpe?g|webp|gif|ico|pdf|woff2?|ttf|otf|mp4|mov|zip)$/i;
 // Mirrors and fixed sources are other people's text: em-dash warnings there are noise.
-const DASH_EXEMPT = /^(knowledge\/|docs\/WORKFLOW\.md|HISTORY\.md|package-lock\.json)/;
+const DASH_EXEMPT = /^(knowledge\/|package-lock\.json)/;
 
 const git = (args) => execFileSync("git", args, { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
 const staged = process.argv.includes("--staged");
@@ -40,7 +40,7 @@ for (const file of files) {
 }
 
 if (blocked) {
-  console.error(`\n${blocked} dato/i sensibile/i trovato/i. Rimuovili (o spostali in _PERSONAL/ o .dev.vars) e riprova.`);
+  console.error(`\n${blocked} dato/i sensibile/i trovato/i. Rimuovili e riprova.`);
   process.exit(1);
 }
 console.log(`privacy-scan: ${files.length} file controllati, nessun dato sensibile${dashWarnings ? `, ${dashWarnings} avvisi em-dash` : ""}.`);

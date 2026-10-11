@@ -4,7 +4,10 @@
 //   node scripts/agents-sync.mjs --check   exit 1 if out of date (pre-commit, ship)
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { ROOT } from "./history.mjs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 const SRC = join(ROOT, ".agents", "AGENTS.md");
 const OUT = join(ROOT, "GEMINI.md");
