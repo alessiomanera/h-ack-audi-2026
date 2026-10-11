@@ -2,7 +2,7 @@
 
 Questo documento raccoglie le indicazioni di stile e i prompt pronti per generare immagini placeholder e mockup UI coerenti con l'identità visiva Audi ([tokens.json](tokens.json), [palette.md](palette.md), [voice.md](voice.md)) per le 10 slide del pitch deck Canva.
 
-I file generati dal mockup Stitch si trovano in [`brand/assets/stitch/`](assets/stitch/):
+Il mockup generato con Stitch non è incluso in questa repo (immagine e HTML nell'archivio privato):
 - `code.html`: Mockup interattivo della shell mobile myAudi con tab Loyalty evidenziata.
 - `screen.png`: Screenshot del mockup mobile pronto per Canva.
 

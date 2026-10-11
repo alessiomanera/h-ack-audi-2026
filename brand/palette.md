@@ -1,6 +1,6 @@
 # Palette e tipografia del progetto
 
-Fonte unica dei valori: [`tokens.json`](tokens.json). Questo file la spiega, il blocco 🔒 nella tab WORKFLOW del Google Doc la rispecchia.
+Fonte unica dei valori: [`tokens.json`](tokens.json). Questo file la spiega.
 
 ## Perché questa palette
 
@@ -47,7 +47,7 @@ Regola d'oro: **scuro di base, un solo elemento rosso per schermata o slide.**
 - **Testo: Inter** (Regular).
 - Etichette piccole in maiuscolo con spaziatura +8%.
 - Entrambi gratuiti (Google Fonts) e presenti in Canva.
-- Audi Type è proprietario: lo usiamo solo se gli organizzatori ci danno il brand kit sabato (basta cambiare un valore in `tokens.json`).
+- Audi Type è proprietario e non è incluso in questa repo: il deploy del giorno lo usava (brand kit degli organizzatori), qui restano Archivo e Inter.
 
 ## Stile
 

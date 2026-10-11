@@ -10,35 +10,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@font-face {
-  font-family: "Audi Type";
-  src: url("../../../brand/assets/fonts/AudiType-Normal_4.03.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Audi Type";
-  src: url("../../../brand/assets/fonts/AudiType-Bold_4.03.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Audi Type Extended";
-  src: url("../../../brand/assets/fonts/AudiType-ExtendedNormal_4.03.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Audi Type Extended";
-  src: url("../../../brand/assets/fonts/AudiType-ExtendedBold_4.03.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -68,9 +39,9 @@
   --radius-lg: var(--radius-lg);
   --radius-xl: var(--radius-lg);
 
-  /* Audi Type from brand/assets/fonts, with the tokens' Archivo / Inter as fallback. */
-  --font-sans: "Audi Type", var(--font-body);
-  --font-display: "Audi Type Extended", var(--font-heading);
+  /* Archivo / Inter from the tokens (loaded from Google Fonts in index.html). The first live deploy used the organizers' Audi Type, which is proprietary and not redistributed. */
+  --font-sans: var(--font-body);
+  --font-display: var(--font-heading);
 }
 
 /* Dark-first: the dark palette is the default and the only one we ship. */
