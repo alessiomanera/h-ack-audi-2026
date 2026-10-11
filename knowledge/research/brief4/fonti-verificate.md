@@ -12,8 +12,8 @@ Affidabilità: **alta** = fonte primaria (azienda, ente, autorità) o grande tes
 
 | Scheda | Fonte | Link | Stato |
 |---|---|---|---|
-| A05, A07, F01-F04 | Brief ufficiale H-ACK Audi 2026 | [knowledge/fixed/brief.md](../../fixed/brief.md) | OK (fixed) |
-| H03 | Speech del direttore marketing di Audi Italia, 10/10/2026 | [knowledge/fixed/speech-farao.md](../../fixed/speech-farao.md) | OK (fixed) |
+| A05, A07, F01-F04 | Brief ufficiale H-ACK Audi 2026 | brief ufficiale (non incluso in questa repo) | OK (fixed) |
+| H03 | Speech del direttore marketing di Audi Italia, 10/10/2026 | speech di apertura (non incluso in questa repo) | OK (fixed) |
 
 ## Audi
 

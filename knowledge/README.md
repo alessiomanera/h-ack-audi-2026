@@ -1,13 +1,10 @@
 # Knowledge base
 
-| Cartella | Cosa contiene | Affidabilità | Chi la aggiorna |
-|---|---|---|---|
-| `fixed/` | Il brief ufficiale (`brief.md`, parti da qui), lo speech di il direttore marketing (`speech-farao.md`), il regolamento del 10/10 (`rules.md`), giuria e mentor (`jury.md`), link utili degli organizzatori (`useful-links.md`). PDF originali in `fixed/sources/`. `four-questions.md` è superato | **Fatti confermati** | a mano |
-| `team-doc/` | Copia del Google Doc del team, una tab per file. Parti da `INDEX.md` | Ipotesi del team | solo `align` (`scripts/gdoc_to_md.py`), mai a mano |
-| `prep/` | Note di preparazione di Alessio | Ipotesi, superate dal Google Doc se in conflitto | a mano |
-| `decisions/` | Riassunti delle decisioni (call, mentor). Mai trascrizioni grezze | Decisioni del team | `ingest-call` |
+| Folder | Content | Reliability |
+|---|---|---|
+| `research/brief4/` | Verified loyalty research for Brief 4: findings, existing initiatives, white spaces, bonus and reward options, points system, source register. Italian. Start from `README.md` | Facts checked against reachable sources on 10/10/2026 |
+| `decisions/` | Summary of the direction chosen for Brief 4 (the family driver idea). Never raw transcripts | Team decision |
 
-Regole:
-- Se `fixed/` contraddice qualcosa, vince `fixed/`.
-- Un numero va in slide solo con fonte primaria e anno (vedi `brand/voice.md`).
-- Le note grezze (Granola, vocali) stanno in `_PERSONAL/` o nel Drive, mai qui.
+Rules:
+- A number goes in a slide only with a primary source and year (see `brand/voice.md`).
+- The official brief, rules and organizer material are not included in this repo (they belong to the organizers).

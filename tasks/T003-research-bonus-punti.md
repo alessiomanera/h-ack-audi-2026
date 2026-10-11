@@ -1,7 +1,7 @@
 ---
 id: T003
 title: Ricerca sui bonus utilizzabili nel sistema a punti (Audi e marchi premium)
-status: review
+status: done
 owner: Evelyn
 executor: claude
 branch: testing

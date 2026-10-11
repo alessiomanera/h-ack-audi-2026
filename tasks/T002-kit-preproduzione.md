@@ -1,7 +1,7 @@
 ---
 id: T002
 title: Kit pre-produzione Brief 4 verifica numeri, outline 10 slide, KPI, QA giuria
-status: review
+status: done
 owner: Alessio
 executor: antigravity
 branch: testing

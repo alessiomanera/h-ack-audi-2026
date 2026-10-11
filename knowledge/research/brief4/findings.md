@@ -50,7 +50,7 @@ Tutte le schede sono raggruppate per area (A-H), con rigida separazione tra fatt
 
 ### A05 · Audi driving experience
 - Fatto: Audi organizza corsi di guida (anche su neve e ghiaccio) aperti a clienti e appassionati, prenotabili tramite concessionari o Audi Sport Italia. Il brief ufficiale conferma 2 aree tecniche per la driving experience su fondi a bassa aderenza e superfici ghiacciate nelle destinazioni montane.
-- Fonte: [Brief ufficiale H-ACK Audi 2026, sezione 2](../../fixed/brief.md); [Motorbox, "Audi, le date dei corsi quattro experience"](https://www.motorbox.com/auto/magazine/vivere-auto/audi-le-date-dei-corsi-quattro-experience) · consultate 2026-10-10
+- Fonte: Brief ufficiale H-ACK Audi 2026, sezione 2; [Motorbox, "Audi, le date dei corsi quattro experience"](https://www.motorbox.com/auto/magazine/vivere-auto/audi-le-date-dei-corsi-quattro-experience) · consultate 2026-10-10
 - Paese: IT
 - Tipo di fonte: primaria (brief); secondaria (Motorbox)
 - Affidabilità: alta per il brief, media per l'articolo
@@ -70,7 +70,7 @@ Tutte le schede sono raggruppate per area (A-H), con rigida separazione tra fatt
 
 ### A07 · Presidio territoriale: destinazioni montane e Milano Design Week
 - Fatto: Audi presidia Cortina d'Ampezzo, Alta Badia e Madonna di Campiglio con 3 hub (accoglienza per clienti, non clienti, ospiti e giornalisti) e 2 aree tecniche. Alla Milano Design Week Audi è co-producer da 13 anni della mostra-evento di INTERNI; quest'anno l'installazione firmata Zaha Hadid all'Audi Design Hub ha avuto 170.000 visitatori (dato detto dal palco).
-- Fonte: [Brief ufficiale H-ACK Audi 2026, sezione 2](../../fixed/brief.md) · 2026-10-10
+- Fonte: Brief ufficiale H-ACK Audi 2026, sezione 2 · 2026-10-10
 - Paese: IT
 - Tipo di fonte: primaria (Fixed)
 - Affidabilità: alta (brief ufficiale; i 170.000 visitatori sono un dato orale)
@@ -340,7 +340,7 @@ Tutte le schede sono raggruppate per area (A-H), con rigida separazione tra fatt
 
 ### F01 · Destinazioni montane: hub e aree tecniche
 - Fatto: a Cortina d'Ampezzo, Alta Badia e Madonna di Campiglio Audi dispone di 3 hub (accoglienza, punti informazione, lounge per ospiti, clienti, non clienti e giornalisti), 2 aree tecniche per la driving experience su fondi a bassa aderenza e un roadshow di guida nelle località montane dove Audi non è presente.
-- Fonte: [Brief ufficiale H-ACK Audi 2026, sezione 2](../../fixed/brief.md) · 2026-10-10
+- Fonte: Brief ufficiale H-ACK Audi 2026, sezione 2 · 2026-10-10
 - Paese: IT
 - Tipo di fonte: primaria (Fixed)
 - Affidabilità: alta
@@ -350,7 +350,7 @@ Tutte le schede sono raggruppate per area (A-H), con rigida separazione tra fatt
 
 ### F02 · Sport invernali: FISI
 - Fatto: Audi è main partner della FISI (20 anni di partnership il prossimo anno); 27 vetture sono state consegnate agli atleti la settimana prima dell'hackathon. Gli atleti sono disponibili previa condivisione dei progetti con la federazione. La FIS Ski World Cup è invece un asset di AUDI AG: niente visibilità del logo su piste, pettorali, porte e archi d'arrivo.
-- Fonte: [Brief ufficiale H-ACK Audi 2026, sezione 2](../../fixed/brief.md) · 2026-10-10
+- Fonte: Brief ufficiale H-ACK Audi 2026, sezione 2 · 2026-10-10
 - Paese: IT
 - Tipo di fonte: primaria (Fixed, con chiarimenti dal palco)
 - Affidabilità: alta
@@ -360,7 +360,7 @@ Tutte le schede sono raggruppate per area (A-H), con rigida separazione tra fatt
 
 ### F03 · Milano Design Week e Audi Design Hub
 - Fatto: Audi è co-producer da 13 anni della mostra-evento di INTERNI. L'Audi Design Hub ospita installazioni e talk; la parte creativa è definita da Audi AG, mentre area e palinsesto sono aperti a proposte.
-- Fonte: [Brief ufficiale H-ACK Audi 2026, sezione 2](../../fixed/brief.md) · 2026-10-10
+- Fonte: Brief ufficiale H-ACK Audi 2026, sezione 2 · 2026-10-10
 - Paese: IT
 - Tipo di fonte: primaria (Fixed)
 - Affidabilità: alta
@@ -370,7 +370,7 @@ Tutte le schede sono raggruppate per area (A-H), con rigida separazione tra fatt
 
 ### F04 · Formula 1: show car R26 e Audi Performance Tour
 - Fatto: la show car R26 in livrea (senza motore) è presente agli eventi Audi ed è protagonista dell'Audi Performance Tour nelle concessionarie. Nessun diritto su gare, autodromo e contenuti sportivi; niente loghi FIA/F1, immagini di gara o piloti.
-- Fonte: [Brief ufficiale H-ACK Audi 2026, sezione 2](../../fixed/brief.md) · 2026-10-10
+- Fonte: Brief ufficiale H-ACK Audi 2026, sezione 2 · 2026-10-10
 - Paese: IT
 - Tipo di fonte: primaria (Fixed)
 - Affidabilità: alta
@@ -418,7 +418,7 @@ Tutte le schede sono raggruppate per area (A-H), con rigida separazione tra fatt
 
 ### H03 · Costo della fidelizzazione contro l'acquisizione
 - Fatto: nello speech di apertura di H-ACK (10/10/2026) il direttore marketing di Audi Italia (Direttore Marketing Audi Italia) ha detto che fidelizzare un cliente costa circa 5 volte meno che acquisirne uno nuovo.
-- Fonte: [speech di apertura, H-ACK 10/10/2026](../../fixed/speech-farao.md) · 2026-10-10
+- Fonte: speech di apertura, H-ACK 10/10/2026 · 2026-10-10
 - Paese: IT
 - Tipo di fonte: primaria (Fixed, discorso orale)
 - Affidabilità: alta come posizione dichiarata da Audi Italia (nessuna fonte primaria dietro il numero)

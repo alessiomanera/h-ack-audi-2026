@@ -1,7 +1,7 @@
 ---
 id: T006
 title: Sistema di punteggio a 4 tier (finestra di 3 anni) e pulizia dei dati in conflitto con il pitch
-status: review
+status: done
 owner: Evelyn
 executor: claude
 branch: testing

@@ -1,7 +1,7 @@
 ---
 id: T004
 title: Prototipo "Audi with you" (myAudi tab + portale web + Worker)
-status: doing
+status: done
 owner: Alessio
 executor: claude
 branch: testing

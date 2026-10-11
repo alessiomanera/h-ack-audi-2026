@@ -96,11 +96,11 @@ E il giorno in cui Luca prenderà la sua prima Audi, profilo, storico e livello 
 
 | Affermazione | Fonte |
 |---|---|
-| Fidelizzare costa 5 volte meno che acquisire | Speech del direttore marketing di Audi Italia, 10/10/2026 ([speech-farao.md](../knowledge/fixed/speech-farao.md)), dato Audi Italia senza fonte primaria |
+| Fidelizzare costa 5 volte meno che acquisire | Speech del direttore marketing di Audi Italia, 10/10/2026 (testo non incluso in questa repo), dato Audi Italia senza fonte primaria |
 | Solo il 17% dei giovani spenderebbe 30.000 euro per un'auto | Speech del direttore marketing di Audi Italia, 10/10/2026, dato Audi Italia senza fonte primaria |
 | myAudi permette utenti secondari oltre al titolare | Audi USA, myAudi Vehicle Functions (in [direzione Brief 4](../knowledge/decisions/2026-10-10-direzione-brief4.md)); procedura italiana da confermare |
-| Dopo il secondo anno molti clienti lasciano le officine ufficiali | Mentor Jakala, orale ([note il mentor Jakala](../knowledge/decisions/2026-10-10-mentor-jakala-brief4.md)), nessun numero: per questo nel pitch non c'è una percentuale |
-| Hub montani, aree tecniche, FISI, Design Week | [Brief ufficiale](../knowledge/fixed/brief.md), sezione 2 |
+| Dopo il secondo anno molti clienti lasciano le officine ufficiali | Mentor Jakala, orale (note il mentor Jakala), nessun numero: per questo nel pitch non c'è una percentuale |
+| Hub montani, aree tecniche, FISI, Design Week | Brief ufficiale, sezione 2 |
 | Punti, tier, premi, finestra di 3 anni | [sistema-punteggio.md](../knowledge/research/brief4/sistema-punteggio.md) (T006), dalla tab "sistema punti" del Doc; decisione di Alessio del 10/10 ore 15:30 (T004): i punti non si spendono, prenotare non consuma punti |
 
 ## Da verificare prima del pitch

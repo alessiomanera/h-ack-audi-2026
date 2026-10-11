@@ -1,7 +1,7 @@
 ---
 id: T005
 title: Copione del pitch "Audi with you" (5 minuti, 2 voci) nella tab Pitch del Google Doc
-status: review
+status: done
 owner: Evelyn
 executor: claude
 branch: testing

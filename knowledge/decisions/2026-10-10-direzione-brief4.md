@@ -1,6 +1,6 @@
 # Direzione Brief 4: "Audi with you", la fedeltà di chi guida l'Audi di famiglia
 
-**Stato: ipotesi del team (Alessio, 12:26), da decidere alle 13:00 del 10/10/2026.** Nasce dall'intervista a il mentor Jakala ([2026-10-10-mentor-jakala-brief4.md](2026-10-10-mentor-jakala-brief4.md)) e dall'esperienza di Alessio. Ogni riga è etichettata: FATTO (fixed), mentor, dato USA, inferenza, aneddoto.
+**Stato: ipotesi del team (Alessio, 12:26), da decidere alle 13:00 del 10/10/2026.** Nasce dall'intervista al mentor Jakala (riassunto non incluso in questa repo) e dall'esperienza di Alessio. Ogni riga è etichettata: FATTO (fixed), mentor, dato USA, inferenza, aneddoto.
 
 ## 1. L'idea in una frase (bozza)
 
@@ -43,7 +43,7 @@ Non si inventa niente: si attiva ciò che Audi ha già (ruolo di utente secondar
 | Account Apple e Quick Start | Tutto è legato alla persona: cambiare iPhone è immediato, uscire costa | Profilo myAudi e Personalization 2.0: le impostazioni passano su altre Audi (dal model year 2022, [Automotive World](https://www.automotiveworld.com/news/hey-audi-whats-new-for-2022-audi-infotainment-platform-expands-with-voice-assistant-and-personalization-features/)) | Anche storico e livello seguono la persona, fino alla sua Audi |
 | Apple Store e Today at Apple | Il negozio come posto dove imparare e tornare, gratis | Concessionaria, service (gomme, check invernale), Audi driving experience (finding A05) | Sessioni gratuite in concessionaria per chi guida l'Audi di famiglia |
 | BA Household Account | Fino a 7 persone allo stesso indirizzo uniscono i punti; lo status resta personale ([British Airways](https://www-cloud.britishairways.com/travel/household-account/public/en_gb)) | Niente | Punti di famiglia, status personale |
-| Status delle compagnie aeree (finding C06) | Lo status toglie attriti concreti | Fast lane del service su audi.it (citato da il mentor Jakala) | Livelli con priorità reali |
+| Status delle compagnie aeree (finding C06) | Lo status toglie attriti concreti | Fast lane del service su audi.it (citato dal mentor Jakala) | Livelli con priorità reali |
 
 ## 5. Meccanica minima (pochi livelli, misurabile)
 
@@ -65,7 +65,7 @@ Non si inventa niente: si attiva ciò che Audi ha già (ruolo di utente secondar
 
 | Verifica | Chi | Entro |
 |---|---|---|
-| Domande a il mentor Jakala e la mentor Jakala (Jakala): in Italia gli utenti secondari esistono? La sezione loyalty può leggere i ruoli? I passaggi in officina sono misurabili? Lo status personale va bene? | Simone e Sofi | 12:50 |
+| Domande al mentor Jakala e la mentor Jakala (Jakala): in Italia gli utenti secondari esistono? La sezione loyalty può leggere i ruoli? I passaggi in officina sono misurabili? Lo status personale va bene? | Simone e Sofi | 12:50 |
 | Anti-riciclo: Audi Presents (UK) e Audi Experience (Australia) includono i guidatori secondari? Il nome "Audi with you" è libero? (nessun uso trovato in una ricerca rapida) | Nicola e Alberto | 12:50 |
 | Sondaggio in sala: "Guidi un'auto intestata a un familiare? Di che marca? Hai l'app del costruttore?" Etichetta: sondaggio in sala 10/10/2026, con il numero di risposte | Aurora | 12:50 |
 | Neopatentati: i limiti di potenza dei primi 3 anni (riforma del Codice della strada 2024) possono escludere i 18-21enni dalle Audi più potenti. Verificare e preparare la risposta | Valeria | 13:00 |

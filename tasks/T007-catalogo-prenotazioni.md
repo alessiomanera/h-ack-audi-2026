@@ -1,7 +1,7 @@
 ---
 id: T007
 title: Catalogo esperienze e prenotazione premi (biglietti, QR, spedizione, concierge)
-status: review
+status: done
 owner: Alessio
 executor: claude
 branch: testing
@@ -72,7 +72,7 @@ cd app && cmd /c npm run check
 ## Stato (10/10, 16:32, sessione di Alessio)
 Deploy completo in produzione su Cloudflare Workers (`https://audi-with-you.<account>.workers.dev`):
 - Migrazioni D1 0003 e 0004 applicate in remoto su `audi-with-you`
-- Inclusi i fix di Evelyn (82fe5ad: kit spediti a casa, denominazione Dolomiti, limite biglietti a posti rimasti; 29fefc3: pitch script e kpi allineati)
+- Inclusi i fix di Evelyn (kit spediti a casa, denominazione Dolomiti, limite biglietti a posti rimasti; pitch script e kpi allineati)
 - `npm run check` verde (191 test vitest, typecheck ok)
 - `vite build` completato e deploy eseguito con successo (versione `c23d717c-b8a5-417f-9535-6a6398f5523b`)
 - Reset del database demo eseguito con successo (`/api/demo/reset`)

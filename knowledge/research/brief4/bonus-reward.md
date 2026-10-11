@@ -14,7 +14,7 @@ Task: [T003](../../../tasks/T003-research-bonus-punti.md) · Ricerca di Evelyn (
 
 ## 1. I vincoli che filtrano i bonus
 
-Dal [brief ufficiale](../../fixed/brief.md), Brief 4 e Don't:
+Dal brief ufficiale, Brief 4 e Don't:
 - **Niente sconti né logiche promozionali.**
 - **Niente complessità**, niente reward **non sostenibili** o che **non avvicinano il target under 35**.
 - Il brief chiede di definire **come si misura la fedeltà** e **quali reward sono davvero rilevanti** per questo target.
@@ -83,7 +83,7 @@ Dalla ricerca T001 ([findings.md](findings.md)):
 
 ## 5. Rosa di bonus per il nostro sistema a punti (proposta del team)
 
-Allineata alla direzione **"Audi with you"** ([direzione Brief 4](../../decisions/2026-10-10-direzione-brief4.md), da decidere alle 13:00) e alle note del mentor Jakala ([note il mentor Jakala](../../decisions/2026-10-10-mentor-jakala-brief4.md)), che sono opinioni orali e non fonti primarie. Tre indicazioni del mentor cambiano la rosa:
+Allineata alla direzione **"Audi with you"** ([direzione Brief 4](../../decisions/2026-10-10-direzione-brief4.md), da decidere alle 13:00) e alle note del mentor Jakala (note il mentor Jakala), che sono opinioni orali e non fonti primarie. Tre indicazioni del mentor cambiano la rosa:
 - **Gli asset sono scarsi** (Dolomiti, FISI, Design Week, show car): vanno solo ai livelli alti o per merito; alla base servono **vantaggi di servizio replicabili**.
 - **Bundle sì, sconti no**: Audi ha già incluso servizi (per esempio la ricarica a muro con l'elettrico). Questo risponde in parte al dubbio sui crediti in servizi: meglio un servizio incluso che un credito in euro.
 - **Il referral secco annoia**: ha senso solo se il contatto arriva già qualificato, come il figlio che guida l'Audi di famiglia.
