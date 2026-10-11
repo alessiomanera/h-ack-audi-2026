@@ -43,6 +43,14 @@ A single-page web app with two views of the same program: the full portal on des
   <em>The mobile tab, designed to sit inside myAudi.</em>
 </p>
 
+## The pitch deck
+
+The ten-slide deck we submitted (Italian, as required by the brief): [`docs/presentation/audi-with-you-pitch-deck.pdf`](docs/presentation/audi-with-you-pitch-deck.pdf). It covers the idea, naming, insight, how it works, impact, KPIs and the prototype. The photography in the deck is Audi imagery used only for the hackathon.
+
+<p align="center">
+  <a href="docs/presentation/audi-with-you-pitch-deck.pdf"><img src="docs/presentation/deck-overview.png" alt="Overview of the ten pitch deck slides" width="860"></a>
+</p>
+
 ## How it was built
 
 - **Frontend**: React 19, TypeScript (strict), Vite, Tailwind CSS 4, shadcn/Radix components, React Router.
@@ -75,6 +83,7 @@ The Worker needs a D1 database of your own: create one with `wrangler d1 create 
 | Path | What |
 |---|---|
 | `app/` | The prototype: React front end, Worker API, D1 migrations, tests |
+| `docs/` | Screenshots of the prototype and the submitted pitch deck (PDF) |
 | `pitch/` | Pitch script, KPI menu, AI usage log |
 | `knowledge/` | Verified Brief 4 research and the decision memo |
 | `tasks/` | Task files used to coordinate the team |
@@ -87,4 +96,4 @@ Alessio, Evelyn, Simone, Valeria, Aurora, Sofi, Nicola and Alberto, with mentors
 
 ## Disclaimer
 
-This is an unofficial team project created during a hackathon. It is not affiliated with, endorsed by or sponsored by AUDI AG, Volkswagen Group Italia or H-FARM. Audi and the four rings are trademarks of AUDI AG. No Audi fonts, logos or organizer material are included in this repository. No licence is granted: all rights reserved by the authors, subject to the hackathon rules.
+This is an unofficial team project created during a hackathon. It is not affiliated with, endorsed by or sponsored by AUDI AG, Volkswagen Group Italia or H-FARM. Audi and the four rings are trademarks of AUDI AG. No Audi fonts, logo files or organizer material are included in this repository; the pitch deck and the screenshots show Audi names and imagery for illustration only. No licence is granted: all rights reserved by the authors, subject to the hackathon rules.
