@@ -1,0 +1,109 @@
+/* Theme for Audi with you. Colors come only from brand/tokens.css (single source).
+   Utilities to use in components:
+   - surfaces: bg-background (carbon), bg-card (graphite), bg-accent (graphite hover)
+   - text: text-foreground (chalk), text-muted-foreground (titanium), text-subtle (grey 03)
+   - lines: border-border (1px hairline), divide-border
+   - the ONE red element per screen: bg-signal / text-signal / border-signal (lava)
+   Never use Tailwind's default palette (red-500, zinc-800, ...). */
+@import "tailwindcss";
+@import "../../../brand/tokens.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-subtle: var(--color-grey-03);
+  --color-signal: var(--color-lava);
+  --color-signal-ink: var(--color-lava-ink);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-lg);
+
+  /* Archivo / Inter from the tokens (loaded from Google Fonts in index.html). The first live deploy used the organizers' Audi Type, which is proprietary and not redistributed. */
+  --font-sans: var(--font-body);
+  --font-display: var(--font-heading);
+}
+
+/* Dark-first: the dark palette is the default and the only one we ship. */
+:root {
+  --background: var(--color-carbon);
+  --foreground: var(--color-chalk);
+  --card: var(--color-graphite);
+  --card-foreground: var(--color-chalk);
+  --popover: var(--color-graphite);
+  --popover-foreground: var(--color-chalk);
+  --primary: var(--color-chalk);
+  --primary-foreground: var(--color-carbon);
+  --secondary: var(--color-graphite);
+  --secondary-foreground: var(--color-chalk);
+  --muted: var(--color-graphite);
+  --muted-foreground: var(--color-titanium);
+  --accent: var(--color-graphite-hover);
+  --accent-foreground: var(--color-white);
+  --destructive: var(--color-lava-ink);
+  --destructive-foreground: var(--color-white);
+  --border: var(--color-graphite-hover);
+  --input: var(--color-graphite-hover);
+  --ring: var(--color-titanium);
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+
+  p,
+  li {
+    text-wrap: pretty;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

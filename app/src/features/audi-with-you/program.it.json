@@ -1,0 +1,598 @@
+{
+  "name": "Audi with you",
+  "claim": "La tua Audi evolve con te",
+  "version": "1.0 (H-ACK, 10/10/2026)",
+  "windowMonths": 36,
+  "steps": [
+    {
+      "id": "entra",
+      "title": "Entra",
+      "body": "Ti registri come titolare o accetti l'invito di chi ha l'Audi in famiglia: 100 punti."
+    },
+    {
+      "id": "cura",
+      "title": "Cura",
+      "body": "Officina ufficiale e accessori originali valgono punti. Doppi se l'Audi ha più di 2 anni."
+    },
+    {
+      "id": "partecipa",
+      "title": "Partecipa",
+      "body": "Sessioni in concessionaria, Audi driving experience, eventi Audi: ogni esperienza vissuta vale punti."
+    },
+    {
+      "id": "sali",
+      "title": "Sali di livello",
+      "body": "I punti degli ultimi 3 anni decidono il livello. Non si spendono e vengono con te sulla prossima Audi."
+    }
+  ],
+  "actions": [
+    {
+      "type": "join",
+      "title": "Entra in Audi with you",
+      "description": "Ti registri come titolare o accetti l'invito della tua famiglia in myAudi.",
+      "points": 100,
+      "enabled": true,
+      "once": true
+    },
+    {
+      "type": "invite",
+      "title": "Invita chi guida la tua Audi",
+      "description": "Inviti in myAudi chi guida la tua Audi. Quando accetta, 100 punti a te e 100 a chi entra. Fino a 5 guidatori per ogni Audi.",
+      "points": 100,
+      "enabled": true,
+      "once": true,
+      "bothSides": true
+    },
+    {
+      "type": "service",
+      "title": "Porta l'Audi in officina",
+      "description": "Tagliando, cambio gomme o check invernale in un'officina ufficiale Audi.",
+      "points": 300,
+      "pointsByKind": {
+        "tagliando": 300,
+        "gomme": 100,
+        "check_invernale": 100
+      },
+      "enabled": true,
+      "multiplier": {
+        "olderThanYears": 2,
+        "factor": 2,
+        "label": "Punti doppi se la tua Audi ha più di 2 anni"
+      },
+      "examples": ["Tagliando", "Cambio gomme", "Check invernale"]
+    },
+    {
+      "type": "accessory",
+      "title": "Monta un accessorio originale Audi",
+      "description": "Un accessorio originale Audi montato in concessionaria: barre portatutto, gancio traino, tappetini.",
+      "points": 100,
+      "enabled": true,
+      "examples": ["Barre portatutto", "Gancio traino", "Tappetini originali"]
+    },
+    {
+      "type": "merch",
+      "title": "Scegli Audi Collection",
+      "description": "Un articolo Audi Collection preso in concessionaria. Al massimo 4 premiati al mese.",
+      "points": 50,
+      "enabled": true,
+      "monthlyCap": 4,
+      "examples": ["Cappellino Audi", "Zaino Audi", "Modellino in scala"]
+    },
+    {
+      "type": "trade_in",
+      "title": "Passa alla tua prossima Audi",
+      "description": "Dai in permuta la tua Audi per un'altra Audi, nuova o usata. Una volta per ogni Audi: livello e storico vengono con te.",
+      "points": 1000,
+      "enabled": true,
+      "oncePerVehicle": true
+    },
+    {
+      "type": "first_audi",
+      "title": "La tua prima Audi",
+      "description": "Guidavi l'Audi di famiglia da invitato e ora prendi la tua prima Audi come titolare: 1.000 punti a te e 500 a chi ti aveva invitato. Una volta per persona.",
+      "points": 1000,
+      "enabled": true,
+      "once": true,
+      "inviterPoints": 500
+    },
+    {
+      "type": "anniversary",
+      "title": "Un anno insieme",
+      "description": "Arriva in automatico a ogni anno nel programma, se nell'anno sei passato almeno una volta dalla rete ufficiale Audi.",
+      "points": 200,
+      "enabled": true,
+      "yearlyCap": 1
+    },
+    {
+      "type": "session",
+      "title": "Impara con Audi",
+      "description": "Una sessione \"Conosci la tua Audi\" in concessionaria o un modulo di Audi driving experience con gli istruttori Audi.",
+      "points": 150,
+      "pointsByKind": {
+        "dealer": 150,
+        "driving_experience": 250
+      },
+      "enabled": true,
+      "examples": ["Conosci la tua Audi", "Audi driving experience"]
+    },
+    {
+      "type": "event",
+      "title": "Vivi un evento Audi",
+      "description": "Check-in a un evento Audi: in concessionaria, negli hub in montagna, alla Milano Design Week. Fino a 6 eventi premiati all'anno.",
+      "points": 100,
+      "enabled": true,
+      "yearlyCap": 6
+    },
+    {
+      "type": "charging",
+      "title": "Ricarica con Audi",
+      "description": "Premiata una volta al mese, con almeno 4 ricariche Audi nel mese.",
+      "points": 25,
+      "enabled": true,
+      "monthlyCap": 1
+    }
+  ],
+  "levels": [
+    {
+      "id": "icon-circle",
+      "name": "Icon Circle",
+      "threshold": 0,
+      "tagline": "Il primo passo: un profilo tutto tuo, anche se l'Audi è di famiglia.",
+      "courtesyCar": {
+        "label": "Standard",
+        "description": "Quando disponibile, un'auto di cortesia dello stesso segmento della tua Audi.",
+        "segmentsUp": 0
+      },
+      "rewards": [
+        {
+          "id": "icon-card",
+          "title": "Card digitale e badge",
+          "description": "La tua card Audi with you in myAudi, con il tuo nome e il tuo livello.",
+          "kind": "recognition"
+        },
+        {
+          "id": "icon-profile",
+          "title": "Profilo personale",
+          "description": "Il tuo profilo, il tuo storico e il tuo livello, distinti da quelli del titolare.",
+          "kind": "recognition"
+        },
+        {
+          "id": "icon-sessions",
+          "title": "Sessioni \"Conosci la tua Audi\"",
+          "description": "Incluse nel programma: in concessionaria impari la tua Audi con chi la conosce meglio.",
+          "kind": "service",
+          "claim": {
+            "cta": "Prenota",
+            "tickets": true,
+            "options": [
+              {
+                "id": "concessionaria",
+                "label": "Scegli la concessionaria",
+                "choices": ["Treviso", "Padova", "Milano"]
+              },
+              {
+                "id": "data",
+                "label": "Scegli il giorno",
+                "choices": ["Sabato 17 ottobre, 10:00", "Sabato 24 ottobre, 10:00", "Sabato 7 novembre, 10:00"]
+              }
+            ],
+            "confirmation": "Ti aspettiamo in concessionaria per un'ora dedicata alla tua Audi. Mostra il QR all'accoglienza."
+          }
+        },
+        {
+          "id": "icon-events",
+          "title": "Inviti agli eventi Audi",
+          "description": "Inviti agli eventi della tua concessionaria e di Audi Italia.",
+          "kind": "access"
+        },
+        {
+          "id": "icon-talks",
+          "title": "Talk e masterclass digitali",
+          "description": "Innovazione, sostenibilità e design, raccontati da chi lavora in Audi.",
+          "kind": "experience",
+          "note": "Proposta da definire con Audi Italia"
+        },
+        {
+          "id": "icon-checkup",
+          "title": "Check-up digitale al primo passaggio in officina",
+          "description": "Al primo passaggio in un'officina ufficiale, un riepilogo digitale dello stato della tua Audi.",
+          "kind": "service",
+          "note": "Proposta da definire con la rete Audi"
+        },
+        {
+          "id": "icon-kit",
+          "title": "Kit di benvenuto: portachiavi Audi",
+          "description": "Ti aspetta quando entri in Icon Circle. Te lo spediamo a casa e non spendi punti: è il benvenuto.",
+          "kind": "welcome_kit",
+          "claim": {
+            "cta": "Ricevi a casa",
+            "delivery": "shipping",
+            "options": [
+              {
+                "id": "spedizione",
+                "label": "Dove lo spediamo",
+                "choices": ["All'indirizzo del tuo profilo myAudi"]
+              }
+            ],
+            "confirmation": "Spedizione confermata: il kit arriva all'indirizzo del tuo profilo myAudi entro 5 giorni lavorativi."
+          }
+        }
+      ]
+    },
+    {
+      "id": "quattro-circle",
+      "name": "quattro Circle",
+      "threshold": 1000,
+      "tagline": "Ti prendi cura della tua Audi, e in officina se ne accorgono.",
+      "courtesyCar": {
+        "label": "Un segmento in più",
+        "description": "Quando disponibile, un'Audi di un segmento superiore alla tua (per esempio da A3 ad A5, da Q3 a Q5).",
+        "segmentsUp": 1
+      },
+      "rewards": [
+        {
+          "id": "quattro-fasttrack",
+          "title": "Fast track in officina",
+          "description": "Accettazione prioritaria per tagliandi e interventi e, quando disponibile, l'auto di cortesia del tuo livello.",
+          "kind": "service",
+          "note": "Proposta da definire con la rete Audi",
+          "claim": {
+            "cta": "Prenota",
+            "options": [
+              {
+                "id": "data",
+                "label": "Scegli il giorno",
+                "choices": ["Lunedì 12 ottobre, 8:30", "Martedì 13 ottobre, 8:30", "Mercoledì 14 ottobre, 14:00"]
+              },
+              {
+                "id": "concessionaria",
+                "label": "Scegli la concessionaria",
+                "choices": ["Treviso", "Padova", "Milano"]
+              }
+            ],
+            "confirmation": "Prenotazione fatta. In officina ti aspetta l'accettazione prioritaria e, quando disponibile, l'auto di cortesia del tuo livello. Mostra il codice all'accettazione."
+          }
+        },
+        {
+          "id": "quattro-proof",
+          "title": "Proof of Quality",
+          "description": "Il certificato digitale dello stato della tua Audi, aggiornato a ogni passaggio in officina ufficiale.",
+          "kind": "service",
+          "note": "Proposta da definire con Audi Italia"
+        },
+        {
+          "id": "quattro-clinical",
+          "title": "Giornate tecniche in officina",
+          "description": "Con i capiofficina della tua concessionaria: vedi da vicino come si cura un'Audi.",
+          "kind": "experience",
+          "note": "Proposta da definire con la rete Audi"
+        },
+        {
+          "id": "quattro-driving",
+          "title": "Moduli di Audi driving experience",
+          "description": "Guida con gli istruttori Audi per conoscere la tua Audi su fondi a bassa aderenza, in sicurezza.",
+          "kind": "experience",
+          "limited": true,
+          "claim": {
+            "cta": "Prenota",
+            "tickets": true,
+            "options": [
+              {
+                "id": "data",
+                "label": "Scegli la data",
+                "choices": ["Sabato 9 gennaio 2027", "Sabato 23 gennaio 2027", "Sabato 6 febbraio 2027"]
+              }
+            ],
+            "seatsPerChoice": 16,
+            "confirmation": "Ci vediamo sulla neve: gli istruttori Audi ti aspettano nell'area tecnica. Mostra il QR all'arrivo."
+          }
+        },
+        {
+          "id": "quattro-kit",
+          "title": "Kit di benvenuto: borraccia e accessori da viaggio",
+          "description": "Ti aspetta quando raggiungi quattro Circle. Te lo spediamo a casa e non spendi punti: è il regalo per il nuovo livello.",
+          "kind": "welcome_kit",
+          "claim": {
+            "cta": "Ricevi a casa",
+            "delivery": "shipping",
+            "options": [
+              {
+                "id": "spedizione",
+                "label": "Dove lo spediamo",
+                "choices": ["All'indirizzo del tuo profilo myAudi"]
+              }
+            ],
+            "confirmation": "Spedizione confermata: il kit arriva all'indirizzo del tuo profilo myAudi entro 5 giorni lavorativi."
+          }
+        }
+      ]
+    },
+    {
+      "id": "s-line-club",
+      "name": "S line Club",
+      "threshold": 2500,
+      "tagline": "Dalle Dolomiti alla Milano Design Week, c'è un posto che ti aspetta.",
+      "courtesyCar": {
+        "label": "Un segmento in più, anche elettrica",
+        "description": "Quando disponibile, un'Audi di un segmento superiore, elettrica se possibile (per esempio da Q3 a Q4 e-tron).",
+        "segmentsUp": 1,
+        "electricWhenAvailable": true
+      },
+      "rewards": [
+        {
+          "id": "sline-dolomiti",
+          "title": "Una giornata Audi sulle Dolomiti",
+          "description": "Accoglienza e lounge nell'hub Audi, deposito sci e un modulo di Audi driving experience sulla neve. Posti limitati, accesso anticipato per livello.",
+          "kind": "experience",
+          "limited": true,
+          "note": "Servizi sulle piste da definire con Dolomiti Superski",
+          "claim": {
+            "cta": "Prenota",
+            "options": [
+              {
+                "id": "hub",
+                "label": "Scegli l'hub",
+                "choices": ["Cortina d'Ampezzo", "Alta Badia", "Madonna di Campiglio"]
+              },
+              {
+                "id": "data",
+                "label": "Scegli la data",
+                "choices": ["Sabato 16 gennaio 2027", "Sabato 30 gennaio 2027", "Sabato 13 febbraio 2027"]
+              }
+            ],
+            "seatsPerChoice": 20,
+            "tickets": true,
+            "confirmation": "Ci vediamo in montagna. All'hub Audi ti aspettano accoglienza e lounge, poi la guida sulla neve con gli istruttori Audi. Mostra il QR all'arrivo."
+          }
+        },
+        {
+          "id": "sline-hubs",
+          "title": "Accesso riservato agli hub Audi in montagna",
+          "description": "Accoglienza e lounge negli hub Audi di Cortina d'Ampezzo, Alta Badia e Madonna di Campiglio, d'inverno e d'estate.",
+          "kind": "access"
+        },
+        {
+          "id": "sline-designweek",
+          "title": "Milano Design Week all'Audi Design Hub",
+          "description": "Una giornata all'Audi Design Hub durante la Milano Design Week: installazioni e talk con designer e architetti, con ingresso riservato.",
+          "kind": "access",
+          "limited": true,
+          "note": "Programma da definire con Audi Italia",
+          "claim": {
+            "cta": "Prenota",
+            "options": [
+              {
+                "id": "giornata",
+                "label": "Scegli la giornata",
+                "choices": ["Aprile 2027, date da confermare"]
+              }
+            ],
+            "seatsPerChoice": 30,
+            "tickets": true,
+            "confirmation": "Il tuo posto alla Milano Design Week è riservato. Ti scriviamo appena le date sono confermate."
+          }
+        },
+        {
+          "id": "sline-snow",
+          "title": "Guida su neve e ghiaccio",
+          "description": "Trazione e sicurezza su fondi a bassa aderenza e superfici ghiacciate, con gli istruttori Audi driving experience.",
+          "kind": "experience",
+          "limited": true
+        },
+        {
+          "id": "sline-superski",
+          "title": "Dolomiti Superski",
+          "description": "Un servizio pensato per chi scia, da costruire con Dolomiti Superski, di cui Audi è partner ufficiale.",
+          "kind": "partner",
+          "note": "Da definire con Dolomiti Superski"
+        },
+        {
+          "id": "sline-pickup",
+          "title": "Ritiro e riconsegna per il service",
+          "description": "La concessionaria ritira la tua Audi per il service e te la riconsegna, dove offre il servizio.",
+          "kind": "service",
+          "note": "Proposta da definire con la rete Audi"
+        },
+        {
+          "id": "sline-kit",
+          "title": "Kit di benvenuto: cura e pulizia della tua Audi",
+          "description": "Ti aspetta quando raggiungi S line Club. Te lo spediamo a casa e non spendi punti: è il regalo per il nuovo livello.",
+          "kind": "welcome_kit",
+          "claim": {
+            "cta": "Ricevi a casa",
+            "delivery": "shipping",
+            "options": [
+              {
+                "id": "spedizione",
+                "label": "Dove lo spediamo",
+                "choices": ["All'indirizzo del tuo profilo myAudi"]
+              }
+            ],
+            "confirmation": "Spedizione confermata: il kit arriva all'indirizzo del tuo profilo myAudi entro 5 giorni lavorativi."
+          }
+        }
+      ]
+    },
+    {
+      "id": "rs-vanguard",
+      "name": "RS Vanguard",
+      "threshold": 5000,
+      "requires": {
+        "action": "service",
+        "withinMonths": 12,
+        "label": "almeno un passaggio in officina ufficiale negli ultimi 12 mesi"
+      },
+      "tagline": "Vedi per primo la tua prossima Audi, e la rendi tua con un wrap.",
+      "courtesyCar": {
+        "label": "Due segmenti in più, anche elettrica",
+        "description": "Quando disponibile, un'Audi di due segmenti superiore, elettrica se possibile (per esempio da A3 ad A6 e-tron).",
+        "segmentsUp": 2,
+        "electricWhenAvailable": true
+      },
+      "rewards": [
+        {
+          "id": "rs-weekend",
+          "title": "Weekend di 48 ore",
+          "description": "Un'Audi di segmento superiore o elettrica per un weekend, quando disponibile.",
+          "kind": "experience",
+          "highlight": true,
+          "note": "Proposta da definire con la rete Audi"
+        },
+        {
+          "id": "rs-early",
+          "title": "Prenotazione anticipata delle experience a posti limitati",
+          "description": "Prenoti prima degli altri livelli: giornata sulle Dolomiti, Milano Design Week, meet and greet con gli atleti FISI previa approvazione della FISI.",
+          "kind": "access",
+          "limited": true
+        },
+        {
+          "id": "rs-referente",
+          "title": "Un referente dedicato in concessionaria",
+          "description": "Una persona della tua concessionaria che conosce te, la tua famiglia e la tua Audi.",
+          "kind": "service",
+          "note": "Proposta da definire con la rete Audi"
+        },
+        {
+          "id": "rs-preview",
+          "title": "Anteprime riservate dei nuovi modelli",
+          "description": "Inviti alle anteprime dei nuovi modelli Audi nella tua concessionaria.",
+          "kind": "access",
+          "note": "Proposta da definire con Audi Italia"
+        },
+        {
+          "id": "rs-family",
+          "title": "Riconoscimento per chi porta un nuovo guidatore",
+          "description": "Un segno visibile sul profilo per chi fa entrare un nuovo guidatore in famiglia.",
+          "kind": "recognition"
+        },
+        {
+          "id": "rs-tradein",
+          "title": "Prima scelta sulla prossima Audi",
+          "description": "Quando pensi alla prossima Audi, la concessionaria ti mostra per primo le novità e l'usato disponibile.",
+          "kind": "access",
+          "note": "Proposta da definire con la rete Audi"
+        },
+        {
+          "id": "rs-kit",
+          "title": "Kit di benvenuto: profumatore per l'abitacolo",
+          "description": "Ti aspetta quando raggiungi RS Vanguard. Te lo spediamo a casa e non spendi punti: è il regalo per il nuovo livello.",
+          "kind": "welcome_kit",
+          "claim": {
+            "cta": "Ricevi a casa",
+            "delivery": "shipping",
+            "options": [
+              {
+                "id": "spedizione",
+                "label": "Dove lo spediamo",
+                "choices": ["All'indirizzo del tuo profilo myAudi"]
+              }
+            ],
+            "confirmation": "Spedizione confermata: il kit arriva all'indirizzo del tuo profilo myAudi entro 5 giorni lavorativi."
+          }
+        },
+        {
+          "id": "rs-wrap",
+          "title": "Wrap personalizzato",
+          "description": "Proposta: un wrap parziale (tetto, calotte degli specchietti, linee) da progettare con i designer dell'Audi Design Hub. Posti limitati, assegnati con accesso anticipato per livello.",
+          "kind": "design",
+          "bonus": true,
+          "limited": true,
+          "image": "/rewards/wrap-demo.jpg",
+          "note": "da verificare: un cambio colore totale richiede l'aggiornamento della carta di circolazione",
+          "claim": {
+            "cta": "Richiedi il tuo posto",
+            "options": [
+              {
+                "id": "zona",
+                "label": "Scegli la zona del wrap",
+                "choices": ["Tetto", "Calotte degli specchietti", "Linee laterali"]
+              }
+            ],
+            "seatsPerChoice": 10,
+            "confirmation": "Richiesta registrata. Ti contattiamo per progettare il wrap insieme: nulla si applica finché non approvi il progetto."
+          }
+        }
+      ]
+    }
+  ],
+  "segments": [
+    { "id": "s1", "models": ["A1", "Q2"] },
+    { "id": "s2", "models": ["A3", "Q3"] },
+    { "id": "s3", "models": ["A5", "Q5", "Q4 e-tron"] },
+    { "id": "s4", "models": ["A6", "Q6 e-tron", "A6 e-tron", "Q7", "Q8"] },
+    { "id": "s5", "models": ["A8", "e-tron GT"] }
+  ],
+  "experiences": {
+    "intro": "Il catalogo è aperto: ogni nuova esperienza Audi, anche quelle nate oggi all'H-ACK, può diventare un premio.",
+    "items": [
+      {
+        "id": "conosci",
+        "rewardId": "icon-sessions",
+        "title": "Conosci la tua Audi",
+        "description": "Un'ora in concessionaria per scoprire funzioni e servizi della tua Audi, con chi la conosce meglio.",
+        "minLevel": "icon-circle",
+        "limited": false,
+        "place": "In concessionaria"
+      },
+      {
+        "id": "eventi",
+        "title": "Eventi Audi",
+        "description": "Presentazioni, serate e giornate in concessionaria e sul territorio.",
+        "minLevel": "icon-circle",
+        "limited": false,
+        "place": "In tutta Italia"
+      },
+      {
+        "id": "driving",
+        "rewardId": "quattro-driving",
+        "title": "Audi driving experience su neve e ghiaccio",
+        "description": "Guida con gli istruttori Audi su fondi a bassa aderenza e superfici ghiacciate.",
+        "minLevel": "quattro-circle",
+        "limited": true,
+        "place": "Dolomiti"
+      },
+      {
+        "id": "hub",
+        "rewardId": "sline-dolomiti",
+        "title": "Una giornata Audi sulle Dolomiti",
+        "description": "Accoglienza e lounge nell'hub Audi, deposito sci e un modulo di Audi driving experience sulla neve.",
+        "minLevel": "s-line-club",
+        "limited": true,
+        "place": "Cortina d'Ampezzo, Alta Badia, Madonna di Campiglio"
+      },
+      {
+        "id": "design-week",
+        "rewardId": "sline-designweek",
+        "title": "Milano Design Week all'Audi Design Hub",
+        "description": "Installazioni e talk con designer e architetti, con un ingresso riservato.",
+        "minLevel": "s-line-club",
+        "limited": true,
+        "place": "Milano"
+      },
+      {
+        "id": "fisi",
+        "title": "Meet and greet con gli atleti FISI",
+        "description": "Incontri gli atleti della squadra azzurra di sport invernali, previa approvazione della FISI.",
+        "minLevel": "rs-vanguard",
+        "limited": true,
+        "place": "Da definire con la FISI"
+      },
+      {
+        "id": "h-ack",
+        "title": "Nata all'H-ACK",
+        "description": "Le idee progettate con gli under 35 all'H-ACK possono entrare nel catalogo come nuove esperienze.",
+        "minLevel": "icon-circle",
+        "limited": false
+      }
+    ]
+  },
+  "rules": [
+    "I punti non si spendono: si sommano e decidono il livello.",
+    "Prenotare un premio non consuma punti.",
+    "Contano i punti degli ultimi 3 anni: ogni punto esce dal conteggio 36 mesi dopo averlo guadagnato.",
+    "Punti fissi per ogni azione, mai in base agli euro spesi: il livello non si compra.",
+    "Nessun punto per chilometri, stile di guida o dati di telemetria.",
+    "Nessuno sconto e nessun credito in euro: i premi sono servizi, priorità ed esperienze.",
+    "Premi, servizi e partnership sono proposte da verificare con Audi Italia e con la rete ufficiale."
+  ]
+}

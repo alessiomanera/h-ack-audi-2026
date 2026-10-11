@@ -1,0 +1,17 @@
+{
+  "name": "h-ack-audi-2026",
+  "private": true,
+  "type": "module",
+  "description": "Audi with you: loyalty prototype built in one day at the H-ACK (Audi x H-FARM, 10 Oct 2026). Archived.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "agents:sync": "node scripts/agents-sync.mjs",
+    "agents:check": "node scripts/agents-sync.mjs --check",
+    "privacy:scan": "node scripts/privacy-scan.mjs --all",
+    "tasks:board": "node scripts/tasks-board.mjs",
+    "check": "npm run agents:check && npm run privacy:scan && npm --prefix app run check"
+  },
+  "license": "UNLICENSED"
+}

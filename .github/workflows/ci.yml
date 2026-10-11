@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [testing, main]
+  pull_request:
+    branches: [main, testing]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  repo-guards:
+    name: Repo guards (privacy scan, rulebook sync)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - run: node scripts/privacy-scan.mjs --all
+      - run: node scripts/agents-sync.mjs --check
+
+  app:
+    name: app (typecheck, tests, build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm ci
+      - run: npx wrangler types
+      - run: npx tsc -b
+      - run: npx vitest run
+      - run: npx vite build
