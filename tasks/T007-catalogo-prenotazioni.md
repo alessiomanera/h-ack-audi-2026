@@ -12,7 +12,7 @@ depends_on: T004
 # T007: Catalogo esperienze e prenotazione premi
 
 ## Contesto
-Richiesta di Alessio (10/10, 15:45): nella demo l'utente sceglie un'esperienza da un catalogo e la prenota fino alla conferma. I punti non si spendono mai: prenotare non consuma punti. La demo per la giuria usa l'evento sci (il presidente, Dolomiti Superski). Partire da T004 già fatto: contratto in `app/src/shared/types.ts` (RewardClaimConfig, RewardBooking, BookingRequest, RewardAvailability, POST /api/bookings, GET /api/rewards/:id/availability), `app/worker/bookings.ts`, `shared/BookingDialog.tsx`, `shared/MyBookings.tsx`, `shared/qr.ts` + `QrCode.tsx` (encoder QR senza dipendenze).
+Richiesta di Alessio (10/10, 15:45): nella demo l'utente sceglie un'esperienza da un catalogo e la prenota fino alla conferma. I punti non si spendono mai: prenotare non consuma punti. La demo per la giuria usa l'evento sci (Dolomiti Superski). Partire da T004 già fatto: contratto in `app/src/shared/types.ts` (RewardClaimConfig, RewardBooking, BookingRequest, RewardAvailability, POST /api/bookings, GET /api/rewards/:id/availability), `app/worker/bookings.ts`, `shared/BookingDialog.tsx`, `shared/MyBookings.tsx`, `shared/qr.ts` + `QrCode.tsx` (encoder QR senza dipendenze).
 
 ## Passi
 1. **Contratto (`types.ts`, a mano).** Aggiungere `DeliveryKind = 'qr' | 'shipping'`, `RewardClaimConfig.delivery` e `tickets?`, `ProgramExperience.claim?`, `RewardBooking.itemKind / tickets / delivery / qrPayload / shipping`, `BookingRequest.tickets?`, `RewardAvailability.maxTickets`.

@@ -28,7 +28,7 @@ Il team F1 scrive frasi brevi e affermative ("Defined by progress", "Performance
 7. Spiegare l'elettrico con i kWh.
 8. Due strategie separate online e offline.
 9. Asset AI generici: SHADO li riconosce al volo.
-10. Citare [nome] come direttore di Audi Italia (il direttore è [nome]).
+10. Citare il nome sbagliato per il direttore di Audi Italia (verificare sempre il nome in carica).
 
 ## Numeri
 

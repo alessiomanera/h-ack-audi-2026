@@ -232,7 +232,7 @@ Tutte le schede sono raggruppate per area (A-H), con rigida separazione tra fatt
 - Paese: IT
 - Tipo di fonte: primaria
 - Affidabilità: alta
-- Rilevanza per il Brief 4: Dolomiti Superski è partner ufficiale di Audi e il suo presidente, il presidente, è in giuria. È un esempio di misurazione basata su un sistema già esistente (lo skipass).
+- Rilevanza per il Brief 4: Dolomiti Superski è partner ufficiale di Audi e il suo presidente è in giuria. È un esempio di misurazione basata su un sistema già esistente (lo skipass).
 - Inferenza: incrociare il mondo Audi con la presenza in montagna registrata da My Dolomiti potrebbe collegare la trazione quattro alla neve.
 - Flag: nessuno
 
