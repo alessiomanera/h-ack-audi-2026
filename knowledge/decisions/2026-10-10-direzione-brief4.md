@@ -65,7 +65,7 @@ Non si inventa niente: si attiva ciò che Audi ha già (ruolo di utente secondar
 
 | Verifica | Chi | Entro |
 |---|---|---|
-| Domande al mentor Jakala e la mentor Jakala (Jakala): in Italia gli utenti secondari esistono? La sezione loyalty può leggere i ruoli? I passaggi in officina sono misurabili? Lo status personale va bene? | Simone e Sofi | 12:50 |
+| Domande al mentor Jakala e la mentor Jakala (Jakala): in Italia gli utenti secondari esistono? La sezione loyalty può leggere i ruoli? I passaggi in officina sono misurabili? Lo status personale va bene? | Simone e Dori | 12:50 |
 | Anti-riciclo: Audi Presents (UK) e Audi Experience (Australia) includono i guidatori secondari? Il nome "Audi with you" è libero? (nessun uso trovato in una ricerca rapida) | Nicola e Alberto | 12:50 |
 | Sondaggio in sala: "Guidi un'auto intestata a un familiare? Di che marca? Hai l'app del costruttore?" Etichetta: sondaggio in sala 10/10/2026, con il numero di risposte | Aurora | 12:50 |
 | Neopatentati: i limiti di potenza dei primi 3 anni (riforma del Codice della strada 2024) possono escludere i 18-21enni dalle Audi più potenti. Verificare e preparare la risposta | Valeria | 13:00 |
