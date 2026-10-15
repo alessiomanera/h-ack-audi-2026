@@ -4,7 +4,7 @@ One rulebook for Claude Code, Antigravity and Gemini CLI. `GEMINI.md` is a gener
 
 ## The project
 
-A team of 8 (Alessio, Evelyn, Simone, Valeria, Aurora, Sofi, Nicola, Alberto) at the Audi x H-FARM hackathon "H-ACK | Co-Design the Future" (Sat 10 Oct 2026). Deliverable: one digital solution answering one of four official briefs (a clickable prototype living in Audi's existing channels, never a dedicated app, plus a deck of at most 10 slides), pitched in Italian in 5 minutes. We chose Brief 4 (post-purchase loyalty, under 35) and built **Audi with you** (`app/`).
+A team of 8 (Alessio, Evelyn, Simone, Valeria, Aurora, Dori, Nicola, Alberto) at the Audi x H-FARM hackathon "H-ACK | Co-Design the Future" (Sat 10 Oct 2026). Deliverable: one digital solution answering one of four official briefs (a clickable prototype living in Audi's existing channels, never a dedicated app, plus a deck of at most 10 slides), pitched in Italian in 5 minutes. We chose Brief 4 (post-purchase loyalty, under 35) and built **Audi with you** (`app/`).
 
 ## Facts versus hypotheses
 
