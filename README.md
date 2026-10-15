@@ -90,10 +90,6 @@ The Worker needs a D1 database of your own: create one with `wrangler d1 create 
 | `brand/` | Colour tokens, tone of voice and generation prompts |
 | `.agents/` | Shared rules for the AI agents |
 
-## Credits
-
-Alessio, Evelyn, Simone, Valeria, Aurora, Sofi, Nicola and Alberto, with mentors from Audi Italia and Jakala.
-
 ## Disclaimer
 
 This is an unofficial team project created during a hackathon. It is not affiliated with, endorsed by or sponsored by AUDI AG, Volkswagen Group Italia or H-FARM. Audi and the four rings are trademarks of AUDI AG. No Audi fonts, logo files or organizer material are included in this repository; the pitch deck and the screenshots show Audi names and imagery for illustration only. No licence is granted: all rights reserved by the authors, subject to the hackathon rules.
